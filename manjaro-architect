@@ -1920,7 +1920,7 @@ install_network_menu() {
     }
 
     submenu 5
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstNMMenuTitle " --menu "$_InstNMMenuBody" 0 0 5 \
+    DIALOG " $_InstNMMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "$_InstNMMenuBody" 0 0 5 \
       "1" "$_SeeWirelessDev" \
       "2" "$_InstNMMenuPkg" \
       "3" "$_InstNMMenuNM" \
@@ -2560,7 +2560,7 @@ install_multimedia_menu() {
     }
 
     submenu 5
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstMultMenuTitle " --menu "$_InstMultMenuBody" 0 0 5 \
+    DIALOG "$_InstMultMenuBody" --default-item ${HIGHLIGHT_SUB} " $_InstMultMenuTitle " --menu 0 0 5 \
       "1" "$_InstMulSnd" \
       "2" "$_InstMulCodec" \
       "3" "$_InstMulAcc" \
@@ -2590,7 +2590,7 @@ security_menu() {
     local PARENT="$FUNCNAME"
 
     submenu 4
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_SecMenuTitle " \
+    DIALOG " $_SecMenuTitle " --default-item ${HIGHLIGHT_SUB} \
       --menu "$_SecMenuBody" 0 0 4 \
       "1" "$_SecJournTitle" \
       "2" "$_SecCoreTitle" \
@@ -2678,7 +2678,7 @@ prep_menu() {
     local PARENT="$FUNCNAME"
 
     submenu 7
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_PrepMenuTitle " \
+    DIALOG "$_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} \
       --menu "$_PrepMenuBody" 0 0 7 \
       "1" "$_VCKeymapTitle" \
       "2" "$_DevShowOpt" \
@@ -2718,7 +2718,7 @@ install_base_menu() {
     local PARENT="$FUNCNAME"
 
     submenu 5
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstBsMenuTitle " --menu "$_InstBseMenuBody" 0 0 5 \
+    DIALOG " $_InstBsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "$_InstBseMenuBody" 0 0 5 \
       "1" "$_PrepMirror" \
       "2" "$_PrepPacKey" \
       "3" "$_InstBse" \
@@ -2756,8 +2756,8 @@ config_base_menu() {
     check_for_error
 
     submenu 8
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_ConfBseMenuTitle " \
-      --menu "$_ConfBseBody" 0 0 8 \
+    DIALOG "$_ConfBseBody" --default-item ${HIGHLIGHT_SUB} " $_ConfBseMenuTitle " \
+      --menu 0 0 8 \
       "1" "$_ConfBseFstab" \
       "2" "$_ConfBseHost" \
       "3" "$_ConfBseSysLoc" \
@@ -2797,7 +2797,7 @@ install_vanilla_de_wm() {
     local PARENT="$FUNCNAME"
 
     submenu 4
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstGrMenuTitle " \
+    DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SUB} \
       --menu "$_InstGrMenuBody" 0 0 4 \
       "1" "$_InstGrMenuDS" \
       "2" "$_InstGrDE" \
@@ -2827,7 +2827,7 @@ install_deskop_menu() {
     local PARENT="$FUNCNAME"
 
     submenu 4
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstGrMenuTitle " \
+    DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SUB} \
       --menu "$_InstDEMenuTitle" 0 0 4 \
       "1" "$_InstDEStable" \
       "2" "$_InstDEGit" \
@@ -2857,7 +2857,7 @@ install_graphics_menu() {
     local PARENT="$FUNCNAME"
 
     submenu 4
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_InstGrMenuTitle " \
+    DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SUB} \
       --menu "$_InstGrMenuBody" 0 0 4 \
       "1" "$_InstGrMenuDD" \
       "2" "$_InstGrMenuGE|>" \
@@ -2923,7 +2923,7 @@ edit_configs() {
     user_list=""
 
     submenu 13
-    dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_SeeConfOptTitle " --menu "$_SeeConfOptBody" 0 0 13 \
+    DIALOG " $_SeeConfOptTitle " --default-item ${HIGHLIGHT_SUB} --menu "$_SeeConfOptBody" 0 0 13 \
       "1" "/etc/vconsole.conf" \
       "2" "/etc/locale.conf" \
       "3" "/etc/hostname" \
