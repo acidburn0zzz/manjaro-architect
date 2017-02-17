@@ -2196,6 +2196,10 @@ install_manjaro_de_wm() {
         # Remove empty lines
         sed -i '/^\s*$/d' /tmp/.edition
 
+        # remove >manjaro flags and >sonar flags+pkgs until we support it properly
+        sed -i '/>sonar/d' /tmp/.edition
+        sed -i 's/>manjaro //g' /tmp/.edition
+
         # Remove base-devel and base packages. Base is already installed and base-devel should be decided by the user
         # pacman -Sgq base-devel base openrc-base > /tmp/.notincluded
         # grep -v -f /tmp/.notincluded /tmp/.edition | grep -v "base-devel" > /tmp/.tmp
