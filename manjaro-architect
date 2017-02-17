@@ -396,8 +396,7 @@ set_keymap() {
         KEYMAPS="${KEYMAPS} ${i} -"
     done
 
-    DIALOG " $_VCKeymapTitle " \
-      --menu "$_VCKeymapBody" 20 40 16 ${KEYMAPS} 2>${ANSWER} || prep_menu
+    DIALOG " $_VCKeymapTitle " --menu "$_VCKeymapBody" 20 40 16 ${KEYMAPS} 2>${ANSWER} || prep_menu
     KEYMAP=$(cat ${ANSWER})
 
     loadkeys $KEYMAP 2>/tmp/.errlog
@@ -419,8 +418,7 @@ set_xkbmap() {
         XKBMAP_LIST="${XKBMAP_LIST} ${i} -"
     done
 
-    DIALOG " $_PrepKBLayout " --menu "$_XkbmapBody" 0 0 16 ${XKBMAP_LIST} 2>${ANSWER} \
-      || install_graphics_menu
+    DIALOG " $_PrepKBLayout " --menu "$_XkbmapBody" 0 0 16 ${XKBMAP_LIST} 2>${ANSWER} || install_graphics_menu
     XKBMAP=$(cat ${ANSWER} |sed 's/_.*//')
     echo -e "Section "\"InputClass"\"\nIdentifier "\"system-keyboard"\"\nMatchIsKeyboard "\"on"\"\nOption "\"XkbLayout"\" "\"${XKBMAP}"\"\nEndSection" \
       > ${MOUNTPOINT}/etc/X11/xorg.conf.d/00-keyboard.conf
@@ -477,7 +475,6 @@ set_timezone() {
 }
 
 set_hw_clock() {
-
     DIALOG " $_ConfBseTimeHC " --menu "$_HwCBody" 0 0 2 \
     "utc" "-" \
     "localtime" "-" 2>${ANSWER}
@@ -556,7 +553,7 @@ create_new_user() {
         USER=$(cat ${ANSWER})
     done
 
-        DIALOG " Choose Manjaro branch to use " --radiolist " $_UseSpaceBar" 0 0 3 \
+        DIALOG "_MirrorBranch" --radiolist " $_UseSpaceBar" 0 0 3 \
           "zsh" "-" on \
           "bash" "-" off \
           "fish" "-" off 2>/tmp/.shell
