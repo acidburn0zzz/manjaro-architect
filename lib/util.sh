@@ -103,7 +103,7 @@ DIALOG() {
     dialog --backtitle "$VERSION - $SYSTEM ($ARCHI)" --column-separator "|" --exit-label "$_Back" --title "$@"
 }
 
-# store datas in ini file
+# store datas in tmp ini file
 # read: value=$(ini system.init)
 # set:  ini system.init "openrc"
 ini() {
@@ -121,7 +121,7 @@ function finishini {
 }
 trap finishini EXIT
 
-# read datas from ini file
+# read datas from import ini file
 # read: value=$(ini system.init)
 inifile() {
     [[ -r "${ARGS[ini]}" ]] || return 1
@@ -130,13 +130,21 @@ inifile() {
     ini_val "${ARGS[ini]}" "$section" 2>/dev/null
 }
 
-# read install value
+# read install value, only if denydialog=1 in import file
 # console param, import ini, or current ini
 getvar() {
-    local value=''
+    local value='' denydialog=1
     value="${ARGS[$1]}"
-    [[ -z "$value" ]] && value=$(inifile "$1")
-    [[ -z "$value" ]] && value=$(ini "$1")
+    if [[ -z "$value" ]]; then
+        denydialog=$(inifile "denydialog")
+check_for_error "denydialog in ${ARGS[ini]}: $denydialog \n $(<${ARGS[ini]})";
+        if [[ "$denydialog" == 1 ]]; then
+            value=$(inifile "$1")
+            [[ -z "$value" ]] && value=$(ini "$1")
+        else
+            return 0
+        fi
+    fi
     echo "$value"
 }
 
