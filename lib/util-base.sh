@@ -209,7 +209,7 @@ install_base() {
     kernels=$(cat /tmp/.available_kernels)
 
     # User to select initsystem
-    local init=$(getvar "linux.init")
+    local init=$(getvar "base.init")
     if [[ -z "${init}" ]]; then
         init=$(DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
         "1" "systemd" \
