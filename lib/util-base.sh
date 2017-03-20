@@ -209,7 +209,7 @@ install_base() {
     kernels=$(cat /tmp/.available_kernels)
 
     # User to select initsystem
-    local init=$(getvar "base.init")
+    local init=$(getvar "linux.init")
     if [[ -z "${init}" ]]; then
         init=$(DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
         "1" "systemd" \
@@ -220,7 +220,7 @@ install_base() {
     fi
 
     check_for_error "init ${init}"
-    ini "base.init" "openrc"
+    ini "linux.init" "${init}"
     [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
 
     if [[ $init == 'openrc' ]]; then
@@ -322,7 +322,7 @@ install_base() {
     # arch_chroot "mhwd-kernel -i $(cat ${PACKAGES} | xargs -n1 | grep -f /tmp/.available_kernels | xargs)"
 
     # copy keymap and consolefont settings to target
-    if [[ $(ini base.init) == "openrc" ]]; then
+    if [[ $(ini linux.init) == "openrc" ]]; then
         echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
         arch_chroot "rc-update add keymaps boot" 2>$ERR
         check_for_error "configure keymaps" $?
