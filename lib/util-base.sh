@@ -551,21 +551,22 @@ generate_fstab() {
 
 # locale array generation code adapted from the Manjaro 0.8 installer
 set_locale() {
-    LOCALES=""
-    for i in $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | sed 's/ UTF-8//g' | grep .UTF-8); do
-        LOCALES="${LOCALES} ${i} -"
-    done
-
-    DIALOG " $_ConfBseSysLoc " --menu "\n$_localeBody\n " 0 0 12 ${LOCALES} 2>${ANSWER} || return 0
-
-    LOCALE=$(cat ${ANSWER})
+    local locales=""
+    LOCALE=$(getvar "linux.locale")
+    if [[ -z "${LOCALE}" ]]; then
+        for i in $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | sed 's/ UTF-8//g' | grep .UTF-8); do
+            locales="${locales} ${i} -"
+        done
+        LOCALE=$(DIALOG " $_ConfBseSysLoc " --menu "\n$_localeBody\n " 0 0 12 ${locales} 3>&1 1>&2 2>&3)
+    fi
+    [[ -z "${LOCALE}" ]] && return 0
 
     echo "LANG=\"${LOCALE}\"" > ${MOUNTPOINT}/etc/locale.conf
     sed -i "s/#${LOCALE}/${LOCALE}/" ${MOUNTPOINT}/etc/locale.gen 2>$ERR
     arch_chroot "locale-gen" >/dev/null 2>$ERR
-    check_for_error "$FUNCNAME" "$?"
+    check_for_error "$FUNCNAME ${LOCALE}" "$?"
     ini linux.locale "$LOCALE"
-    if [[ -e /mnt/.openrc ]]; then 
+    if [[ $(ini base.init) == "openrc" ]]; then 
         mkdir ${MOUNTPOINT}/etc/env.d
         echo "LANG=\"${LOCALE}\"" > ${MOUNTPOINT}/etc/env.d/02locale
     fi
@@ -600,25 +601,31 @@ set_timezone() {
 }
 
 set_hw_clock() {
-    DIALOG " $_ConfBseTimeHC " --menu "\n$_HwCBody\n " 0 0 2 \
-    "utc" "-" \
-    "localtime" "-" 2>${ANSWER}
-
-    if [[ $(cat ${ANSWER}) != "" ]]; then
-        arch_chroot "hwclock --systohc --$(cat ${ANSWER})"  2>$ERR
-        check_for_error "$FUNCNAME" "$?"
-        ini linux.time "$ANSWER"
+    local clock=$(getvar "linux.time")
+    if [[ -z "${clock}" ]]; then
+        clock=$(DIALOG " $_ConfBseTimeHC " --menu "\n$_HwCBody\n " 0 0 2 \
+        "utc" "-" \
+        "localtime" "-" 3>&1 1>&2 2>&3)
     fi
+    [[ -z "${clock}" ]] && return 0
+
+    arch_chroot "hwclock --systohc --${clock}"  2>$ERR
+    check_for_error "$FUNCNAME : ${clock}" "$?"
+    ini linux.time "${clock}"
 }
 
 set_hostname() {
-    DIALOG " $_ConfBseHost " --inputbox "\n$_HostNameBody\n " 0 0 "manjaro" 2>${ANSWER} || return 0
+    local hostname=$(getvar "linux.hostname")
+    if [[ -z "${hostname}" ]]; then
+        hostname=$(ini "linux.hostname")
+        hostname=$(DIALOG " $_ConfBseHost " --inputbox "\n$_HostNameBody\n " 0 0 "${hostname}" 3>&1 1>&2 2>&3)
+    fi
+    [[ -z "${hostname}" ]] && return 0
 
-    echo "$(cat ${ANSWER})" > ${MOUNTPOINT}/etc/hostname 2>$ERR
-    echo -e "#<ip-address>\t<hostname.domain.org>\t<hostname>\n127.0.0.1\tlocalhost.localdomain\tlocalhost\t$(cat \
-      ${ANSWER})\n::1\tlocalhost.localdomain\tlocalhost\t$(cat ${ANSWER})" > ${MOUNTPOINT}/etc/hosts 2>$ERR
-    check_for_error "$FUNCNAME"
-    ini linux.hostname "$ANSWER"
+    echo "${hostname}" > ${MOUNTPOINT}/etc/hostname 2>$ERR
+    echo -e "#<ip-address>\t<hostname.domain.org>\t<hostname>\n127.0.0.1\tlocalhost.localdomain\tlocalhost\t${hostname}\n::1\tlocalhost.localdomain\tlocalhost\t${hostname}" > ${MOUNTPOINT}/etc/hosts 2>$ERR
+    check_for_error "$FUNCNAME ${hostname}"
+    ini linux.hostname "${hostname}"
 }
 
 # Adapted and simplified from the Manjaro 0.8 and Antergos 2.0 installers

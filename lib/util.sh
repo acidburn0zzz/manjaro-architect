@@ -137,7 +137,6 @@ getvar() {
     value="${ARGS[$1]}"
     if [[ -z "$value" ]]; then
         denydialog=$(inifile "denydialog")
-check_for_error "denydialog in ${ARGS[ini]}: $denydialog \n $(<${ARGS[ini]})";
         if [[ "$denydialog" == 1 ]]; then
             value=$(inifile "$1")
             [[ -z "$value" ]] && value=$(ini "$1")
