@@ -209,20 +209,22 @@ install_base() {
     kernels=$(cat /tmp/.available_kernels)
 
     # User to select initsystem
-    DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
-      "1" "systemd" \
-      "2" "openrc" 2>${INIT}
+    local init=$(getvar "linux.init")
+    if [[ -z "${init}" ]]; then
+        init=$(DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
+        "1" "systemd" \
+        "2" "openrc"    3>&1 1>&2 2>&3)
+        check_for_error "init choice: \"$init\""
+        [[ -z "$init" ]] && return 0
+        [[ "$init" == "1" ]] && init="systemd" || init="openrc"
+    fi
 
-    if [[ $(cat ${INIT}) != "" ]]; then
-        if [[ $(cat ${INIT}) -eq 2 ]]; then
-            check_for_error "init openrc"
-            touch /mnt/.openrc
-        else
-            check_for_error "init systemd"
-            [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
-        fi
-    else
-        return 0
+    check_for_error "init ${init}"
+    ini "linux.init" "openrc"
+    [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
+
+    if [[ $init == 'openrc' ]]; then
+        touch /mnt/.openrc
     fi
     # Create the base list of packages
     echo "" > /mnt/.base

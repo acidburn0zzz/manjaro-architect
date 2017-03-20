@@ -45,7 +45,7 @@ BRANCH="/tmp/.branch"
 
 # Installer-Log
 LOGFILE="/var/log/m-a.log"  # path for the installer log in the live environment
-[[ ! -e $LOGFILE ]] && touch $LOGFILE
+[[ ! -e $LOGFILE ]] && touch $LOGFILE || echo "">"$LOGFILE"
 TARGLOG="/mnt/.m-a.log"     # path to copy the installer log to target install
 INIFILE="/tmp/manjaro-architect.ini"
 
@@ -121,6 +121,67 @@ function finishini {
 }
 trap finishini EXIT
 
+# read datas from ini file
+# read: value=$(ini system.init)
+inifile() {
+    [[ -r "${ARGS[ini]}" ]] || return 1
+    local section="$1"
+    [[ "$section" =~ \. ]] || section="manjaro-architect.${section}"
+    ini_val "${ARGS[ini]}" "$section" 2>/dev/null
+}
+
+# read install value
+# console param, import ini, or current ini
+getvar() {
+    local value=''
+    value="${ARGS[$1]}"
+    [[ -z "$value" ]] && value=$(inifile "$1")
+    [[ -z "$value" ]] && value=$(ini "$1")
+    echo "$value"
+}
+
+# read console args , set in array ARGS global var
+get_ARGS() {
+    declare key param
+    getvalue(){
+        local value="${param##--${key}=}"
+        [[ "${value:0:1}" == '"' ]] && value="${value/\"/}" # remove quotes
+        echo "${value}"
+    }
+    while [ -n "$1" ]; do
+        param="$1"
+        case "${param}" in
+            --debug|-d)
+                ARGS[debug]=1
+                debug=1  # compatibility old version
+                ;; 
+            --init=*)
+                key="init"
+                ARGS[$key]=$(getvalue)
+                ;;
+            --ini=*)
+                key="ini"
+                ARGS[$key]=$(getvalue)
+                ;;
+            --help|-h)
+                echo -e "usage [-d|--debug] [--ini=\"file.ini\"] [ --init=openrc ]  "
+                exit 0
+                ;;
+            --*=*)
+                key="${param%=*}"
+                key="${key//-}"
+                ARGS[$key]=$(getvalue)
+                ;;
+            -*)
+                echo "${param}: not used";
+                ;;
+        esac
+        shift
+    done
+    #declare -g -r ARGS
+}
+get_ARGS "$@"
+
 # progress through menu entries until number $1 is reached
 submenu() {
     if [[ $SUB_MENU != "$PARENT" ]]; then
@@ -165,7 +226,7 @@ id_system() {
     else
         H_INIT="openrc"
     fi
-    ini system.init "$H_INIT"
+    ini system.hostinit "$H_INIT"
 
     ## TODO: Test which nw-client is available, including if the service according to $H_INIT is running
     [[ $H_INIT == "systemd" ]] && [[ $(systemctl is-active NetworkManager) == "active" ]] && NW_CMD=nmtui 2>$ERR
