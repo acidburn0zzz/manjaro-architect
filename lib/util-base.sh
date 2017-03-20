@@ -209,7 +209,7 @@ install_base() {
     kernels=$(cat /tmp/.available_kernels)
 
     # User to select initsystem
-    local init=$(getvar "linux.init")
+    local init=$(getvar "base.init")
     if [[ -z "${init}" ]]; then
         init=$(DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
         "1" "systemd" \
@@ -220,7 +220,7 @@ install_base() {
     fi
 
     check_for_error "init ${init}"
-    ini "linux.init" "openrc"
+    ini "base.init" "openrc"
     [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
 
     if [[ $init == 'openrc' ]]; then
@@ -229,44 +229,62 @@ install_base() {
     # Create the base list of packages
     echo "" > /mnt/.base
 
-    declare -i loopmenu=1
-    while ((loopmenu)); do
-        # Choose kernel and possibly base-devel
-        DIALOG " $_InstBseTitle " --checklist "\n$_InstStandBseBody$_UseSpaceBar\n " 0 0 13 \
-          "yaourt + base-devel" "-" off \
-          $(cat /tmp/.available_kernels | awk '$0=$0" - off"') 2>${PACKAGES} || { loopmenu=0; return 0; }
-        if [[ ! $(grep "linux" ${PACKAGES}) ]]; then
-            # Check if a kernel is already installed
-            ls ${MOUNTPOINT}/boot/*.img >/dev/null 2>&1
-            if [[ $? == 0 ]]; then
-                DIALOG " Check Kernel " --msgbox "\nlinux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2 | grep -v ucode.img | sort -u) detected \n " 0 0
-                check_for_error "linux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2) already installed"
-                loopmenu=0
+    local nb=$(cat /tmp/.available_kernels | wc -l); ((nb++))
+    local pkgs=$(getvar "linux.pkgs_base")
+    if [[ ! "${pkgs}" =~ linux ]]; then
+        declare -i loopmenu=1
+        while ((loopmenu)); do
+            # Choose kernel and possibly base-devel
+            DIALOG " $_InstBseTitle " --checklist "\n$_InstStandBseBody$_UseSpaceBar\n " 0 0 ${nb} \
+            "yaourt + base-devel" "-" off \
+            $(cat /tmp/.available_kernels | awk '$0=$0" - off"') 2>${PACKAGES} || { loopmenu=0; return 0; }
+            if [[ ! $(grep "linux" ${PACKAGES}) ]]; then
+                # Check if a kernel is already installed
+                ls ${MOUNTPOINT}/boot/*.img >/dev/null 2>&1
+                if [[ $? == 0 ]]; then
+                    DIALOG " Check Kernel " --msgbox "\nlinux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2 | grep -v ucode.img | sort -u) detected \n " 0 0
+                    check_for_error "linux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2) already installed"
+                    loopmenu=0
+                else
+                    DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoKernel\n " 0 0
+                fi
             else
-                DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoKernel\n " 0 0
+                cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' >> /mnt/.base
+                echo " " >> /mnt/.base
+                check_for_error "selected: $(cat ${PACKAGES})"
+                loopmenu=0
             fi
-        else
-            cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' >> /mnt/.base
-            echo " " >> /mnt/.base
-            check_for_error "selected: $(cat ${PACKAGES})"
-            loopmenu=0
-        fi
-    done
+        done
+    else
+        printf "%s\n" "${pkgs}" >/mnt/.base
+        printf "%s\n" "${pkgs}" >"${PACKAGES}"
+    fi
+    ini "base.pkgs_base" "$(printf "%s " $(cat /mnt/.base))"
 
     # Choose wanted kernel modules
-    DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
-      "KERNEL-headers" "-" off \
-      "KERNEL-acpi_call" "-" on \
-      "KERNEL-ndiswrapper" "-" on \
-      "KERNEL-broadcom-wl" "-" off \
-      "KERNEL-r8168" "-" off \
-      "KERNEL-rt3562sta" "-" off \
-      "KERNEL-tp_smapi" "-" off \
-      "KERNEL-vhba-module" "-" off \
-      "KERNEL-virtualbox-guest-modules" "-" off \
-      "KERNEL-virtualbox-host-modules" "-" off \
-      "KERNEL-spl" "-" off \
-      "KERNEL-zfs" "-" off 2>/tmp/.modules || return 0
+    local pkgs=$(getvar "base.modules")
+    if [[ -z "${pkgs}" ]]; then
+        local invb="off"
+        (($(sudo dmidecode | grep -c "VirtualBox")>0)) && invb="on"
+        DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
+        "KERNEL-headers" "-" off \
+        "KERNEL-acpi_call" "-" on \
+        "KERNEL-ndiswrapper" "-" on \
+        "KERNEL-broadcom-wl" "-" off \
+        "KERNEL-r8168" "-" off \
+        "KERNEL-rt3562sta" "-" off \
+        "KERNEL-tp_smapi" "-" off \
+        "KERNEL-vhba-module" "-" off \
+        "KERNEL-virtualbox-guest-modules" "-" off \
+        "KERNEL-virtualbox-host-modules" "-" ${invb} \
+        "KERNEL-spl" "-" off \
+        "KERNEL-zfs" "-" off 2>/tmp/.modules || return 0
+        pkgs=$(</tmp/.modules)
+        echo "$pkgs";
+        ini "base.modules" "${pkgs}"
+    else
+        echo "${pkgs}">/tmp/.modules
+    fi
 
     if [[ $(cat /tmp/.modules) != "" ]]; then
         check_for_error "modules: $(cat /tmp/.modules)"
@@ -304,7 +322,7 @@ install_base() {
     # arch_chroot "mhwd-kernel -i $(cat ${PACKAGES} | xargs -n1 | grep -f /tmp/.available_kernels | xargs)"
 
     # copy keymap and consolefont settings to target
-    if [[ -e /mnt/.openrc ]]; then
+    if [[ $(ini base.init) == "openrc" ]]; then
         echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
         arch_chroot "rc-update add keymaps boot" 2>$ERR
         check_for_error "configure keymaps" $?
@@ -323,8 +341,8 @@ install_base() {
     fi
 
     # if branch was chosen, use that also in installed system. If not, use the system setting
-    [[ -z $(ini branch) ]] && ini branch $(ini system.branch)
-    sed -i "s/Branch =.*/Branch = $(ini branch)/;s/# //" ${MOUNTPOINT}/etc/pacman-mirrors.conf
+    [[ -z $(getvar branch) ]] && ini branch $(ini system.branch)
+    sed -i "s/Branch =.*/Branch = $(getvar branch)/;s/# //" ${MOUNTPOINT}/etc/pacman-mirrors.conf
 
     touch /mnt/.base_installed
     check_for_error "base installed succesfully."
@@ -334,8 +352,8 @@ install_base() {
 install_bootloader() {
     check_base
     if [[ $? -eq 0 ]]; then
-        if [[ $SYSTEM == "BIOS" ]]; then
-            bios_bootloader
+        if [[ $(ini system.bios) == "BIOS" ]]; then
+            bios_bootloader || DIALOG " $_InstBseTitle " --msgbox "\n$_InstFail\n " 0 0
         else
             uefi_bootloader
         fi
