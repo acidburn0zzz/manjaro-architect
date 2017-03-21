@@ -146,8 +146,14 @@ install_manjaro_de_wm() {
     echo "" > /tmp/.desktop
 
     # DE/WM Menu
-    DIALOG " $_InstDETitle " --radiolist "\n$_InstManDEBody\n$(evaluate_profiles)\n\n$_UseSpaceBar\n " 0 0 12 \
-      $(echo $PROFILES/{manjaro,community}/* | xargs -n1 | cut -f7 -d'/' | grep -vE "netinstall|architect" | awk '$0=$0" - off"')  2> /tmp/.desktop
+    local manjaro_de=$(getvar "linux.manjaro_de")
+    if [[ -z "${manjaro_de}" ]]; then
+        manjaro_de=$(DIALOG " $_InstDETitle " --radiolist "\n$_InstManDEBody\n$(evaluate_profiles)\n\n$_UseSpaceBar\n " 0 0 12 \
+            $(echo $PROFILES/{manjaro,community}/* | xargs -n1 | cut -f7 -d'/' | grep -vE "netinstall|architect" | awk '$0=$0" - off"')  3>&1 1>&2 2>&3)
+    fi
+    [[ -z "${manjaro_de}" ]] && return 0
+    echo "${manjaro_de}" > /tmp/.desktop # for util.sh evaluate_openrc()
+    ini linux.manjaro_de "${manjaro_de}"
 
     # If something has been selected, install
     if [[ $(cat /tmp/.desktop) != "" ]]; then
@@ -205,6 +211,20 @@ install_manjaro_de_wm() {
         # Offer to install various "common" packages.
         install_extra
     fi
+    # Enable services in the chosen profile
+    enable_services
+    install_graphics_menu
+    # Stop for a moment so user can see if there were errors
+    echo ""
+    echo ""
+    echo ""
+    echo "press Enter to continue"
+    read
+    # Clear the packages file for installation of "common" packages
+    echo "" > ${PACKAGES}
+
+    # Offer to install various "common" packages.
+    install_extra
 }
 
 set_lightdm_greeter() {

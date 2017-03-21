@@ -37,7 +37,7 @@ setup_profiles() {
 enable_services() {
         # Enable services in the chosen profile
         echo "Enabling services"
-        if [[ -e /mnt/.openrc ]]; then
+        if [[ $(ini base.init) == "openrc" ]]; then
             eval $(grep -e "enable_openrc=" $profile | sed 's/# //g')
             echo "${enable_openrc[@]}" | xargs -n1 > /tmp/.services
             echo /mnt/etc/init.d/* | xargs -n1 | cut -d/ -f5 > /tmp/.available_services
@@ -95,21 +95,23 @@ enable_services() {
 
 install_extra() {
     # Offer to install various "common" packages.
-    local options=() nb=0
-    cpkgs="manjaro-settings-manager pamac octopi pacli pacui fish fisherman zsh zsh-completions \
-      manjaro-zsh-config mhwd-chroot bmenu clonezilla snapper snap-pac manjaro-tools-iso manjaro-tools-base manjaro-tools-pkg"
-    for p in ${cpkgs}; do
-        ! grep "$p" /mnt/.desktop && options+=("$p" "" off)
-    done
-    nb="$((${#options[@]}/3))"; (( nb>20 )) && nb=20 # if list too long limit
-    DIALOG " $_InstComTitle " --checklist "\n$_InstComBody\n\n$_UseSpaceBar\n  " 0 50 $nb "${options[@]}" 2>${PACKAGES}
-
-    # If at least one package, install.
-    if [[ $(cat ${PACKAGES}) != "" ]]; then
-        clear
-        basestrap -i ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
-        check_for_error "basestrap -i ${MOUNTPOINT} $(cat ${PACKAGES})" "$?"
+    local extras=$(getvar "linux.extra")
+    if [[ -z "${extras}" ]]; then
+        local options=() nb=0
+        cpkgs="manjaro-settings-manager pamac octopi pacli pacui fish fisherman zsh zsh-completions \
+        manjaro-zsh-config mhwd-chroot bmenu clonezilla snapper snap-pac manjaro-tools-iso manjaro-tools-base manjaro-tools-pkg"
+        for p in ${cpkgs}; do
+            ! grep "$p" /mnt/.desktop && options+=("$p" "" off)
+        done
+        nb="$((${#options[@]}/3))"; (( nb>20 )) && nb=20 # if list too long limit
+        extras=$(DIALOG " $_InstComTitle " --checklist "\n$_InstComBody\n\n$_UseSpaceBar\n  " 0 50 $nb "${options[@]}"  3>&1 1>&2 2>&3)
     fi
+    [[ -z "${extras}" ]] && return 0    # If at least one package, install.
+
+    clear
+    basestrap -i ${MOUNTPOINT} "${extras}" 2>$ERR
+    check_for_error "basestrap -i ${MOUNTPOINT} ${extras}" $?
+    ini linux.extra "${extras}"
 }
 
 filter_packages() {
