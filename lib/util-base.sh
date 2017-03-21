@@ -267,7 +267,7 @@ install_base() {
     local pkgs=$(getvar "base.modules")
     if [[ -z "${pkgs}" ]]; then
         local invb="off"
-        (($(sudo dmidecode | grep -c "VirtualBox")>0)) && invb="on"
+        [[ $(</sys/class/dmi/id/product_name) == "VirtualBox" ]] && invb="on"
         DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
         "KERNEL-headers" "-" off \
         "KERNEL-acpi_call" "-" on \
@@ -277,8 +277,8 @@ install_base() {
         "KERNEL-rt3562sta" "-" off \
         "KERNEL-tp_smapi" "-" off \
         "KERNEL-vhba-module" "-" off \
-        "KERNEL-virtualbox-guest-modules" "-" off \
-        "KERNEL-virtualbox-host-modules" "-" ${invb} \
+        "KERNEL-virtualbox-guest-modules" "-" ${invb} \
+        "KERNEL-virtualbox-host-modules" "-"  off \
         "KERNEL-spl" "-" off \
         "KERNEL-zfs" "-" off 2>/tmp/.modules || return 0
         pkgs=$(</tmp/.modules)
