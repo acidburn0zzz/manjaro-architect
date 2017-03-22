@@ -231,9 +231,13 @@ confirm_mount() {
 # partially because some don't seem to be viable.
 # Set static list of filesystems rather than on-the-fly.
 select_filesystem() {
-    local rescue="$1" formats=( "${PARTITION}" "-" )
+    local rescue="$1"
+    # prep variables
+    fs_opts=""
+    CHK_NUM=0
+
     if [[ -z "$rescue" ]]; then
-        formats=( "$_FSSkip" "-" \
+        local formats=( "$_FSSkip" "-" \
             "btrfs" "mkfs.btrfs -f" \
             "ext3" "mkfs.ext3 -q" \
             "ext4" "mkfs.ext4 -q" \
@@ -243,68 +247,65 @@ select_filesystem() {
             "reiserfs" "mkfs.reiserfs -q" \
             "vfat" "mkfs.vfat -F32" \
             "xfs" "mkfs.xfs -f" )
-    else
-        $_FSBody=""
-        $_FSTitle="${PARTITION}"
-    fi
-    # prep variables
-    fs_opts=""
-    CHK_NUM=0
 
-    local option=$(getvar "mount.${PARTITION}")
-    if [[ -z "$option" ]]; then
-        DIALOG " $_FSTitle " --menu "\n${PARTITION}\n$_FSBody\n " 0 0 "${#formats[@]}" \
-            "${formats[@]}" 2>${ANSWER} || return 1
-    else
-        echo "$option">${ANSWER}
-    fi
+        local option=$(getvar "mount.${PARTITION}")
+        if [[ -z "$option" ]]; then
+            DIALOG " $_FSTitle " --menu "\n${PARTITION}\n$_FSBody\n " 0 0 "${#formats[@]}" \
+                "${formats[@]}" 2>${ANSWER} || return 1
+        else
+            echo "$option">${ANSWER}
+        fi
 
-    case $(cat ${ANSWER}) in
-        "$_FSSkip"|"${PARTITION}") FILESYSTEM="$_FSSkip"
-            ;;
-        "btrfs") FILESYSTEM="mkfs.btrfs -f"
-            CHK_NUM=16
-            fs_opts="autodefrag compress=zlib compress=lzo compress=no compress-force=zlib compress-force=lzo discard \
-            noacl noatime nodatasum nospace_cache recovery skip_balance space_cache ssd ssd_spread"
-            modprobe btrfs
-            ;;
-        "ext2") FILESYSTEM="mkfs.ext2 -q"
-            ;;
-        "ext3") FILESYSTEM="mkfs.ext3 -q"
-            ;;
-        "ext4") FILESYSTEM="mkfs.ext4 -q"
-            CHK_NUM=8
-            fs_opts="data=journal data=writeback dealloc discard noacl noatime nobarrier nodelalloc"
-            ;;
-        "f2fs") FILESYSTEM="mkfs.f2fs -q"
-            fs_opts="data_flush disable_roll_forward disable_ext_identify discard fastboot flush_merge \
-            inline_xattr inline_data inline_dentry no_heap noacl nobarrier noextent_cache noinline_data norecovery"
-            CHK_NUM=16
-            modprobe f2fs
-            ;;
-        "jfs") FILESYSTEM="mkfs.jfs -q"
-            CHK_NUM=4
-            fs_opts="discard errors=continue errors=panic nointegrity"
-            ;;
-        "nilfs2") FILESYSTEM="mkfs.nilfs2 -fq"
-            CHK_NUM=7
-            fs_opts="discard nobarrier errors=continue errors=panic order=relaxed order=strict norecovery"
-            ;;
-        "ntfs") FILESYSTEM="mkfs.ntfs -q"
-            ;;
-        "reiserfs") FILESYSTEM="mkfs.reiserfs -q"
-            CHK_NUM=5
-            fs_opts="acl nolog notail replayonly user_xattr"
-            ;;
-        "vfat") FILESYSTEM="mkfs.vfat -F32"
-            ;;
-        "xfs") FILESYSTEM="mkfs.xfs -f"
-            CHK_NUM=9
-            fs_opts="discard filestreams ikeep largeio noalign nobarrier norecovery noquota wsync"
-            ;;
-        *)  return 1
-            ;;
-    esac
+        case $(cat ${ANSWER}) in
+            "$_FSSkip") FILESYSTEM="$_FSSkip"
+                ;;
+            "btrfs") FILESYSTEM="mkfs.btrfs -f"
+                CHK_NUM=16
+                fs_opts="autodefrag compress=zlib compress=lzo compress=no compress-force=zlib compress-force=lzo discard \
+                noacl noatime nodatasum nospace_cache recovery skip_balance space_cache ssd ssd_spread"
+                modprobe btrfs
+                ;;
+            "ext2") FILESYSTEM="mkfs.ext2 -q"
+                ;;
+            "ext3") FILESYSTEM="mkfs.ext3 -q"
+                ;;
+            "ext4") FILESYSTEM="mkfs.ext4 -q"
+                CHK_NUM=8
+                fs_opts="data=journal data=writeback dealloc discard noacl noatime nobarrier nodelalloc"
+                ;;
+            "f2fs") FILESYSTEM="mkfs.f2fs -q"
+                fs_opts="data_flush disable_roll_forward disable_ext_identify discard fastboot flush_merge \
+                inline_xattr inline_data inline_dentry no_heap noacl nobarrier noextent_cache noinline_data norecovery"
+                CHK_NUM=16
+                modprobe f2fs
+                ;;
+            "jfs") FILESYSTEM="mkfs.jfs -q"
+                CHK_NUM=4
+                fs_opts="discard errors=continue errors=panic nointegrity"
+                ;;
+            "nilfs2") FILESYSTEM="mkfs.nilfs2 -fq"
+                CHK_NUM=7
+                fs_opts="discard nobarrier errors=continue errors=panic order=relaxed order=strict norecovery"
+                ;;
+            "ntfs") FILESYSTEM="mkfs.ntfs -q"
+                ;;
+            "reiserfs") FILESYSTEM="mkfs.reiserfs -q"
+                CHK_NUM=5
+                fs_opts="acl nolog notail replayonly user_xattr"
+                ;;
+            "vfat") FILESYSTEM="mkfs.vfat -F32"
+                ;;
+            "xfs") FILESYSTEM="mkfs.xfs -f"
+                CHK_NUM=9
+                fs_opts="discard filestreams ikeep largeio noalign nobarrier norecovery noquota wsync"
+                ;;
+            *)  return 1
+                ;;
+        esac
+        
+    else
+        FILESYSTEM="$_FSSkip"
+    fi
 
     # Warn about formatting!
     if [[ $FILESYSTEM != "$_FSSkip" ]]; then
@@ -836,7 +837,9 @@ lvm_menu() {
 mount_partitions() {
     local rescue="$1"
     # Warn users that they CAN mount partitions without formatting them!
-    [[ -z "${rescue}" ]] && DIALOG " $_PrepMntPart " --msgbox "\n$_WarnMount1 '$_FSSkip' $_WarnMount2\n " 0 0
+    if [[ -z "${rescue}" ]]; then
+        DIALOG " $_PrepMntPart " --msgbox "\n$_WarnMount1 '$_FSSkip' $_WarnMount2\n " 0 0
+    fi
 
     # LVM Detection. If detected, activate.
     lvm_detect
