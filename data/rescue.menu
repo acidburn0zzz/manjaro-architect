@@ -8,12 +8,12 @@
 --------back               ; mnu_return 97
 ------home          ; mount_partition /home
 --------back               ; mnu_return 97
-----InstBs                   ; check_mount ;
+----InstBs                   ; check_r_mounted ;
 ------Mirrorlisting
 ------refresh keys
 ------bootloader
 ------done                ; mnu_return 97
-----video_driver            ; workfunction_videod
-----xkbmap                  ; workfunction_x
-----edit_config               ; edit_configs
+----video_driver            ; check_r_mounted workfunction_videod
+----xkbmap                  ; check_r_mounted workfunction_x
+----edit_config               ; check_r_mounted edit_configs
 

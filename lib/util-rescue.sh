@@ -52,9 +52,10 @@ check_menu_edit_config_begin(){
     return 0
 }
 
-check_menu_is_mounted(){
-    if [[ "${INSTALL[mounted]}" != 1 ]]; then
-        DIALOG " error " --msgbox "\n make mount in pre-install before\n" 0 0
-        return "${1:-98}"
+check_r_mounted(){
+    if [[ $(lsblk -o MOUNTPOINT | grep ${MOUNTPOINT}) == "" ]]; then
+        DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoMount\n " 0 0
+        return "${2:-98}"
     fi
+    [ -n "$1"] && $1
 }
