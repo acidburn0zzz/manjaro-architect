@@ -231,14 +231,9 @@ confirm_mount() {
 # partially because some don't seem to be viable.
 # Set static list of filesystems rather than on-the-fly.
 select_filesystem() {
-    # prep variables
-    fs_opts=""
-    CHK_NUM=0
-
-    local option==$(getvar "mount.${PARTITION}")
-    if [[ -z "$option" ]]; then
-        DIALOG " $_FSTitle " --menu "\n${PARTITION}\n$_FSBody\n " 0 0 12 \
-        "$_FSSkip" "-" \
+    local rescue="$1" formats=( "${PARTITION}" "-" )
+    if [[ -z "$rescue" ]]; then
+        formats=( "$_FSSkip" "-" \
             "btrfs" "mkfs.btrfs -f" \
             "ext3" "mkfs.ext3 -q" \
             "ext4" "mkfs.ext4 -q" \
@@ -247,13 +242,25 @@ select_filesystem() {
             "ntfs" "mkfs.ntfs -q" \
             "reiserfs" "mkfs.reiserfs -q" \
             "vfat" "mkfs.vfat -F32" \
-            "xfs" "mkfs.xfs -f" 2>${ANSWER} || return 1
+            "xfs" "mkfs.xfs -f" )
+    else
+        $_FSBody=""
+        $_FSTitle="${PARTITION}"
+    fi
+    # prep variables
+    fs_opts=""
+    CHK_NUM=0
+
+    local option=$(getvar "mount.${PARTITION}")
+    if [[ -z "$option" ]]; then
+        DIALOG " $_FSTitle " --menu "\n${PARTITION}\n$_FSBody\n " 0 0 "${#formats[@]}" \
+            "${formats[@]}" 2>${ANSWER} || return 1
     else
         echo "$option">${ANSWER}
     fi
-        
+
     case $(cat ${ANSWER}) in
-        "$_FSSkip") FILESYSTEM="$_FSSkip"
+        "$_FSSkip"|"${PARTITION}") FILESYSTEM="$_FSSkip"
             ;;
         "btrfs") FILESYSTEM="mkfs.btrfs -f"
             CHK_NUM=16
@@ -300,7 +307,7 @@ select_filesystem() {
     esac
 
     # Warn about formatting!
-    if [[ $FILESYSTEM != $_FSSkip ]]; then
+    if [[ $FILESYSTEM != "$_FSSkip" ]]; then
         DIALOG " $_FSTitle " --yesno "\n$_FSMount $FILESYSTEM\n\n! $_FSWarn1 $PARTITION $_FSWarn2 !\n " 0 0
         if (( $? != 1 )); then
             ${FILESYSTEM} ${PARTITION} >/dev/null 2>$ERR
@@ -827,8 +834,9 @@ lvm_menu() {
 }
 
 mount_partitions() {
+    local rescue="$1"
     # Warn users that they CAN mount partitions without formatting them!
-    DIALOG " $_PrepMntPart " --msgbox "\n$_WarnMount1 '$_FSSkip' $_WarnMount2\n " 0 0
+    [[ -z "${rescue}" ]] && DIALOG " $_PrepMntPart " --msgbox "\n$_WarnMount1 '$_FSSkip' $_WarnMount2\n " 0 0
 
     # LVM Detection. If detected, activate.
     lvm_detect
@@ -855,7 +863,7 @@ mount_partitions() {
     ROOT_PART=${PARTITION}
 
     # Format with FS (or skip) -> # Make the directory and mount. Also identify LUKS and/or LVM
-    select_filesystem && mount_current_partition || return 0
+    select_filesystem "${rescue}" && mount_current_partition || return 0
 
     ini mount.root "${PARTITION}"
     delete_partition_in_list "${ROOT_PART}"
@@ -907,7 +915,7 @@ mount_partitions() {
             return 0;
         else
             MOUNT=""
-            select_filesystem
+            select_filesystem "${rescue}"
 
             # Ask user for mountpoint. Don't give /boot as an example for UEFI systems!
             [[ $SYSTEM == "UEFI" ]] && MNT_EXAMPLES="/home\n/var" || MNT_EXAMPLES="/boot\n/home\n/var"
