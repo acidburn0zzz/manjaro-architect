@@ -12,7 +12,7 @@ returnOK(){ return 0; }    # function is ok
 
 dialog_menu() {
     # add : --keep-tite to aif version
-    dialog --keep-tite --backtitle "$VERSION - $SYSTEM ($ARCHI)" --column-separator "|" --title "$@"
+    dialog --backtitle "$VERSION - $SYSTEM ($ARCHI)" --column-separator "|" --title "$@"
 }
 
 #pick in .transfile
@@ -216,8 +216,7 @@ show_menu()
         cmd+=( $nbitems ) # add number of items
 
         # run dialog options
-        choice=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
-        # ?choice=eval "${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty
+        choice=$("${cmd[@]}" "${options[@]}" 3>&1 1>&2 2>&3)
         choice="${choice:-0}"
 
         case "$choice" in

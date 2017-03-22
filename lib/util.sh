@@ -139,10 +139,17 @@ inifile() {
 # read install value
 # console param, import ini, or current ini
 getvar() {
-    local value=''
+    local value='' denydialog=1
     value="${ARGS[$1]}"
-    [[ -z "$value" ]] && value=$(inifile "$1")
-    [[ -z "$value" ]] && value=$(ini "$1")
+    if [[ -z "$value" ]]; then
+        denydialog=$(inifile "denydialog")
+        if [[ "$denydialog" == 1 ]]; then
+            value=$(inifile "$1")
+            [[ -z "$value" ]] && value=$(ini "$1")
+        else
+            return 0
+        fi
+    fi
     echo "$value"
 }
 

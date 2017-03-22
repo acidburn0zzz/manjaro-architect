@@ -2,8 +2,8 @@
 # rescur menu tree
 
 --rescue
-----mount   ; mount_partitions rescue
-----oldmount   ;mount_test_efi            
+----mount   ; mount_r_partitions
+----old mount   ;mount_test_efi
 ------root          ; mount_partition /
 --------back               ; mnu_return 97
 ------home          ; mount_partition /home
@@ -15,5 +15,5 @@
 ------done                ; mnu_return 97
 ----video_driver            ; check_r_mounted workfunction_videod
 ----xkbmap                  ; check_r_mounted workfunction_x
-----edit_config               ; check_r_mounted edit_configs
+----SeeConfOpt               ; check_r_mounted edit_configs
 
