@@ -82,6 +82,8 @@ install:
 	install -dm0755 $(DESTDIR)$(PREFIX)$(DATADIR)/translations
 	install -m0644 ${LANG} $(DESTDIR)$(PREFIX)$(DATADIR)/translations
 
+	install -m0644 ${MENUS} $(DESTDIR)$(PREFIX)$(DATADIR)
+
 	install -dm0755 $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps
 	install -m0644 ${ICONS} $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps
 	
