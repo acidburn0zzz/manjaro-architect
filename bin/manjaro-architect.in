@@ -35,7 +35,7 @@ if [[ -e /run/miso/bootmnt ]]; then
 fi
 
 # run in debug mode with -d option
-[[ $1 == "-d" ]] && declare -i debug=1
+#[[ $1 == "-d" ]] && declare -i debug=1
 
 id_system
 set_language

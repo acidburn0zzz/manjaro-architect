@@ -78,6 +78,9 @@ UEFI_MOUNT=""                   # UEFI mountpoint (/boot or /boot/efi)
 # Edit Files
 FILE=""          # File(s) to be reviewed
 
+# input infos
+declare -A ARGS=()
+
 # Installation
 DM_INST=""       # Which DMs have been installed?
 DM_ENABLED=0     # Has a display manager been enabled?
@@ -448,6 +451,15 @@ check_requirements() {
 # Greet the user when first starting the installer
 greeting() {
     DIALOG " $_WelTitle $VERSION " --msgbox "\n$_WelBody\n " 0 0
+
+    # if params, auto load root partition
+    local PARTITION=$(getvar "mount.root")
+    if [[ -n "$PARTITION" ]]; then
+        local option=$(getvar "mount.${PARTITION}")
+        if [[ -n "$option" ]]; then
+            mount_partitions
+        fi
+    fi
 }
 
 # Originally adapted from AIS. Added option to allow users to edit the mirrorlist.
