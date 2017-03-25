@@ -121,6 +121,77 @@ function finishini {
 }
 trap finishini EXIT
 
+# read datas from ini file
+# read: value=$(ini system.init)
+inifile() {
+    [[ -r "${ARGS[ini]}" ]] || return 1
+    local section="$1"
+    [[ "$section" =~ \. ]] || section="manjaro-architect.${section}"
+    ini_val "${ARGS[ini]}" "$section" 2>/dev/null
+}
+
+# read install value
+# console param, import ini, or current ini
+getvar() {
+    local value='' denydialog=1
+    value="${ARGS[$1]}"
+    if [[ -z "$value" ]]; then
+        denydialog=$(inifile "denydialog")
+        if [[ "$denydialog" == 1 ]]; then
+            value=$(inifile "$1")
+            [[ -z "$value" ]] && value=$(ini "$1")
+        else
+            return 0
+        fi
+    fi
+    echo "$value"
+}
+
+# read console args , set in array ARGS global var
+get_ARGS() {
+    declare key param
+    getvalue(){
+        local value="${param##--${key}=}"
+        [[ "${value:0:1}" == '"' ]] && value="${value/\"/}" # remove quotes
+        echo "${value}"
+    }
+    while [ -n "$1" ]; do
+        param="$1"
+        case "${param}" in
+            --debug|-d)
+                ARGS[debug]=1
+                debug=1
+                ;;
+            --rescue|-r)
+                ARGS[rescue]=1
+                ;;                
+            --init=*)
+                key="init"
+                ARGS[$key]=$(getvalue)
+                ;;
+            --ini=*)
+                key="ini"
+                ARGS[$key]=$(getvalue)
+                ;;
+            --help|-h)
+                echo -e "usage [-d|--debug] [-r|--rescue] [--ini=\"file.ini\"] [ --init=openrc ]  "
+                exit 0
+                ;;
+            --*=*)
+                key="${param%=*}"
+                key="${key//-}"
+                ARGS[$key]=$(getvalue)
+                ;;
+            -*)
+                echo "${param}: not used";
+                ;;
+        esac
+        shift
+    done
+    #declare -g -r ARGS
+}
+get_ARGS "$@"
+
 # progress through menu entries until number $1 is reached
 submenu() {
     if [[ $SUB_MENU != "$PARENT" ]]; then

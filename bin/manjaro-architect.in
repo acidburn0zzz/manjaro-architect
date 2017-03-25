@@ -23,6 +23,7 @@ import ${LIBDIR}/util-base.sh
 import ${LIBDIR}/util-desktop.sh
 import ${LIBDIR}/util-disk.sh
 import ${LIBDIR}/util-menu.sh
+import ${LIBDIR}/util-config.sh
 import ${LIBDIR}/util-rescue.sh
 
 import ${DATADIR}/translations/english.trans
@@ -41,4 +42,12 @@ set_language
 mk_connection
 check_requirements
 greeting
+
+if ((${ARGS[rescue]})); then
+    import ${LIBDIR}/util-config.sh
+    TEMPLATEMENU="rescue"
+    show_menu rescue
+    return 0
+fi
+
 main_menu
