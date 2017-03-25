@@ -19,13 +19,15 @@ _ErrTitle="Erro"
 _PassErrBody="As senhas digitadas não coincidem. Por favor, tente novamente."
 
 # Basics
-_SelLang="Select Language"             # translate me !
-_Lang="Language"                         # translate me !
-_NoCon="No Internet Detected."         # translate me !
-_EstCon="Establish connection?"          # translate me !
-_Config="Configure"                    # translate me !
-_ApplySet="Apply language settings ..."  # translate me !
-_ChMenu="Select Menu"                    # translate me !
+_SelLang="Select Language"                       # translate me !
+_Lang="Language"                                 # translate me !
+_Keep="Keep"                                     # translate me !
+_Change="Change"                                 # translate me !
+_NoCon="No Internet Detected."                   # translate me !
+_EstCon="Establish connection?"                  # translate me !
+_Config="Configure"                              # translate me !
+_ApplySet="Apply language settings ..."          # translate me !
+_ChMenu="Select Menu"                            # translate me !
 _ChMenuBody="The Regular Menu will guide you through the installation of a pre-configured Manjaro Environment with some additional choices.\n\nThe Advanced Menu can be used to install unconfigured desktops or Manjaro development profiles and also includes an additional selection of network and multimedia applications and some advanced options for system and security configuration."       # translate me !
 
 # Segurança e Ajustes
@@ -139,6 +141,7 @@ _UpdDb="Updating database ..."     # translate me !
 _MirrorlistTitle="Lista de espelhos"
 _MirrorBranch="Choose Manjaro branch to use"   # translate me !
 _MirrorlistBody="A lista de espelhos contém endereços dos servidores usados pelo pacman para instalar pacotes. Para encontrar os servidores mais rápidos, PRIMEIRO gere uma lista de espelhos por país ANTES de executar o RankMirrors, por outro lado o processo irá demorar um BOM TEMPO.\n\nO arquivo de configuração do pacman pode ser editado para habilitar o multilib e outros repositórios.\n\nNOTA: Feche os arquivos texto com '[CTRL] + [x]'. Se editado, então pressione [y] para salvar ou [n] para descartar as alterações."
+_RankMirrors="Selected your custom mirrors using [Spacebar] or [Enter] and confirm with the [OK] button at the bottom."        # translate me !
 _MirrorbyCountry="Gerar lista de espelhos por País"
 _MirrorEdit="Editar manualmente a lista de espelhos"
 _MirrorRankTitle="Executar o RankMirrors"
@@ -153,6 +156,7 @@ _MIrrorPacQ="Utilizar o arquivo de configuração editado do pacman para o siste
 
 # Definir layout de teclado (vconsole)
 _VCKeymapTitle="Definir console virtual"
+_DefKeymap="The default keymap for your selected language is"              # translate me !
 _VCKeymapBody="Um console virtual é um prompt do shell em um ambiente não-gráfico. Seu layout de teclado é independente de um ambiente de desktop / terminal."
 
 # Definir Xkbmap (ambiente)
@@ -222,7 +226,7 @@ _PartErrBody="Sistemas BIOS requerem pelo menos uma partição (ROOT).\n\nSistem
 # Sistema de Arquivos
 _FSTitle="Escolha o sistema de arquivo"
 _FSBody="Ext4 é recomendado. Nem todos os sistemas de arquivos são viáveis para partições Root ou Boot. Todas tem diferentes funcionalidades e limitações."
-_FSSkip="Pular / Nenhum"
+_FSSkip="Do not format"  # translate me !
 _FSMount="Mount"         # translate me !
 _FSWarn1="Data on"       # translate me !
 _FSWarn2="will be lost"  # translate me !
@@ -268,6 +272,7 @@ _InstGrub="Install Grub"        # translate me !
 
 # Instalar o carregador de boot BIOS"
 _InstBiosBtTitle="Instalar o carregador de boot BIOS"
+_InstGrubBody="The installation device for GRUB can be selected in the next step.\n\nOs-prober is needed for automatic detection of already installed systems on other partitions."                        # translate me !
 _InstBiosBtBody="Grub2 é recomendado para iniciantes. O dispositivo de instalação também pode ser selecionado.\n\nSyslinux é uma alternativa mais leve e simples, que só funcionará com sistemas de arquivos ext/btrfs."
 _InstSysTitle="Instalar o Syslinux"
 _InstSysBody="Instalar o syslinux no Master Boot Record (MBR) ou no Root (/)?"

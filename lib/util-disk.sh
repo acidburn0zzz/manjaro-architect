@@ -342,8 +342,6 @@ mount_opts() {
 }
 
 mount_current_partition() {
-    [ -n "$1" ] && PARTITION="$1"
-    [ -n "$2" ] && MOUNT="$2"
     # Make the mount directory
     mkdir -p ${MOUNTPOINT}${MOUNT} 2>$ERR
     check_for_error "create mountpoint ${MOUNTPOINT}${MOUNT}" "$?"
@@ -858,11 +856,8 @@ mount_partitions() {
     done
 
     # Identify and mount root
-    PARTITION=$(getvar "mount.root")
-    if [[ -z "$PARTITION" ]]; then
-        DIALOG " $_PrepMntPart " --menu "\n$_SelRootBody\n " 0 0 12 ${PARTITIONS} 2>${ANSWER} || return 0
-        PARTITION=$(cat ${ANSWER})
-    fi
+    DIALOG " $_PrepMntPart " --menu "\n$_SelRootBody\n " 0 0 12 ${PARTITIONS} 2>${ANSWER} || return 0
+    PARTITION=$(cat ${ANSWER})
     ROOT_PART=${PARTITION}
 
     # Format with FS (or skip) -> # Make the directory and mount. Also identify LUKS and/or LVM

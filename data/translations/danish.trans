@@ -22,11 +22,13 @@ _PassErrBody="Adgangskoderne er ikke ens. Prøv igen."
 # Basics
 _SelLang="Sprogvalg"
 _Lang="Sprog"
+_Keep="Keep"                                     # translate me !
+_Change="Change"                                 # translate me !
 _NoCon="Internet forbindelse er ikke aktiv"
 _EstCon="Opret forbindelse?"
 _Config="Opsæt"
-_ApplySet="Apply language settings ..."  # translate me !
-_ChMenu="Select Menu"                    # translate me !
+_ApplySet="Apply language settings ..."          # translate me !
+_ChMenu="Select Menu"                            # translate me !
 _ChMenuBody="The Regular Menu will guide you through the installation of a pre-configured Manjaro Environment with some additional choices.\n\nThe Advanced Menu can be used to install unconfigured desktops or Manjaro development profiles and also includes an additional selection of network and multimedia applications and some advanced options for system and security configuration."       # translate me !
 
 # Security and Tweaks
@@ -140,6 +142,7 @@ _UpdDb="Updating database ..."     # translate me !
 _MirrorlistTitle="Server liste"
 _MirrorBranch="Vælg Manjaro gren (i tvivl så vælg 'stable')"
 _MirrorlistBody="Serverlisten indeholder servere som pacman bruger for at hente og installere Manjaro pakker. For at finde de hurtigste servere; FØRST dannes en serverliste efter land DEREFTER bruges RankMirrors. Omvendt vil det tage LANG TID.\n\nPacman's opsætnings kan redigeres for aktivere multilib andre repos.\n\nBEMÆRK: Tekst editor lukkes med 'F2' eller '[CTRL] + [x]'. Hvis denne er ændret tast [y/j] for at gemme eller [n] for at smide ændringer væk."
+_RankMirrors="Selected your custom mirrors using [Spacebar] or [Enter] and confirm with the [OK] button at the bottom."        # translate me !
 _MirrorbyCountry="Opret Server liste efter Land"
 _MirrorEdit="Rediger serverliste"
 _MirrorRankTitle="Kør RankMirrors"
@@ -154,6 +157,7 @@ _MIrrorPacQ="Brug denne opsætning til det færdige system? Hvis ja, vil filen b
 
 # Set Keymap (vconsole)
 _VCKeymapTitle="Vælg Terminal Tastatur Layout"
+_DefKeymap="The default keymap for your selected language is"              # translate me !
 _VCKeymapBody="En Terminal er en kommando prompt i et ikke-grafisk miljø. Tastatur layout er uafhængigt af Skrivebord"
 
 # Set Xkbmap (environment)
@@ -223,7 +227,7 @@ _PartErrBody="BIOS systemer kræver mindst en partition (ROOT).\n\nUEFI systemer
 # File System
 _FSTitle="Vælg Filsystem"
 _FSBody="Ext4 anbefales. Ikke alle filsystemer er brugbare til Root eller Boot partitioner. Alle har forskellige fordele og ulemper."
-_FSSkip="Spring over / Ingen"
+_FSSkip="Do not format"  # translate me !
 _FSMount="Monter"
 _FSWarn1="Alle data på"
 _FSWarn2="vil gå uigenkaldeligt tabt"
@@ -269,6 +273,7 @@ _InstGrub="Install Grub"        # translate me !
 
 # Install BIOS Bootloader
 _InstBiosBtTitle="Installer BIOS Bootloader"
+_InstGrubBody="The installation device for GRUB can be selected in the next step.\n\nOs-prober is needed for automatic detection of already installed systems on other partitions."                        # translate me !
 _InstBiosBtBody="Grub2 is anbefalet for uerfarne brugere. Den ønskede enhed kan også vælges.\n\nSyslinux er enklere alternativ men vil kun fungere med et ext/btrfs filsystem."
 _InstSysTitle="Installer Syslinux"
 _InstSysBody="Installer syslinux i Master Boot Record (MBR) eller Root (/)?"

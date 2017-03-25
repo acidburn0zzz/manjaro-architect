@@ -20,6 +20,8 @@ _PassErrBody="A megadott jelszavak nem egyeznek. Kérlek próbáld újra."
 # Alap beállítások
 _SelLang="Válassz nyelvet"
 _Lang="Nyelv"
+_Keep="Keep"                                                        # translate me !
+_Change="Change"                                                    # translate me !
 _NoCon="Nincs internetkapcsolat."
 _EstCon="Kapcsolódni akarsz az internethez?"
 _Config="Beállítás"
@@ -137,6 +139,7 @@ _ReqMetBody="Összes feltétel rendben!"
 _MirrorlistTitle="Szerverlista"
 _MirrorBranch="Válaszd ki, hogy melyik Manjaro ágat akarod használni"
 _MirrorlistBody="A szerverlista szerver címeket tartalmaz, melyeket a 'pacman' használ csomagok letöltésére és telepítésére. Ahhoz, hogy megtaláld leggyorsabb szervert, először generálj egy szerverlistát a tartózkodási országod alapján, mielőtt futtatnád a szerverek rangsorolását, különben a folyamat hosszú időt vehet igénybe.\n\nA pacman konfigurációs fájl szerkesztésével engedélyezheted a 'multilib' és egyéb tárhelyeket. \n\nMegjegyzés: Szövegfájl bezárása a '[CTRL] + [x]' billentyű kombinációval. Ha szerkesztetted, akkor nyomj [i] billentyűt a mentéshez, vagy to [n] billentyűt a változtatások elvetéséhez."
+_RankMirrors="Selected your custom mirrors using [Spacebar] or [Enter] and confirm with the [OK] button at the bottom."        # translate me !
 _MirrorbyCountry="Szerverlista létrehozása ország alapján"
 _MirrorEdit="Szerverlista kézi szerkesztése"
 _MirrorRankTitle="Szerverek rangsorolás sebesség alapján"
@@ -151,6 +154,7 @@ _MirrorPacQ="Használni akarod a szerkesztett 'pacman' konfigurációt a telepí
 
 # Virtuális konzol billentyűzetkiosztásának beállítása \(vconsole\)
 _VCKeymapTitle="Virtuális konzol beállítása"
+_DefKeymap="The default keymap for your selected language is"              # translate me !
 _VCKeymapBody="A virtuális konzol egy nem grafikus környezetben futó 'shell prompt'. A billentyűzetkiosztása független az asztali környezettől."
 
 # Asztali környezet billentyűzetkioszásának beállítása \(Xkbmap\)
@@ -219,7 +223,7 @@ _PartErrBody="A BIOS rendszereknél minimum egy partíció szükséges \(gyöké
 # Fájlrendszer
 _FSTitle="Válassz fájlrendszert"
 _FSBody="Ext4 az ajánlott. Nem minden fájlrendszer alkalmas gyökér \(root\) vagy rendszerindító \(boot\) partíció számára. Minden fájlrendszernek megvanak a maga sajátságai és korlátai"
-_FSSkip="Kihagyás / egyik sem"
+_FSSkip="Do not format"  # translate me !
 _FSMount="Csatolás"
 _FSWarn1="Az összes adat a"
 _FSWarn2="partíción el fog veszni"
@@ -265,6 +269,7 @@ _InstGrub="Install Grub"        # translate me !
 
 # BIOS rendszertöltő telepítése
 _InstBiosBtTitle="BIOS rendszertöltő telepítése"
+_InstGrubBody="The installation device for GRUB can be selected in the next step.\n\nOs-prober is needed for automatic detection of already installed systems on other partitions."                        # translate me !
 _InstBiosBtBody="A kezdők számára a 'Grub2' ajánlott. A telepítési eszköz is kiválasztható.\n\nA 'Syslinux' egy egyszerűbb és kevésbe erőforrás-igényes megoldás, de csak 'ext' vagy 'btrfs' fájlrendszereknél használható."
 _InstSysTitle="Syslinux telepítése"
 _InstSysBody="A 'Master Boot Record'-ba \(MBR\) vagy a Gyökérpartícióra \(/\) akarod a ‘syslinux’-ot telepíteni?"

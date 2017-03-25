@@ -19,13 +19,15 @@ _ErrTitle="Error"
 _PassErrBody="Las contraseñas introducidas no coinciden. Vuelva a intentarlo."
 
 # Basics
-_SelLang="Select Language"             # translate me !
-_Lang="Language"                         # translate me !
-_NoCon="No Internet Detected."         # translate me !
-_EstCon="Establish connection?"          # translate me !
-_Config="Configure"                    # translate me !
-_ApplySet="Apply language settings ..."  # translate me !
-_ChMenu="Select Menu"                    # translate me !
+_SelLang="Select Language"                       # translate me !
+_Lang="Language"                                 # translate me !
+_Keep="Keep"                                     # translate me !
+_Change="Change"                                 # translate me !
+_NoCon="No Internet Detected."                   # translate me !
+_EstCon="Establish connection?"                  # translate me !
+_Config="Configure"                              # translate me !
+_ApplySet="Apply language settings ..."          # translate me !
+_ChMenu="Select Menu"                            # translate me !
 _ChMenuBody="The Regular Menu will guide you through the installation of a pre-configured Manjaro Environment with some additional choices.\n\nThe Advanced Menu can be used to install unconfigured desktops or Manjaro development profiles and also includes an additional selection of network and multimedia applications and some advanced options for system and security configuration."       # translate me !
 
 # Seguridad y ajustes
@@ -139,6 +141,7 @@ _UpdDb="Updating database ..."     # translate me !
 _MirrorlistTitle="Lista de mirrors"
 _MirrorBranch="Choose Manjaro branch to use"   # translate me !
 _MirrorlistBody="La lista de mirrors contiene direcciones de servidores utilizadas por 'pacman' para instalar paquetes. Para encontrar los servidores más rápidos, PRIMERO genere una lista de mirrors por país ANTES de ejecutar RankMirrors, ya que de no hacerlo el proceso puede tardar MUCHO TIEMPO.\n\nSe puede editar el archivo de configuración de 'pacman' para activar 'multilib' y otros repositorios.\n\nNOTA: Cierre los archivos de texto con '[CTRL] + [x]'. Si se edita el archivo, pulse [y] para guardar o [n] para descartar los cambios."
+_RankMirrors="Selected your custom mirrors using [Spacebar] or [Enter] and confirm with the [OK] button at the bottom."        # translate me !
 _MirrorbyCountry="Generar lista de mirrors por países"
 _MirrorEdit="Editar manualmente la lista de mirrors"
 _MirrorRankTitle="Ejecutar RankMirrors"
@@ -153,6 +156,7 @@ _MIrrorPacQ="¿Utilizar el archivo de configuración de 'pacman' editado para el
 
 # Seleccionar distribución de teclado de la consola virtual (vconsole)
 _VCKeymapTitle="Seleccionar distribución de teclado de la consola virtual"
+_DefKeymap="The default keymap for your selected language is"              # translate me !
 _VCKeymapBody="Una consola virtual es un intérprete de comandos en un entorno no gráfico. Su distribución de teclado es independiente de un entorno de escritorio o terminal."
 
 # Seleccionar Xkbmap (entorno)
@@ -222,7 +226,7 @@ _PartErrBody="Los sistemas BIOS requieren un mínimo de una partición (RAÍZ).\
 # Sistema de archivos
 _FSTitle="Elegir sistema de archivos"
 _FSBody="Se recomienda el sistema de archivos Ext4. No todos los sistemas de archivos son adecuados para particiones raíz o de arranque. Todas tienen sus características y limitaciones."
-_FSSkip="Saltar / Ninguno"
+_FSSkip="Do not format"  # translate me !
 _FSMount="Mount"         # translate me !
 _FSWarn1="Data on"       # translate me !
 _FSWarn2="will be lost"  # translate me !
@@ -268,6 +272,7 @@ _InstGrub="Install Grub"        # translate me !
 
 # Instalar gestor de arranque BIOS
 _InstBiosBtTitle="Instalar gestor de arranque BIOS"
+_InstGrubBody="The installation device for GRUB can be selected in the next step.\n\nOs-prober is needed for automatic detection of already installed systems on other partitions."                        # translate me !
 _InstBiosBtBody="Se recomienda Grub2 para usuarios principiantes. También se puede seleccionar el dispositivo de instalación.\n\nSyslinux es una alternativa más ligera y más simple que sólo funciona con sistemas de archivos ext o btrfs."
 _InstSysTitle="Instalar Syslinux"
 _InstSysBody="¿Desea instalar 'syslinux' en el Registro de Arranque Maestro (MBR) o en la raíz (/)?"

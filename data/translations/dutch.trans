@@ -19,13 +19,15 @@ _ErrTitle="Fout"
 _PassErrBody="De ingegeven wachtwoorden zijn niet identiek. Probeer opnieuw aub."
 
 # Basics
-_SelLang="Select Language"             # translate me !
-_Lang="Language"                         # translate me !
-_NoCon="No Internet Detected."         # translate me !
-_EstCon="Establish connection?"          # translate me !
-_Config="Configure"                    # translate me !
-_ApplySet="Apply language settings ..."  # translate me !
-_ChMenu="Select Menu"                    # translate me !
+_SelLang="Select Language"                       # translate me !
+_Lang="Language"                                 # translate me !
+_Keep="Keep"                                     # translate me !
+_Change="Change"                                 # translate me !
+_NoCon="No Internet Detected."                   # translate me !
+_EstCon="Establish connection?"                  # translate me !
+_Config="Configure"                              # translate me !
+_ApplySet="Apply language settings ..."          # translate me !
+_ChMenu="Select Menu"                            # translate me !
 _ChMenuBody="The Regular Menu will guide you through the installation of a pre-configured Manjaro Environment with some additional choices.\n\nThe Advanced Menu can be used to install unconfigured desktops or Manjaro development profiles and also includes an additional selection of network and multimedia applications and some advanced options for system and security configuration."       # translate me !
 
 # Veiligheid en aanpassingen
@@ -139,6 +141,7 @@ _UpdDb="Updating database ..."     # translate me !
 _MirrorlistTitle="Mirrorlijst"
 _MirrorBranch="Choose Manjaro branch to use"   # translate me !
 _MirrorlistBody="De mirrorlijst bevat server-adressen die worden gebruikt door pacman om pakketten te installeren. Om de snelste servers te vinden, moet u EERST een mirrorlijst per land genereren VOORALEER u RankMirrors laat draaien, anders zal het proces LANG duren.\n\nHet pacman configuratiebestand kan worden bewerkt om multilib en andere repositories in te schakelen. \n\nOPMERKING:. Sluit tekstbestanden met '[Ctrl] + [x] '. Indien  u dit bestand bewerkt, druk dan op [y] om de wijzigingen op te slaan of [n] om ze te annuleren."
+_RankMirrors="Selected your custom mirrors using [Spacebar] or [Enter] and confirm with the [OK] button at the bottom."        # translate me !
 _MirrorbyCountry="Genereer een mirrorlijst gesorteerd volgens Land"
 _MirrorEdit="Pas de Mirrorlijst manueel aan"
 _MirrorRankTitle="Start RankMirrors"
@@ -153,6 +156,7 @@ _MIrrorPacQ="Wil je het aangepast pacman configuratiebestand gebruiken voor het 
 
 # Stel het toetsenbord in (vconsole)
 _VCKeymapTitle="Stel de Virtuele Console in"
+_DefKeymap="The default keymap for your selected language is"              # translate me !
 _VCKeymapBody="Een virtuele console is een shell prompt in een niet-grafische omgeving. De toetsenbordindeling ervan is onafhankelijk van een desktop suite / terminal."
 
 # stel Xkbmap in (omgeving)
@@ -222,7 +226,7 @@ _PartErrBody="De installatie van BIOS systemen vereist minimum één partitie (R
 # Bestand Systeem
 _FSTitle="Kies een bestandsysteem"
 _FSBody="Ext4 is hier aanbevolen. Niet alle bestandsystemen zijn geschikt voor de Root of Boot-Partities. Elk bestandsysteem heeft verschillende eigenschappen en beperkingen."
-_FSSkip="Sla over / Geen"
+_FSSkip="Do not format"  # translate me !
 _FSMount="Mount"         # translate me !
 _FSWarn1="Data on"       # translate me !
 _FSWarn2="will be lost"  # translate me !
@@ -268,6 +272,7 @@ _InstGrub="Install Grub"                  # translate me !
 
 # Installeer BIOS Bootloader
 _InstBiosBtTitle="Installeer BIOS Bootlader"
+_InstGrubBody="The installation device for GRUB can be selected in the next step.\n\nOs-prober is needed for automatic detection of already installed systems on other partitions."                        # translate me !
 _InstBiosBtBody="Grub2 is aanbevolen voor beginners. De installatieschijf kan ook worden geselecteerd.\n\nSyslinux is een lichter en eenvoudiger alternatief dat enkel werkt met de ext/btrfs -bestandsystemen."
 _InstSysTitle="Installeer Syslinux"
 _InstSysBody="Installeer syslinux op Master Boot Record (MBR) of op Root (/)?"

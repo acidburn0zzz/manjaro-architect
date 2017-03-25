@@ -35,10 +35,10 @@ if [[ -e /run/miso/bootmnt ]]; then
 fi
 
 # run in debug mode with -d option
-#[[ $1 == "-d" ]] && declare -i debug=1
+[[ $1 == "-d" ]] && declare -i debug=1
 
 id_system
-select_language
+set_language
 mk_connection
 check_requirements
 greeting
@@ -49,4 +49,5 @@ if ((${ARGS[rescue]})); then
     show_menu rescue
     return 0
 fi
+
 main_menu
