@@ -3,7 +3,6 @@
 
 --rescue
 ----mount   ; mount_r_partitions
-----old mount   ;mount_test_efi
 ------root          ; mount_partition /
 --------back               ; mnu_return 97
 ------home          ; mount_partition /home
