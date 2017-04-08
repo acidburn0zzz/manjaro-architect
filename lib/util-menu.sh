@@ -35,12 +35,12 @@ main_menu() {
             "3") check_base && config_base_menu
                 ;;
             "4") check_base && {
-                    import ${LIBDIR}/util-config.sh
+                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
                     edit_configs
                     }
                 ;;
             "5") check_base && {
-                    import ${LIBDIR}/util-advanced.sh
+                    type advanced_menu &>/dev/null || import ${LIBDIR}/util-advanced.sh
                     advanced_menu
                     }
                 ;;
@@ -176,7 +176,7 @@ install_drivers_menu() {
     HIGHLIGHT_SUB=1
     declare -i loopmenu=1
     while ((loopmenu)); do
-        DIALOG " $_InstDrvTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstDrvBody\n " 0 0 3 \
+        DIALOG " $_InstDrvTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n " 0 0 3 \
           "1" "$_InstGrMenuTitle|>" \
           "2" "$_InstNWDrv" \
           "3" "$_Back" 2>${ANSWER}
@@ -200,7 +200,7 @@ install_graphics_menu() {
     DIALOG " $_InstGrMenuDD " --menu "\n " 0 0 3 \
       "1" "$_InstFree" \
       "2" "$_InstProp" \
-      "3" "$_InstGrMenuDD" 2>${ANSWER} || return 0
+      "3" "$_SelDDrv" 2>${ANSWER} || return 0
 
     case $(cat ${ANSWER}) in
         "1") clear
@@ -216,33 +216,4 @@ install_graphics_menu() {
         "3") setup_graphics_card
             ;;
     esac
-}
-
-advanced_menu() {
-    declare -i loopmenu=1
-    while ((loopmenu)); do
-        submenu 5
-        DIALOG " $_InstAdvBase " --default-item ${HIGHLIGHT_SUB} \
-          --menu "\n " 0 0 5 \
-          "1" "$_InstDEGit" \
-          "2" "$_InstDE|>" \
-          "3" "$_InstDrvTitle|>" \
-          "4" "$_SecMenuTitle|>" \
-          "5" "$_Back" 2>${ANSWER} || return 0
-        HIGHLIGHT_SUB=$(cat ${ANSWER})
-
-        case $(cat ${ANSWER}) in
-            "1") check_base && install_manjaro_de_wm_git
-                ;;
-            "2") check_base && install_vanilla_de_wm
-                ;;
-            "3") check_base && install_drivers_menu
-                ;;
-            "4") check_base && security_menu
-                ;;
-            *) loopmenu=0
-                return 0
-                ;;
-        esac
-    done
 }

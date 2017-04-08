@@ -82,6 +82,7 @@ _LuksMenuBody="Opslagmedia en volumes die versleuteld werden met dm_crypt kunnen
 _LuksMenuBody2="Een aparte niet-versleutelde boot partitie zonder logisch volume management (LVM - tenzij bij gebruik van BIOS Grub) is vereist."
 _LuksMenuBody3="Standaard wordt de automatische versleuteloptie gebruikt, en dit is aanbevolen voor beginners. Het is ook mogelijk om de code en de sleutelgrootte-parameters manueel in te geven."
 _LuksOpen="Open Versleutelde Partitie"
+_LuksErr="No LUKS-encrypted partition found."           # translate me !
 _LuksOpenBody="Geef een naam aan het versleutelde opslagmedium. Het is niet nodig om het voorvoegsel /dev/mapper/ te vermelden. er werd een voorbeeld voorzien."
 _LuksEncrypt="Automatische LUKS Versleuteling"
 _LuksEncryptAdv="Bepaal de sleutelgrootte en Cypher"
@@ -111,7 +112,7 @@ _LvmPvConfBody2="met de volgende partities:"
 _LvmPvActBody1="Aanmaak en activering van Volume Groep"
 _LvmPvDoneBody1="Volume Groep"
 _LvmPvDoneBody2="werd aangemaakt"
-_LvmLvNumBody1="Gebruik [spatie] om het aantal logische volumes (LVM) te selecteren die moeten worden aangemaakt"
+_LvmLvNumBody1="Enter the number of Logical Volumes (LVs) to create in"                      # translate me !
 _LvmLvNumBody2="De laatste (of enige) LV zal automatisch 100% van de overblijvende ruimte innemen in de Volume Groep."
 _LvmLvNameBody1="Om een Logisch Volume (LV) aan te maken geef je een naam in.\n\nDit is zoals het geven van een naam/label aan een partitie."
 _LvmLvNameBody2="NOTE: Deze LV zal alle overgebleven ruimte van de Volume Groep innemen"
@@ -344,7 +345,7 @@ _Back="Terug"
 # Menu: installeren van het Basissysteem
 _PkgList="Processing package list"                                       # translate me !
 _InstBsMenuTitle="Installeer het Basissysteem"
-_InstBseMenuBody="De gewenste pakketten worden gedownload van mirror servers. Het pacstrap script installeert het basissysteem. Indien je pakketten van het AUR of met ABS wenst te gebruiken, is de basis-devel groep ook vereist."
+_InstBseMenuBody="Packages to be installed will be downloaded from mirror servers. The default branch is 'stable'.\nTo optimize your download speed or to switch branch, use the entry [$_PrepMirror]."                                   # translate me !
 _InstBse="Installeer het Basissysteem"
 _ChsInit="Choose your initsystem"                                        # translate me !
 _Note="Note!"                                                            # translate me !
@@ -352,9 +353,10 @@ _WarnOrc="These Manjaro profiles are incompatible with openrc:"          # trans
 _ChsAddPkgs="Choose additional modules for your kernels"                 # translate me !
 _InstBootldr="Installeer de Bootlader"
 _InstDrvTitle="Install Hardware Drivers"                                 # translate me !
-_InstDrvBody="Some network and graphics cards\nmay need special drivers.\nOptions 1 and 2 choose drivers automatically,\noptions 3 and 4 let you choose specific drivers"                       # translate me !
-_InstFree="Install free drivers"                                         # translate me !
-_InstProp="Install proprietary drivers"                                  # translate me !
+_InstDrvBody="Some network and graphics cards\nmay need special drivers.\nOptions 1 and 2 choose drivers automatically,\noptions 3 and 4 let you choose specific drivers"                                            # translate me !
+_InstFree="Auto-install free drivers"               # translate me !
+_InstProp="Auto-install proprietary drivers"        # translate me !
+_SelDDrv="Select Display Driver"                    # translate me !
 
 # Configureer het basissysteem
 _ConfBseMenuTitle="Configureer het Basissysteem"
@@ -390,6 +392,7 @@ _InstGrMenuDM="Installeer Weergave Manager"
 # Netwerk Menu
 _InstNMMenuTitle="Installeer Netwerk mogelijkheden"
 _InstNWDrv="Network Drivers"                                                                            # translate me !
+_SelNWDrv="Select Network Driver"                                                                       # translate me !
 _InfoNWKernel="Support for your network card is built into the kernel, \nno need to install anything."  # translate me !
 _InstNMMenuBody="Aanvullende pakketten kunnen nodig zijn om netwerken en draadloze apparaten aan te sturen. Sommige draadloze apparaten kunnen ook extra firmware nodig hebben om te functioneren."
 _InstNMMenuPkg="Install Wireless Device Packages"

@@ -81,6 +81,7 @@ _LuksMenuBody="Titkosítás \‘dm-crypt\’-el. A titkosított eszközök és k
 _LuksMenuBody2="Szükség van egy különálló, titkosítatlan, és logikai kötetkezelő nélküli \(LVM - hacsak nem BIOS Grub-ot használsz\) rendszertöltő \(boot\) partícióra is ."
 _LuksMenuBody3="Az automatikus opció az alapértelmezett titkosítási beállításokat használja, a kezdők számára ez ajánlott. De lehetőség van a rejtjel és a kulcsméret paramétereinek kézi megadására is."
 _LuksOpen="Titkosított partíció megnyitása"
+_LuksErr="No LUKS-encrypted partition found."           # translate me !
 _LuksOpenBody="Adj egy nevet a titkosított eszköznek. Nem szükséges a \‘/dev/mapper\’ előtaggal ellátni. Egy példa meg van adva:."
 _LuksEncrypt="Automatikus LUKS titkosítás"
 _LuksEncryptAdv="Határozd meg a kulcs méretét és a rejtjelezés típusát"
@@ -110,7 +111,7 @@ _LvmPvConfBody2="a következő partíciókkal:"
 _LvmPvActBody1="Kötetcsoport elkészítése és aktiválása"
 _LvmPvDoneBody1="A"
 _LvmPvDoneBody2="kötetcsoport létrehozva"
-_LvmLvNumBody1="Használd a [Szóköz] billentyűt a következőhöz létrehozandó logikai kötet\(ek\) \(LV\) számának kiválasztásához"
+_LvmLvNumBody1="Enter the number of Logical Volumes (LVs) to create in"                      # translate me !
 _LvmLvNumBody2="Az utolsó \(vagy egyetlen\) logikai kötet automatikusan felhasználja a kötetcsoportban fennmaradó összes helyet."
 _LvmLvNameBody1="Írd be a létrehozandó logikai kötet \(LV\) nevét.\n\nEz olyan, mint mikor egy partíciónak nevet / címkét adunk."
 _LvmLvNameBody2="MEGJEGYZÉS: Ez a logikai kötet \(LV\) automatikusan használatba veszi az összes fennmaradó helyet a kötetcsoportban."
@@ -341,7 +342,7 @@ _Back="Vissza"
 # Alaptelepítés menü
 _PkgList="Processing package list"                                       # translate me !
 _InstBsMenuTitle="Alaprendszer telepítése"
-_InstBseMenuBody="A 'pacstrap' script a következőkben telepíteni fogja az alaprendszert, miután letöltötte a szükséges csomagokat a szerver\(ek\)ről. Ha az AUR-ból, vagy ABS-el akarsz csomagokat készíteni, szükséged lesz a 'base-devel' csomagcsoportra."
+_InstBseMenuBody="Packages to be installed will be downloaded from mirror servers. The default branch is 'stable'.\nTo optimize your download speed or to switch branch, use the entry [$_PrepMirror]."                                   # translate me !
 _InstBse="Alapcsomagok telepítése"
 _ChsInit="Válaszd ki az \‘init\’ rendszert"
 _Note="Note!"                                                            # translate me !
@@ -349,9 +350,10 @@ _WarnOrc="These Manjaro profiles are incompatible with openrc:"          # trans
 _ChsAddPkgs="Válassz további kernelmodulokat"
 _InstBootldr="Rendszertöltő telepítése"
 _InstDrvTitle="Install Hardware Drivers"                                 # translate me !
-_InstDrvBody="Some network and graphics cards\nmay need special drivers.\nOptions 1 and 2 choose drivers automatically,\noptions 3 and 4 let you choose specific drivers"                       # translate me !
-_InstFree="Install free drivers"                                         # translate me !
-_InstProp="Install proprietary drivers"                                  # translate me !
+_InstDrvBody="Some network and graphics cards\nmay need special drivers.\nOptions 1 and 2 choose drivers automatically,\noptions 3 and 4 let you choose specific drivers"                                            # translate me !
+_InstFree="Auto-install free drivers"               # translate me !
+_InstProp="Auto-install proprietary drivers"        # translate me !
+_SelDDrv="Select Display Driver"                    # translate me !
 
 # Alapbeállítás menü
 _ConfBseMenuTitle="Alaprendszer  beállítása"
@@ -386,6 +388,7 @@ _InstGrMenuDM="Bejelentkezéskezelő telepítése"
 # Hálózatok Menü
 _InstNMMenuTitle="Hálózati eszközkezelő\(k\) telepítése"
 _InstNWDrv="Network Drivers"                                                                            # translate me !
+_SelNWDrv="Select Network Driver"                                                                       # translate me !
 _InfoNWKernel="Support for your network card is built into the kernel, \nno need to install anything."  # translate me !
 _InstNMMenuBody="További, kiegészítő csomagokra is szükség lehet a hálózati és vezeték nélküli eszközök megfelelő működéséhez. Bizonyos vezeték nélküli eszközök számára további 'firmware'-re is szükség lehet."
 _InstNMMenuPkg="Csomagok telepítése vezeték nélküli eszközökhöz"
