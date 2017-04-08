@@ -415,7 +415,7 @@ set_keymap() {
 }
 
 mk_connection() {
-    if [[ ! $(ping -c 2 google.com) ]]; then
+    if [[ ! -n "$(curl -Is https://manjaro.org | head -1)" ]]; then
         DIALOG " $_NoCon " --yesno "\n$_EstCon\n " 0 0 && $NW_CMD && return 0 || clear && exit 0
     fi
 }
@@ -507,7 +507,9 @@ rank_mirrors() {
     clear
     if [[ ! -z ${branch} ]]; then
         DIALOG " $_MirrorBranch " --msgbox "\n$_RankMirrors\n " 0 0
+        clear
         pacman-mirrors -gib "${branch}"
+        echo ""
         ini branch "${branch}"
     fi
 }
@@ -546,6 +548,12 @@ check_base() {
         fi
     else
         return 1
+    fi
+}
+
+check_desktop() {
+    if [[ -e /mnt/.desktop_installed ]]; then
+        DIALOG " $_InstDETitle " --yesno "\n$_DesktopInstalled\n " 0 0 || return 1
     fi
 }
 
