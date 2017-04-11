@@ -343,8 +343,8 @@ install_base() {
     fi
 
     # if branch was chosen, use that also in installed system. If not, use the system setting
-    [[ -z $(getvar branch) ]] && ini branch $(ini system.branch)
-    sed -i "s/Branch =.*/Branch = $(getvar branch)/;s/# //" ${MOUNTPOINT}/etc/pacman-mirrors.conf
+    [[ -z $(getvar linux.branch) ]] && ini linux.branch $(ini system.hostbranch)
+    sed -i "s/Branch =.*/Branch = $(getvar linux.branch)/;s/# //" ${MOUNTPOINT}/etc/pacman-mirrors.conf
 
     touch /mnt/.base_installed
     check_for_error "base installed succesfully."

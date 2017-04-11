@@ -241,7 +241,7 @@ id_system() {
     check_for_error "system: $SYSTEM, init: $H_INIT nw-client: $NW_CMD"
 
     # evaluate host branch
-    ini system.branch "$(grep -oE -m 1 "unstable|stable|testing" /etc/pacman.d/mirrorlist)"
+    ini system.hostbranch "$(grep -oE -m 1 "unstable|stable|testing" /etc/pacman.d/mirrorlist)"
 }
 
 # If there is an error, display it and go back to main menu. In any case, write to logfile.
@@ -484,19 +484,20 @@ configure_mirrorlist() {
 
 rank_mirrors() {
     #Choose the branch for mirrorlist
-    DIALOG " $_MirrorBranch " --radiolist "\n$_UseSpaceBar\n " 0 0 3 \
-      "stable" "-" on \
-      "testing" "-" off \
-      "unstable" "-" off 2>${ANSWER}
-    local branch="$(<${ANSWER})"
-    clear
-    if [[ ! -z ${branch} ]]; then
-        DIALOG " $_MirrorBranch " --msgbox "\n$_RankMirrors\n " 0 0
-        clear
-        pacman-mirrors -gib "${branch}"
-        echo ""
-        ini branch "${branch}"
+    local branch=$(getvar "linux.branch")
+    if [[ -z "${branch}" ]]; then
+        branch=$(DIALOG " $_MirrorBranch " --radiolist "\n$_UseSpaceBar\n " 0 0 3 \
+            "stable" "-" on \
+            "testing" "-" off \
+            "unstable" "-" off  3>&1 1>&2 2>&3)
     fi
+    [[ -z "${branch}" ]] && return 0
+    clear
+    DIALOG " $_MirrorBranch " --msgbox "\n$_RankMirrors\n " 0 0
+    clear
+    pacman-mirrors -gib "${branch}"
+    echo ""
+    ini linux.branch "${branch}"
 }
 
 # Simple code to show devices / partitions.
