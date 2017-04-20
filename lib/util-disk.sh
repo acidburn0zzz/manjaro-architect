@@ -989,7 +989,7 @@ btrfs_subvolumes()
             # Mount subvolumes
             umount /mnt
             # Mount the first subvolume as / 
-            mount mount -o $(cat ${MOUNT_OPTS}),subvol="$(awk '{print $1}' /tmp/.subvols)" /dev/"$(cat /tmp/.root_partition)" /mnt
+            mount -o $(cat ${MOUNT_OPTS}),subvol="$(awk '{print $1}' /tmp/.subvols)" /dev/"$(cat /tmp/.root_partition)" /mnt
             # Remove the first subvolume from the subvolume list
             sed -i -r 's/(\s+)?\S+//1' /tmp/.subvols
             # Loop to mount all created subvolumes
