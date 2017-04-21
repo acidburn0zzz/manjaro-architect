@@ -419,6 +419,31 @@ uefi_bootloader() {
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
         done
 DISABLED_FOR_NOW
+    "refind)"
+        # install refind
+        refind-install --usedefault ${UEFI_MOUNT} --alldrivers
+        # Deal with LVM Root
+        [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]] && bl_root=$ROOT_PART \
+          || bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
+
+        # Set kernel parameters to right root
+        wrongroot=$(cat /boot/refind_linux.conf | tr ' ' '\n' | grep "root=" | sed 's/"//g' | head -n1)
+        sed -i "s/$wrongroot/root=${bl_root}/g" /mnt/boot/refind_linux.conf
+        # generate boot entries
+        [[ -e /mnt/boot/intel-ucode.img ]] && ucode="initrd=/boot/intel-ucode.img" || ucode=""
+        $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) && rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')" || rootflag=""
+        echo /boot/initramfs-* | sed 's/\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
+        for kernel in $(cat /tmp/.kernels); do
+            echo -e "
+            menuentry Manjaro $kernel {
+    icon /EFI/refind/icons/os_manjaro.png
+    loader vmlinuz-$kernel
+    initrd initramfs-$kernel.img
+    options "$LUKS_DEV rw root=${bl_root} quiet ${ucode} $rootflag"
+}
+
+" >> ${UEFI_MOUNT}/EFI/refind/refind.conf
+        done
 }
 
 # Grub auto-detects installed kernels, etc. Syslinux does not, hence the extra code for it.
