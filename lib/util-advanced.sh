@@ -15,12 +15,13 @@ advanced_menu() {
     while ((loopmenu)); do
         submenu 5
         DIALOG " $_InstAdvBase " --default-item ${HIGHLIGHT_SUB} \
-          --menu "\n " 0 0 5 \
+          --menu "\n " 0 0 6 \
           "1" "$_InstDEGit" \
           "2" "$_InstDE|>" \
           "3" "$_InstDrvTitle|>" \
           "4" "$_SecMenuTitle|>" \
-          "5" "$_Back" 2>${ANSWER} || return 0
+          "5" "Chroot into installation" \
+          "6" "$_Back" 2>${ANSWER} || return 0
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -31,6 +32,8 @@ advanced_menu() {
             "3") check_base && install_drivers_menu
                 ;;
             "4") check_base && security_menu
+                ;;
+            "5") check_base && DIALOG " You will now chroot into your installed system.\n You can do changes almost as if you had booted into your installation.\n Type exit to return to installer." --infobox "\nI understand\n " 0 0 && arch_chroot bash
                 ;;
             *) loopmenu=0
                 return 0
@@ -552,7 +555,7 @@ install_acc_menu() {
 
 install_cust_pkgs() {
     echo "" > ${PACKAGES}
-    DIALOG " $_InstMulCust " --inputbox "\n$_InstMulCustBody" 0 0 "" 2>${PACKAGES} || return 0
+    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
 
     clear
     # If at least one package, install.
