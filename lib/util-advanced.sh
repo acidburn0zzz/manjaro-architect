@@ -15,13 +15,14 @@ advanced_menu() {
     while ((loopmenu)); do
         submenu 5
         DIALOG " $_InstAdvBase " --default-item ${HIGHLIGHT_SUB} \
-          --menu "\n " 0 0 6 \
+          --menu "\n " 0 0 7 \
           "1" "$_InstDEGit" \
           "2" "$_InstDE|>" \
           "3" "$_InstDrvTitle|>" \
           "4" "$_SecMenuTitle|>" \
           "5" "Chroot into installation" \
-          "6" "$_Back" 2>${ANSWER} || return 0
+          "6" "$_InstMulCust" \
+          "7" "$_Back" 2>${ANSWER} || return 0
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -33,7 +34,9 @@ advanced_menu() {
                 ;;
             "4") check_base && security_menu
                 ;;
-            "5") check_base && DIALOG " You will now chroot into your installed system.\n You can do changes almost as if you had booted into your installation.\n Type exit to return to installer." --infobox "\nI understand\n " 0 0 && arch_chroot bash
+            "5") check_base && DIALOG " Enter your installation " --infobox "\nYou will now chroot into your installed system.\n You can do changes almost as if you had booted into your installation.\n Type exit and after that fg to return to installer.\n " 0 0 && arch_chroot bash
+                ;;
+            "6") install_cust_pkgs
                 ;;
             *) loopmenu=0
                 return 0
