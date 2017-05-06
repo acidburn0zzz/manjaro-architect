@@ -320,7 +320,7 @@ install_base() {
         arch_chroot "rc-update add consolefont boot" 2>$ERR
         check_for_error "configure consolefont" $?
     else
-        echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font) > ${MOUNTPOINT}/etc/vconsole.conf"
+        echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
         check_for_error "configure vconsole"
     fi
 
