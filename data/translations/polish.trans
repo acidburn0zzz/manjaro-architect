@@ -437,3 +437,7 @@ _UserCheck="Nie utworzono kont użytkowników"
 # Close Installer
 _CloseInstBody="Zamknąć instalator?"
 _LogInfo="Czy chcesz skopiować dziennik instalacyjny do zainstalowanego systemu?\nZostanie przeniesiony do"
+
+# Chroot
+_­ChrootReturn="\nYou will now chroot into your installed system.\nYou can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
+_EnterChroot="Enter your installation

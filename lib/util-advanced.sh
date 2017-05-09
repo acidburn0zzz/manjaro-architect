@@ -34,7 +34,7 @@ advanced_menu() {
                 ;;
             "4") check_base && security_menu
                 ;;
-            "5") check_base && DIALOG " Enter your installation " --infobox "\nYou will now chroot into your installed system.\n You can do changes almost as if you had booted into your installation.\n Type exit and after that fg to return to installer.\n " 0 0 && arch_chroot bash
+            "5") check_base && chroot_interactive
                 ;;
             "6") install_cust_pkgs
                 ;;
@@ -43,6 +43,14 @@ advanced_menu() {
                 ;;
         esac
     done
+}
+
+chroot_interactive() {
+
+DIALOG " $_EnterChroot " --infobox "$_ChrootReturn" 0 0 
+echo ""
+echo ""
+arch_chroot bash
 }
 
 install_manjaro_de_wm_git() {
