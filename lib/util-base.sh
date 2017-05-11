@@ -356,10 +356,32 @@ uefi_bootloader() {
     #Ensure again that efivarfs is mounted
     [[ -z $(mount | grep /sys/firmware/efi/efivars) ]] && mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 
+        DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 2 \
+      "1" "grub" \
+      "2" "refind" 2>/tmp/.bootloader
+
+        case $(cat /tmp/.bootloader) in
+        "1") install_grub_uefi
+            ;;
+        "2") install_refind
+            ;;
+        "3") install_systemd-boot
+            ;;
+        esac
+}
+
+install_grub_uefi() {
+
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstUefiBtBody\n " 0 0 || return 0
     clear
-    basestrap ${MOUNTPOINT} grub efibootmgr dosfstools 2>$ERR
-    check_for_error "$FUNCNAME grub" $? || return 1
+    if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
+        basestrap ${MOUNTPOINT} grub-btrfs efibootmgr dosfstools 2>$ERR
+        check_for_error "$FUNCNAME grub" $? || return 1
+    else
+        basestrap ${MOUNTPOINT} grub efibootmgr dosfstools 2>$ERR
+        check_for_error "$FUNCNAME grub" $? || return 1
+    fi
+
 
     DIALOG " $_InstGrub " --infobox "\n$_PlsWaitBody\n " 0 0
     # if root is encrypted, amend /etc/default/grub
@@ -387,8 +409,45 @@ uefi_bootloader() {
         sleep 2
     fi
 
-<<DISABLED_FOR_NOW
-    "systemd-boot")
+}
+install_refind()
+
+{
+    DIALOG " $_InstRefindTitle " --yesno "\n$_InstRefindBody\n " 0 0 || return 0
+    clear
+    inst_needed refind
+    # Check if the volume is removable. If so, install all drivers
+    root_device=$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}' | rev | cut -c 2- | rev)   
+    ## install refind 
+    if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
+        refind-install --root /mnt --alldrivers --yes 2>$ERR
+        check_for_error "refind-install --root /mnt --alldrivers --yes" $?
+    else
+        refind-install --root /mnt 2>$ERR
+        check_for_error "refind-install --root /mnt" $?
+    fi
+
+    # Mount as rw
+    sed -i 's/ro\ /rw\ \ /g' /mnt/boot/refind_linux.conf
+    # Boot in graphics mode 
+    sed -i -e '/use_graphics_for/ s/^#*//' ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind.conf
+    # Set appropriate rootflags if installed on btrs subvolume
+    if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
+        rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')"
+        sed -i "s|\"$|\ $rootflag\"|g" /mnt/boot/refind_linux.conf
+    fi
+    # Set the root parameter if encrypted or on LVM
+    if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
+        echo "triggered the lvm stuff"
+        bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
+        sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
+        sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
+    fi
+    DIALOG " $_InstUefiBtTitle " --infobox "\n$_RefindReady\n " 0 0
+    sleep 2
+}
+
+install_systemd_boot() {
         arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
         check_for_error "systemd-boot" $?
 
@@ -418,51 +477,8 @@ uefi_bootloader() {
         for i in ${sysdconf}; do
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
         done
-DISABLED_FOR_NOW
-    #"refind)"
-        # install refind
-     #   refind-install --root /mnt
-        # Deal with LVM Root
-        #[[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]] && bl_root=$ROOT_PART \
-        #  || bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
-
-        # generate boot entries
-        #[[ -e /mnt/boot/intel-ucode.img ]] && ucode="initrd=/boot/intel-ucode.img" || ucode=""
-        #$(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) && rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')" || rootflag=""
-        #echo /boot/initramfs-* | sed 's/\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
-        #for kernel in $(cat /tmp/.kernels); do
-        #    echo -e "
-        #    menuentry Manjaro $kernel {
-    #icon /EFI/refind/icons/os_manjaro.png
-    #loader vmlinuz-$kernel
-    #initrd initramfs-$kernel.img
-    #options "$LUKS_DEV rw root=${bl_root} quiet ${ucode} $rootflag"
-#}
-
-#" >> ${UEFI_MOUNT}/EFI/refind/refind.conf
-#        done
 }
 
-install_refind()
-
-{
-    # Check if the volume is removable. If so, install all drivers
-    root_device=$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}' | rev | cut -c 2- | rev)   
-    # install refind 
-    if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
-        refind-install --root /mnt --alldrivers
-    else
-        refind-install --root /mnt
-    fi
-    # Mount as rw, add quiet
-    sed -i 's/\ ro\ /\ rw\ quiet\ /g' /mnt/boot/refind_linux.conf        
-    # Boot in graphics mode 
-    sed -i -e '/use_graphics_for/ s/^#*/#' ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind.conf
-    # deal with LUKS and BTRFS
-    
-
-
-}
 # Grub auto-detects installed kernels, etc. Syslinux does not, hence the extra code for it.
 bios_bootloader() {
     DIALOG " $_InstBiosBtTitle " --menu "\n$_InstGrubBody\n " 0 0 2 \

@@ -441,3 +441,9 @@ _LogInfo="Would you like to save the installation-log to the installed system?\n
 # Chroot
 _­ChrootReturn="\nYou will now chroot into your installed system.\nYou can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
 _EnterChroot="Enter your installation"
+
+#Refind
+_InstRefindTitle="Install refind"
+_InstRefindBody="This installs refind and configures it to automatically detect your kernels.\nNo support for intel microcode. Use manual boot stanzas for that.\nDo not use shared /boot partition with other systems when using this option."
+_RefindReady="Refind was succesfully installed"
+_bootloaderInfo="Refind can be used as standalone or in conjunction with other bootloaders as a bootmenu.\nGrub can boot iso files from harddrive and have automatic boot entries for btrfs snapshots."

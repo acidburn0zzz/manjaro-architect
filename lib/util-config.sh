@@ -51,6 +51,16 @@ edit_configs() {
         options+=( $i "grub" )
         functions+=( "edit_grub" )
     fi
+    if [[ -e ${MOUNTPOINT}/boot/refind_linux.conf ]]; then
+        ((i++))
+        options+=( $i "refind_linux.conf" )
+        functions+=( "nano ${MOUNTPOINT}/boot/refind_linux.conf" )
+    fi    
+    if [[ -e ${MOUNTPOINT}/boot/efi/EFI/refind/refind_linux.conf ]]; then
+        ((i++))
+        options+=( $i "refind.conf" )
+        functions+=( "nano ${MOUNTPOINT}/boot/efi/EFI/refind/refind_linux.conf" )
+    fi    
     if [[ -e ${MOUNTPOINT}/etc/hostname ]]; then
         ((i++))
         options+=( $i "hostname" )
