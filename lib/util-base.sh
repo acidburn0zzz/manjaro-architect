@@ -415,7 +415,7 @@ install_refind()
 {
     DIALOG " $_InstRefindTitle " --yesno "\n$_InstRefindBody\n " 0 0 || return 0
     clear
-    inst_needed refind
+    inst_needed refind-efi
     # Check if the volume is removable. If so, install all drivers
     root_device=$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}' | rev | cut -c 2- | rev)   
     ## install refind 
@@ -429,6 +429,11 @@ install_refind()
 
     # Mount as rw
     sed -i 's/ro\ /rw\ \ /g' /mnt/boot/refind_linux.conf
+
+    # Configure for intel microcode
+    if [[ -e /boot/intel-ucode.img ]]; then 
+        sed -i "s|\"$|\ initrd=/boot/intel-ucode.img\"|g" /mnt/boot/refind_linux.conf
+    fi
     # Boot in graphics mode 
     sed -i -e '/use_graphics_for/ s/^#*//' ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind.conf
     # Set appropriate rootflags if installed on btrs subvolume
