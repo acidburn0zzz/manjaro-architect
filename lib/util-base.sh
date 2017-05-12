@@ -417,12 +417,16 @@ install_refind()
     clear
     inst_needed refind-efi
     # Check if the volume is removable. If so, install all drivers
-    root_device=$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}' | rev | cut -c 2- | rev)   
+    root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+    root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
     ## install refind 
     if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
         refind-install --root /mnt --alldrivers --yes 2>$ERR
         check_for_error "refind-install --root /mnt --alldrivers --yes" $?
-    else
+    elif [[ $LUKS == 1 ]]; then
+        refind-install --root /mnt --alldrivers --yes 2>$ERR
+        check_for_error "refind-install --root /mnt --alldrivers --yes" $?
+    else 
         refind-install --root /mnt 2>$ERR
         check_for_error "refind-install --root /mnt" $?
     fi
@@ -444,9 +448,8 @@ install_refind()
 
     # LUKS
     if [[ $LUKS == 1 ]]; then
-        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g)
         mapper_name="$(mount | awk '/\/mnt / {print $1}')"
-        ROOTY_PARTY="/dev/$(lsblk -lno NAME,MOUNTPOINT,TYPE | grep -B1 "${root_name}" | grep "part" | awk '{print $1}')"
+        ROOTY_PARTY="/dev/$(lsblk -i | grep -B1 "$root_name" | awk '/part/ {print $1}' | cut -c 3-)"
         bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOTY_PARTY} | sed 's/.*=//g' | sed 's/"//g')"
         sed -i "s|root=.* |cryptdevice=$bl_root:$root_name root=$mapper_name |g" /mnt/boot/refind_linux.conf
         sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
