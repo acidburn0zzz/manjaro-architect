@@ -430,10 +430,10 @@ install_refind()
     # Mount as rw
     sed -i 's/ro\ /rw\ \ /g' /mnt/boot/refind_linux.conf
 
-    # Configure for intel microcode
-    if [[ -e /boot/intel-ucode.img ]]; then 
-        sed -i "s|\"$|\ initrd=/boot/intel-ucode.img\"|g" /mnt/boot/refind_linux.conf
-    fi
+    ## Configure for intel microcode
+    #if [[ -e /boot/intel-ucode.img ]]; then 
+    #    sed -i "s|\"$|\ initrd=/boot/intel-ucode.img\"|g" /mnt/boot/refind_linux.conf
+    #fi
     # Boot in graphics mode 
     sed -i -e '/use_graphics_for/ s/^#*//' ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind.conf
     # Set appropriate rootflags if installed on btrs subvolume
@@ -442,9 +442,9 @@ install_refind()
         sed -i "s|\"$|\ $rootflag\"|g" /mnt/boot/refind_linux.conf
     fi
     # Set the root parameter if encrypted or on LVM
+        #ROOT_PART="/dev/$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}')"
     if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
-        echo "triggered the lvm stuff"
-        bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
+        bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')"
         sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
         sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
     fi
@@ -457,6 +457,7 @@ install_systemd_boot() {
         check_for_error "systemd-boot" $?
 
         # Deal with LVM Root
+
         [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]] && bl_root=$ROOT_PART \
           || bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
 
