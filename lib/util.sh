@@ -534,9 +534,8 @@ final_check() {
         # Check if bootloader is installed
         if [[ $SYSTEM == "BIOS" ]]; then
             arch_chroot "pacman -Qq grub" &> /dev/null || echo "- $_BootlCheck" >> ${CHECKLIST}
-        else
-            [[ -e /mnt/boot/efi/EFI/manjaro_grub/grubx64.efi ]] || [[ -e /mnt/boot/EFI/manjaro_grub/grubx64.efi ]] || echo "- $_BootlCheck" >> ${CHECKLIST}
-            [[ -e /mnt/boot/efi/EFI/manjaro_grub/grubx64.efi ]] || [[ -e /mnt/boot/EFI/refind/refind_x64.efi ]] || echo "- $_BootlCheck" >> ${CHECKLIST}
+        else ! [[ -e /mnt/boot/efi/EFI/manjaro_grub/grubx64.efi ]] || [[ -e /mnt/boot/EFI/manjaro_grub/grubx64.efi ]] || [[ -e /mnt/boot/efi/EFI/manjaro_grub/grubx64.efi ]] || ! [[ -e /mnt/boot/EFI/refind/refind_x64.efi ]]
+            echo "- $_BootlCheck" >> ${CHECKLIST}
         fi
 
         # Check if fstab is generated

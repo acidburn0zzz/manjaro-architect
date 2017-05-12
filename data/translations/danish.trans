@@ -445,6 +445,6 @@ _EnterChroot="Enter your installation
 
 #Refind
 _InstRefindTitle="Install refind"
-_InstRefindBody="This installs refind and configures it to automatically detect your kernels.\nNo support for intel microcode. Use manual boot stanzas for that.\nDo not use shared /boot partition with other systems when using this option."
+_InstRefindBody="This installs refind and configures it to automatically detect your kernels.\nNo support for encrypted /boot or intel microcode.\nThese require manual boot stanzas or using different bootloader."
 _RefindReady="Refind was succesfully installed"
 _bootloaderInfo="Refind can be used as standalone or in conjunction with other bootloaders as a bootmenu.\nGrub can boot iso files from harddrive and have automatic boot entries for btrfs snapshots."

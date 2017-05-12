@@ -441,13 +441,24 @@ install_refind()
         rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')"
         sed -i "s|\"$|\ $rootflag\"|g" /mnt/boot/refind_linux.conf
     fi
-    # Set the root parameter if encrypted or on LVM
-        #ROOT_PART="/dev/$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}')"
-    if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
-        bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')"
-        sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
+
+    # LUKS
+    if [[ $LUKS == 1 ]]; then
+        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g)
+        mapper_name="$(mount | awk '/\/mnt / {print $1}')"
+        ROOTY_PARTY="/dev/$(lsblk -lno NAME,MOUNTPOINT,TYPE | grep -B1 "${root_name}" | grep "part" | awk '{print $1}')"
+        bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOTY_PARTY} | sed 's/.*=//g' | sed 's/"//g')"
+        sed -i "s|root=.* |cryptdevice=$bl_root:$root_name root=$mapper_name |g" /mnt/boot/refind_linux.conf
         sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
     fi
+        
+    # Set the root parameter if encrypted or on LVM
+    #    ROOTY_PARTY="/dev/$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}')"
+    #if [[ $(echo $ROOTY_PARTY | grep "/dev/mapper/") != "" ]]; then
+    #    bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOTY_PARTY} | sed 's/.*=//g' | sed 's/"//g')"
+    #    sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
+    #    sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
+    #fi
     DIALOG " $_InstUefiBtTitle " --infobox "\n$_RefindReady\n " 0 0
     sleep 2
 }
