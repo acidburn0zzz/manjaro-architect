@@ -474,25 +474,23 @@ install_systemd_boot() {
 
         # Deal with LVM Root
 
-        [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]] && bl_root=$ROOT_PART \
-          || bl_root=$"PARTUUID="$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')
+        if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
+            bl_root=$ROOT_PART
+        else
+            bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')"
 
         # Create default config files. First the loader
-        echo -e "default  arch\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
+        echo -e "default  manjaro\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
 
         # Second, the kernel conf files
-        [[ -e ${MOUNTPOINT}/boot/initramfs-linux.img ]] && \
-          echo -e "title\tManjaro Linux\nlinux\t/vmlinuz-linux\ninitrd\t/initramfs-linux.img\noptions\troot=${bl_root} rw" \
-          > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch.conf
-        [[ -e ${MOUNTPOINT}/boot/initramfs-linux-lts.img ]] && \
-          echo -e "title\tManjaro Linux LTS\nlinux\t/vmlinuz-linux-lts\ninitrd\t/initramfs-linux-lts.img\noptions\troot=${bl_root} rw" \
-          > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch-lts.conf
-        [[ -e ${MOUNTPOINT}/boot/initramfs-linux-grsec.img ]] && \
-          echo -e "title\tManjaro Linux Grsec\nlinux\t/vmlinuz-linux-grsec\ninitrd\t/initramfs-linux-grsec.img\noptions\troot=${bl_root} rw" \
-          > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch-grsec.conf
-        [[ -e ${MOUNTPOINT}/boot/initramfs-linux-zen.img ]] && \
-          echo -e "title\tManjaro Linux Zen\nlinux\t/vmlinuz-linux-zen\ninitrd\t/initramfs-linux-zen.img\noptions\troot=${bl_root} rw" \
-          > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch-zen.conf
+        echo /mnt/boot/initramfs-* | sed 's/\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
+        for kernel in $(cat /tmp/.kernels); do
+            if [[ -e /mnt/boot/intel-ucode.img ]]; then 
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
+            else
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
+            fi
+        done
 
         # Finally, amend kernel conf files for LUKS and BTRFS
         sysdconf=$(ls ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch*.conf)
