@@ -439,7 +439,7 @@ _CloseInstBody="Close installer?"
 _LogInfo="Would you like to save the installation-log to the installed system?\nIt will be copied to"
 
 # Chroot
-_­ChrootReturn="\nYou will now chroot into your installed system.\nYou can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
+_ChrootReturn="\nYou will now chroot into your installed system.\nYou can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
 _EnterChroot="Enter your installation"
 
 #Refind
