@@ -478,7 +478,7 @@ install_systemd_boot() {
             bl_root=$ROOT_PART
         else
             bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/\"//g')"
-
+        fi
         # Create default config files. First the loader
         echo -e "default  manjaro\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
 
