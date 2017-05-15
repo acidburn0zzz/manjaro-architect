@@ -477,7 +477,7 @@ install_systemd_boot() {
         if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
             bl_root=$ROOT_PART
         else
-            bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/"//g')"
+            bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/\"//g')"
 
         # Create default config files. First the loader
         echo -e "default  manjaro\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
@@ -498,6 +498,7 @@ install_systemd_boot() {
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
         done
 }
+
 
 # Grub auto-detects installed kernels, etc. Syslinux does not, hence the extra code for it.
 bios_bootloader() {
