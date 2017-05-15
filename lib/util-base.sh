@@ -483,7 +483,7 @@ install_systemd_boot() {
         echo -e "default  manjaro\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
 
         # Second, the kernel conf files
-        echo /mnt/boot/initramfs-* | sed 's/\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
+        echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
         for kernel in $(cat /tmp/.kernels); do
             if [[ -e /mnt/boot/intel-ucode.img ]]; then 
                 echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
@@ -493,7 +493,7 @@ install_systemd_boot() {
         done
 
         # Finally, amend kernel conf files for LUKS and BTRFS
-        sysdconf=$(ls ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/arch*.conf)
+        sysdconf=$(ls ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro*.conf)
         for i in ${sysdconf}; do
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
         done
