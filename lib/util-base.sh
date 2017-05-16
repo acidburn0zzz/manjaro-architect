@@ -358,16 +358,17 @@ uefi_bootloader() {
     #Ensure again that efivarfs is mounted
     [[ -z $(mount | grep /sys/firmware/efi/efivars) ]] && mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 
-        DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 2 \
+        DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 3 \
       "1" "grub" \
-      "2" "refind" 2>/tmp/.bootloader
+      "2" "refind" \
+      "3" "systemd-boot" 2>/tmp/.bootloader
 
         case $(cat /tmp/.bootloader) in
         "1") install_grub_uefi
             ;;
         "2") install_refind
             ;;
-        "3") install_systemd-boot
+        "3") install_systemd_boot
             ;;
         esac
 }
@@ -415,7 +416,7 @@ install_grub_uefi() {
 install_refind()
 
 {
-    DIALOG " $_InstRefindTitle " --yesno "\n$_InstRefindBody\n " 0 0 || return 0
+    DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstRefindBody\n " 0 0 || return 0
     clear
     inst_needed refind-efi
     # Check if the volume is removable. If so, install all drivers
@@ -469,6 +470,8 @@ install_refind()
 }
 
 install_systemd_boot() {
+    DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstSystdBBody\n " 0 0 || return 0
+    clear
         arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
         check_for_error "systemd-boot" $?
 
@@ -497,6 +500,8 @@ install_systemd_boot() {
         for i in ${sysdconf}; do
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
         done
+    DIALOG " $_InstUefiBtTitle " --infobox "\n$_SystdBReady\n " 0 0
+    sleep 2
 }
 
 
