@@ -440,11 +440,15 @@ _CloseInstBody="Afslut installation?"
 _LogInfo="Would you like to save the installation-log to the installed system?\nIt will be copied to"  # translate me !
 
 # Chroot
-_ChrootReturn="\nYou will now chroot into your installed system.\nYou can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
-_EnterChroot="Enter your installation
+_ChrootReturn="\nYou will now chroot into your installed system. You can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n "
+_EnterChroot="Enter your installation"
 
 #Refind
 _InstRefindTitle="Install refind"
-_InstRefindBody="This installs refind and configures it to automatically detect your kernels.\nNo support for encrypted /boot or intel microcode.\nThese require manual boot stanzas or using different bootloader."
+_InstRefindBody="This installs refind and configures it to automatically detect your kernels. No support for encrypted /boot or intel microcode. These require manual boot stanzas or using different bootloader."
 _RefindReady="Refind was succesfully installed"
-_bootloaderInfo="Refind can be used as standalone or in conjunction with other bootloaders as a bootmenu.\nGrub can boot iso files from harddrive and have automatic boot entries for btrfs snapshots."
+_bootloaderInfo="Refind can be used as standalone or in conjunction with other bootloaders as a bootmenu.\nGrub can boot iso files from harddrive and have automatic boot entries for btrfs snapshots.\nSystemd-boot is very plain and can boot only kernels that are on the same partition as itself."
+
+# Systemd-boot
+_InstSystdBBody="This installs systemd-boot and generates boot entries for the currently installed kernels. This bootloader requires your kernels to be on the UEFI partition. This is achieved by mounting UEFI partition to /boot."
+_SystdBReady="Systemd-boot was installed"
