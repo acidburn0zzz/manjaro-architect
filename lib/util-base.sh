@@ -360,9 +360,9 @@ uefi_bootloader() {
 
         DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 3 \
       "1" "grub" \
-      "2" "refind" \
-      "3" "systemd-boot" 2>/tmp/.bootloader
-
+      "2" "refind" 2>/tmp/.bootloader
+ # \
+ #      "3" "systemd-boot"
         case $(cat /tmp/.bootloader) in
         "1") install_grub_uefi
             ;;
