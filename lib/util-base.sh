@@ -360,9 +360,9 @@ uefi_bootloader() {
 
         DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 3 \
       "1" "grub" \
-      "2" "refind" 2>/tmp/.bootloader
- # \
- #      "3" "systemd-boot"
+      "2" "refind" \
+      "3" "systemd-boot" 2>/tmp/.bootloader
+ 
         case $(cat /tmp/.bootloader) in
         "1") install_grub_uefi
             ;;
@@ -426,6 +426,8 @@ install_refind()
     if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
         refind-install --root /mnt --alldrivers --yes 2>$ERR
         check_for_error "refind-install --root /mnt --alldrivers --yes" $?
+        # Remove autodetect hook
+        sed -i -e '/^HOOKS=/s/\ autodetect//g' /mnt/etc/mkinitcpio.conf 
     elif [[ $LUKS == 1 ]]; then
         refind-install --root /mnt --alldrivers --yes 2>$ERR
         check_for_error "refind-install --root /mnt --alldrivers --yes" $?
@@ -482,11 +484,11 @@ install_systemd_boot() {
         else
             bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/\"//g')"
         fi
-        # Create default config files. First the loader
-        echo -e "default  manjaro\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
 
+        # Create default config files. First the loader
+        echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' | xargs -n1 | grep -v "fallback" > /tmp/.kernels
+        echo -e "default  manjaro-$(cat /tmp/.kernels | sort | tail -n1)\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
         # Second, the kernel conf files
-        echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' > /tmp/.kernels
         for kernel in $(cat /tmp/.kernels); do
             if [[ -e /mnt/boot/intel-ucode.img ]]; then 
                 echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
@@ -499,7 +501,20 @@ install_systemd_boot() {
         sysdconf=$(ls ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro*.conf)
         for i in ${sysdconf}; do
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
+            # Deal with btrfs subvolumes
+            if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
+                rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')"
+                sed -i "s|rw|rw $rootflag|g" ${i}
+            fi
         done
+
+        # Check if the volume is removable. If so, dont use autodetect
+        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+        root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')
+        if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
+            # Remove autodetect hook
+        sed -i -e '/^HOOKS=/s/\ autodetect//g' /mnt/etc/mkinitcpio.conf
+        fi
     DIALOG " $_InstUefiBtTitle " --infobox "\n$_SystdBReady\n " 0 0
     sleep 2
 }

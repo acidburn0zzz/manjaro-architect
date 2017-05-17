@@ -59,7 +59,12 @@ edit_configs() {
     if [[ -e ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind_linux.conf ]]; then
         ((i++))
         options+=( $i "refind.conf" )
-        functions+=( "nano ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind_linux.conf" )
+        functions+=( "nano ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/refind.conf" )
+    fi    
+    if [[ -e ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf ]]; then
+        ((i++))
+        options+=( $i "systemd-boot" )
+        functions+=( "nano ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/*" )
     fi    
     if [[ -e ${MOUNTPOINT}/etc/hostname ]]; then
         ((i++))
