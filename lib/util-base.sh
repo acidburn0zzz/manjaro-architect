@@ -246,6 +246,7 @@ install_base() {
         else
             cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' >> /mnt/.base
             echo " " >> /mnt/.base
+            grep -f /tmp/.available_kernels /mnt/.base > /tmp/.chosen_kernels
             check_for_error "selected: $(cat ${PACKAGES})"
             loopmenu=0
         fi
@@ -486,7 +487,9 @@ install_systemd_boot() {
         fi
 
         # Create default config files. First the loader
-        echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' | xargs -n1 | grep -v "fallback" > /tmp/.kernels
+        #echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' | xargs -n1 | grep -v "fallback" > /tmp/.kernels
+        arch_chroot "pacman -Ql $(cat /tmp/.chosen_kernels)" | awk '/vmlinuz/ {print $2}' | sed 's~/boot/vmlinuz-~~g' > /tmp/.kernels
+
         echo -e "default  manjaro-$(cat /tmp/.kernels | sort | tail -n1)\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
         # Second, the kernel conf files
         for kernel in $(cat /tmp/.kernels); do
