@@ -1,4 +1,4 @@
-Version=0.8.9
+Version=0.8.11
 
 PREFIX = /usr
 LIBDIR = /lib/manjaro-architect
