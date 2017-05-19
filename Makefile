@@ -1,4 +1,4 @@
-Version=0.8.11
+Version = $(shell git describe --abbrev=0 --tags)
 
 PREFIX = /usr
 LIBDIR = /lib/manjaro-architect
