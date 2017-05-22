@@ -293,27 +293,6 @@ install_base() {
         return 1;
     }
 
-    # If root is on btrfs volume, amend mkinitcpio.conf
-    if [[ -e /tmp/.btrfsroot ]]; then
-    sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
-      check_for_error "root on btrfs volume. Amend mkinitcpio."
-    fi
-
-    # If root is on nilfs2 volume, amend mkinitcpio.conf
-    [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == nilfs2 ]] && sed -e '/^HOOKS=/s/\ fsck//g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf && \
-      check_for_error "root on nilfs2 volume. Amend mkinitcpio."
-
-    # add luks and lvm hooks as needed
-    ([[ $LVM -eq 1 ]] && [[ $LUKS -eq 0 ]]) && { sed -i 's/block filesystems/block lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm2 hook" $?; }
-    ([[ $LVM -eq 0 ]] && [[ $LUKS -eq 1 ]]) && { sed -i 's/block filesystems/block encrypt filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add luks hook" $?; }
-    [[ $((LVM + LUKS)) -eq 2 ]] && { sed -i 's/block filesystems/block encrypt lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm/luks hooks" $?; }
-
-    [[ $((LVM + LUKS)) -gt 0 ]] && { arch_chroot "mkinitcpio -P" 2>$ERR; check_for_error "re-run mkinitcpio" $?; }
-
-    # Use mhwd to install selected kernels with right kernel modules
-    # This is as of yet untested
-    # arch_chroot "mhwd-kernel -i $(cat ${PACKAGES} | xargs -n1 | grep -f /tmp/.available_kernels | xargs)"
-
     # copy keymap and consolefont settings to target
     if [[ -e /mnt/.openrc ]]; then
         echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
@@ -326,6 +305,24 @@ install_base() {
         echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
         check_for_error "configure vconsole"
     fi
+    
+    # If root is on btrfs volume, amend mkinitcpio.conf
+    if [[ -e /tmp/.btrfsroot ]]; then
+    BTRFS_ROOT=1
+    sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
+      check_for_error "root on btrfs volume. Amend mkinitcpio."
+    fi
+
+    # If root is on nilfs2 volume, amend mkinitcpio.conf
+    [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == nilfs2 ]] && sed -e '/^HOOKS=/s/\ fsck//g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf && \
+      check_for_error "root on nilfs2 volume. Amend mkinitcpio."
+
+    # add luks and lvm hooks as needed
+    ([[ $LVM -eq 1 ]] && [[ $LUKS -eq 0 ]]) && { sed -i 's/block filesystems/block lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm2 hook" $?; }
+    ([[ $LVM -eq 0 ]] && [[ $LUKS -eq 1 ]]) && { sed -i 's/block filesystems keyboard/block consolefont keymap keyboard encrypt filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add luks hook" $?; }
+    [[ $((LVM + LUKS)) -eq 2 ]] && { sed -i 's/block filesystems keyboard/block consolefont keymap keyboard encrypt lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm/luks hooks" $?; }
+
+    [[ $((LVM + LUKS + BTRFS_ROOT)) -gt 0 ]] && { arch_chroot "mkinitcpio -P" 2>$ERR; check_for_error "re-run mkinitcpio" $?; }
 
     # If specified, copy over the pacman.conf file to the installation
     if [[ $COPY_PACCONF -eq 1 ]]; then
@@ -475,9 +472,13 @@ install_refind()
 install_systemd_boot() {
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstSystdBBody\n " 0 0 || return 0
     clear
-        arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
-        check_for_error "systemd-boot" $?
 
+        # Check if already installed. If so, just add entries
+        if ! $(arch_chroot "bootctl status" 2>&1 >/dev/null | grep -q "systemd-boot not installed"); then
+            arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
+            check_for_error "systemd-boot" $?
+            [[ $? -eq 0 ]] && touch /tmp/.newsystemdboot
+        fi
         # Deal with LVM Root
 
         if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
@@ -494,14 +495,16 @@ install_systemd_boot() {
         # Second, the kernel conf files
         for kernel in $(cat /tmp/.kernels); do
             if [[ -e /mnt/boot/intel-ucode.img ]]; then 
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
             else
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-"$kernel".conf
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
+                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
             fi
         done
 
         # Finally, amend kernel conf files for LUKS and BTRFS
-        sysdconf=$(ls ${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro*.conf)
+        sysdconf=$(cat /tmp/.sysdconfd)
         for i in ${sysdconf}; do
             [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
             # Deal with btrfs subvolumes
