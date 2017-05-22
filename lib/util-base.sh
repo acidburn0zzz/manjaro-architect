@@ -474,7 +474,7 @@ install_systemd_boot() {
     clear
 
         # Check if already installed. If so, just add entries
-        if ! $(arch_chroot "bootctl status" 2>&1 >/dev/null | grep -q "systemd-boot not installed"); then
+        if $(arch_chroot "bootctl status" 2>&1 >/dev/null | grep -q "systemd-boot not installed"); then
             arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
             check_for_error "systemd-boot" $?
             [[ $? -eq 0 ]] && touch /tmp/.newsystemdboot
