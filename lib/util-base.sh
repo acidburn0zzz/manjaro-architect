@@ -152,7 +152,7 @@ filter_packages() {
 
         if grep -q ">extra" $pkgs_target; then
             # User to select base|extra profile
-            DIALOG "$_ExtraTitle" --no-cancel --menu "\n$_ExtraBody\n " 0 0 2 \
+            DIALOG " $_ExtraTitle " --no-cancel --menu "\n$_ExtraBody\n " 0 0 2 \
               "1" "full" \
               "2" "minimal" 2>/tmp/.version
 
