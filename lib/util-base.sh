@@ -308,9 +308,9 @@ install_base() {
     
     # If root is on btrfs volume, amend mkinitcpio.conf
     if [[ -e /tmp/.btrfsroot ]]; then
-    BTRFS_ROOT=1
-    sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
-      check_for_error "root on btrfs volume. Amend mkinitcpio."
+        BTRFS_ROOT=1
+        sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
+        check_for_error "root on btrfs volume. Amend mkinitcpio."
     fi
 
     # If root is on nilfs2 volume, amend mkinitcpio.conf
@@ -356,7 +356,7 @@ uefi_bootloader() {
     #Ensure again that efivarfs is mounted
     [[ -z $(mount | grep /sys/firmware/efi/efivars) ]] && mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 
-        DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 3 \
+    DIALOG " $_InstUefiBtTitle " --menu "\n$_bootloaderInfo\n " 0 0 3 \
       "1" "grub" \
       "2" "refind" \
       "3" "systemd-boot" 2>/tmp/.bootloader
@@ -437,7 +437,7 @@ install_refind()
     # Mount as rw
     sed -i 's/ro\ /rw\ \ /g' /mnt/boot/refind_linux.conf
 
-    ## Configure for intel microcode
+    # Configure for intel microcode
     #if [[ -e /boot/intel-ucode.img ]]; then 
     #    sed -i "s|\"$|\ initrd=/boot/intel-ucode.img\"|g" /mnt/boot/refind_linux.conf
     #fi
@@ -459,7 +459,7 @@ install_refind()
     fi
         
     # Set the root parameter if encrypted or on LVM
-    #    ROOTY_PARTY="/dev/$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}')"
+    #ROOTY_PARTY="/dev/$(lsblk -lno NAME,MOUNTPOINT | grep "/mnt$" | awk '{print $1}')"
     #if [[ $(echo $ROOTY_PARTY | grep "/dev/mapper/") != "" ]]; then
     #    bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOTY_PARTY} | sed 's/.*=//g' | sed 's/"//g')"
     #    sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
@@ -473,54 +473,54 @@ install_systemd_boot() {
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstSystdBBody\n " 0 0 || return 0
     clear
 
-        # Check if already installed. If so, just add entries
-        if $(arch_chroot "bootctl status" 2>&1 >/dev/null | grep -q "systemd-boot not installed"); then
-            arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
-            check_for_error "systemd-boot" $?
-            [[ $? -eq 0 ]] && touch /tmp/.newsystemdboot
-        fi
-        # Deal with LVM Root
+    # Check if already installed. If so, just add entries
+    if $(arch_chroot "bootctl status" 2>&1 >/dev/null | grep -q "systemd-boot not installed"); then
+        arch_chroot "bootctl --path=${UEFI_MOUNT} install" 2>$ERR
+        check_for_error "systemd-boot" $?
+        [[ $? -eq 0 ]] && touch /tmp/.newsystemdboot
+    fi
+    # Deal with LVM Root
 
-        if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
-            bl_root=$ROOT_PART
+    if [[ $(echo $ROOT_PART | grep "/dev/mapper/") != "" ]]; then
+        bl_root=$ROOT_PART
+    else
+        bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/\"//g')"
+    fi
+
+    # Create default config files. First the loader
+    #echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' | xargs -n1 | grep -v "fallback" > /tmp/.kernels
+    arch_chroot "pacman -Ql $(cat /tmp/.chosen_kernels)" | awk '/vmlinuz/ {print $2}' | sed 's~/boot/vmlinuz-~~g' > /tmp/.kernels
+
+    echo -e "default  manjaro-$(cat /tmp/.kernels | sort | tail -n1)\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
+    # Second, the kernel conf files
+    for kernel in $(cat /tmp/.kernels); do
+        if [[ -e /mnt/boot/intel-ucode.img ]]; then 
+            echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
+            echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
         else
-            bl_root="PARTUUID=$(blkid -s PARTUUID ${ROOT_PART} | sed 's/.*=//g' | sed 's/\"//g')"
+            echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
+            echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
         fi
+    done
 
-        # Create default config files. First the loader
-        #echo /mnt/boot/initramfs-* | sed 's/\/mnt\/boot\/initramfs-//g' | sed 's/\.img//g' | xargs -n1 | grep -v "fallback" > /tmp/.kernels
-        arch_chroot "pacman -Ql $(cat /tmp/.chosen_kernels)" | awk '/vmlinuz/ {print $2}' | sed 's~/boot/vmlinuz-~~g' > /tmp/.kernels
+    # Finally, amend kernel conf files for LUKS and BTRFS
+    sysdconf=$(cat /tmp/.sysdconfd)
+    for i in ${sysdconf}; do
+        [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
+        # Deal with btrfs subvolumes
+        if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
+            rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')"
+            sed -i "s|rw|rw $rootflag|g" ${i}
+        fi
+    done
 
-        echo -e "default  manjaro-$(cat /tmp/.kernels | sort | tail -n1)\ntimeout  10" > ${MOUNTPOINT}${UEFI_MOUNT}/loader/loader.conf 2>$ERR
-        # Second, the kernel conf files
-        for kernel in $(cat /tmp/.kernels); do
-            if [[ -e /mnt/boot/intel-ucode.img ]]; then 
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/intel-ucode.img\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
-            else
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel.conf" >> /tmp/.sysdconfd
-                echo -e "title\tManjaro Linux $kernel\nlinux\t/vmlinuz-$kernel\ninitrd\t/initramfs-$kernel-fallback.img\noptions\troot=${bl_root} rw" > "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" && echo "${MOUNTPOINT}${UEFI_MOUNT}/loader/entries/manjaro-$kernel-fallback.conf" >> /tmp/.sysdconfd
-            fi
-        done
-
-        # Finally, amend kernel conf files for LUKS and BTRFS
-        sysdconf=$(cat /tmp/.sysdconfd)
-        for i in ${sysdconf}; do
-            [[ $LUKS_DEV != "" ]] && sed -i "s~rw~$LUKS_DEV rw~g" ${i}
-            # Deal with btrfs subvolumes
-            if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
-                rootflag="rootflags=$(mount | awk '$3 == "/mnt" {print $6}' | sed 's/^.*subvol=/subvol=/' | sed -e 's/,.*$/,/p' | sed 's/)//g')"
-                sed -i "s|rw|rw $rootflag|g" ${i}
-            fi
-        done
-
-        # Check if the volume is removable. If so, dont use autodetect
-        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
-        root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')
-        if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
-            # Remove autodetect hook
+    # Check if the volume is removable. If so, dont use autodetect
+    root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+    root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')
+    if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
+        # Remove autodetect hook
         sed -i -e '/^HOOKS=/s/\ autodetect//g' /mnt/etc/mkinitcpio.conf
-        fi
+    fi
     DIALOG " $_InstUefiBtTitle " --infobox "\n$_SystdBReady\n " 0 0
     sleep 2
 }
