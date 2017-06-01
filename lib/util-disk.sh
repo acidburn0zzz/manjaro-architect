@@ -967,9 +967,7 @@ mount_partitions() {
     done
 }
 
-btrfs_subvolumes()
-
-{
+btrfs_subvolumes() {
     #1) save mount options and name of the root partition 
     mount | grep "on /mnt " | grep -Po '(?<=\().*(?=\))' > /tmp/.root_mount_options
     #lsblk -lno MOUNTPOINT,NAME | awk '/^\/mnt / {print $2}' > /tmp/.root_partition
