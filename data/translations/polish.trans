@@ -357,6 +357,7 @@ _InstDrvBody="Niektóre karty sieciowe i graficzne \nmogą wymagać specjalnych 
 _InstFree="Zainstaluj automatycznie otwarte sterowniki"
 _InstProp="Zainstaluj automatycznie sterowniki własnościowe"
 _SelDDrv="Wybierz sterownik wyświetlania"
+_InstAllDrv="Install all free drivers"				# translate me !
 
 # Configure Base Menu
 _ConfBseMenuTitle="Konfiguracja systemu podstawowego"

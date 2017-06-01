@@ -206,7 +206,8 @@ install_graphics_menu() {
     DIALOG " $_InstGrMenuDD " --menu "\n " 0 0 3 \
       "1" "$_InstFree" \
       "2" "$_InstProp" \
-      "3" "$_SelDDrv" 2>${ANSWER} || return 0
+      "3" "$_SelDDrv" \
+      "4" "$_InstAllDrv" 2>${ANSWER} || return 0
 
     case $(cat ${ANSWER}) in
         "1") clear
@@ -220,6 +221,8 @@ install_graphics_menu() {
             touch /mnt/.video_installed
             ;;
         "3") setup_graphics_card
+            ;;
+        "4") install_all_drivers
             ;;
     esac
 }

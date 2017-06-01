@@ -357,6 +357,7 @@ _InstDrvBody="Некоторым сетевым и графическим кар
 _InstFree="Auto-install free drivers"               # translate me !
 _InstProp="Auto-install proprietary drivers"        # translate me !
 _SelDDrv="Select Display Driver"                    # translate me !
+_InstAllDrv="Install all free drivers"				# translate me !
 
 # Configure Base Menu
 _ConfBseMenuTitle="Настройка базовой системы"

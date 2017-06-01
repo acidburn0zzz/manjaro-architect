@@ -356,6 +356,7 @@ _InstDrvBody="Manche Netzwerk- und Grafikkarten\nbenötigen spezielle Treiber.\n
 _InstFree="Auto-Installation freie Treiber"
 _InstProp="Auto-Installation proprietäre Treiber"
 _SelDDrv="Grafiktreiber auswählen"
+_InstAllDrv="Install all free drivers"				# translate me !
 
 # Configure Base Menu
 _ConfBseMenuTitle="Basis konfigurieren"

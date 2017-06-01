@@ -357,6 +357,7 @@ _InstDrvBody="Some network and graphics cards \nmay need special drivers. \nOpti
 _InstFree="Auto-install free drivers"               # translate me !
 _InstProp="Auto-install proprietary drivers"        # translate me !
 _SelDDrv="Select Display Driver"                    # translate me !
+_InstAllDrv="Install all free drivers"				# translate me !
 
 # Configure Base Menu
 _ConfBseMenuTitle="Configurazione di base"

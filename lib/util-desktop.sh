@@ -103,6 +103,30 @@ install_intel() {
     fi
 }
 
+install_all_drivers() {
+
+    cat $PROFILES/shared/Packages-Mhwd > /tmp/.all_drivers
+    grep "KERNEL-" /tmp/.all_drivers > /tmp/.kernel_dependent
+    for kernel in $(cat /tmp/.chosen_kernels); do
+            cat /tmp/.kernel_dependent | sed "s/KERNEL/\n$kernel/g" >> /mnt/.all_drivers
+            echo "" >> /mnt/.all_drivers
+    done
+
+    if [[ -e /mnt/.openrc ]]; then
+        # Remove any packages tagged with >systemd and remove >openrc tags
+        sed -i '/>systemd/d' /mnt/.all_drivers
+        sed -i 's/>openrc //g' /mnt/.all_drivers
+    else
+        # Remove any packages tagged with >openrc and remove >systemd tags
+        sed -i '/>openrc/d' /mnt/.all_drivers
+        sed -i 's/>systemd //g' /mnt/.all_drivers
+    fi
+    sed -i '/>multilib/d' /mnt/.all_drivers
+    sed -i '/>nonfree_multilib/d' /mnt/.all_drivers
+    sed -i '/>nonfree_default/d' /mnt/.all_drivers
+    basestrap ${MOUNTPOINT} /mnt/.all_drivers
+
+}
 install_ati() {
     sed -i 's/MODULES=""/MODULES="radeon"/' ${MOUNTPOINT}/etc/mkinitcpio.conf
 }

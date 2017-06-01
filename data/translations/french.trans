@@ -358,6 +358,7 @@ _InstDrvBody="Quelques cartes réseau et graphiques\npeuvent nécessiter un pilo
 _InstFree="Installation automatique du pilote libre"
 _InstProp="Installation automatique du pilote propriétaire"
 _SelDDrv="Selectionner un pilote graphique"
+_InstAllDrv="Install all free drivers"				# translate me !
 
 # Configurer le menu de Base
 _ConfBseMenuTitle="Configurer la base"
