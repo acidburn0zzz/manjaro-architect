@@ -203,7 +203,7 @@ install_drivers_menu() {
 }
 
 install_graphics_menu() {
-    DIALOG " $_InstGrMenuDD " --menu "\n " 0 0 3 \
+    DIALOG " $_InstGrMenuDD " --menu "\n " 0 0 4 \
       "1" "$_InstFree" \
       "2" "$_InstProp" \
       "3" "$_SelDDrv" \

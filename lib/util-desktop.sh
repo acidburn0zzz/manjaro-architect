@@ -125,7 +125,7 @@ install_all_drivers() {
     sed -i '/>nonfree_multilib/d' /mnt/.all_drivers
     sed -i '/>nonfree_default/d' /mnt/.all_drivers
     sed -i '/KERNEL-/d' /mnt/.all_drivers
-    basestrap ${MOUNTPOINT} /mnt/.all_drivers
+    basestrap ${MOUNTPOINT} $(cat /mnt/.all_drivers)
 
 }
 install_ati() {
