@@ -388,9 +388,16 @@ install_grub_uefi() {
     # if root is encrypted, amend /etc/default/grub
     boot_encrypted_setting
     #install grub
-    arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro_grub --recheck" 2>$ERR
-    check_for_error "grub-install --target=x86_64-efi" $?
-
+    root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+    root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
+    ## install refind 
+    if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro_grub --recheck --removable" 2>$ERR
+        check_for_error "grub-install --target=x86_64-efi" $?
+    else
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro_grub --recheck" 2>$ERR
+        check_for_error "grub-install --target=x86_64-efi" $?
+    fi
     # If encryption used amend grub
     [[ $LUKS_DEV != "" ]] && sed -i "s~GRUB_CMDLINE_LINUX=.*~GRUB_CMDLINE_LINUX=\"$LUKS_DEV\"~g" ${MOUNTPOINT}/etc/default/grub
 
