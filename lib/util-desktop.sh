@@ -109,23 +109,23 @@ install_all_drivers() {
 
     if [[ -e /mnt/.openrc ]]; then
         # Remove any packages tagged with >systemd and remove >openrc tags
-        sed -i '/>systemd/d' /mnt/.all_drivers
-        sed -i 's/>openrc //g' /mnt/.all_drivers
+        sed -i '/>systemd/d' /tmp/.all_drivers
+        sed -i 's/>openrc //g' /tmp/.all_drivers
     else
         # Remove any packages tagged with >openrc and remove >systemd tags
-        sed -i '/>openrc/d' /mnt/.all_drivers
-        sed -i 's/>systemd //g' /mnt/.all_drivers
+        sed -i '/>openrc/d' /tmp/.all_drivers
+        sed -i 's/>systemd //g' /tmp/.all_drivers
     fi
-    sed -i '/>multilib/d' /mnt/.all_drivers
-    sed -i '/>nonfree_multilib/d' /mnt/.all_drivers
-    sed -i '/>nonfree_default/d' /mnt/.all_drivers
-    basestrap ${MOUNTPOINT} $(cat /mnt/.all_drivers)
+    sed -i '/>multilib/d' /tmp/.all_drivers
+    sed -i '/>nonfree_multilib/d' /tmp/.all_drivers
+    sed -i '/>nonfree_default/d' /tmp/.all_drivers
     grep "KERNEL-" /tmp/.all_drivers > /tmp/.kernel_dependent
     for kernel in $(cat /tmp/.chosen_kernels); do
-            cat /tmp/.kernel_dependent | sed "s/KERNEL/\n$kernel/g" >> /mnt/.all_drivers
-            echo "" >> /mnt/.all_drivers
+            cat /tmp/.kernel_dependent | sed "s/KERNEL/\n$kernel/g" >> /tmp/.all_drivers
+            echo "" >> /tmp/.all_drivers
     done
-    sed -i '/KERNEL-/d' /mnt/.all_drivers
+    sed -i '/KERNEL-/d' /tmp/.all_drivers
+    basestrap ${MOUNTPOINT} $(cat /tmp/.all_drivers)
 }
 install_ati() {
     sed -i 's/MODULES=""/MODULES="radeon"/' ${MOUNTPOINT}/etc/mkinitcpio.conf
