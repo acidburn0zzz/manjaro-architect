@@ -131,6 +131,15 @@ submenu() {
     fi
 }
 
+check_root() {
+    if [[ `whoami` != "root" ]]; then
+        DIALOG " $_ErrTitle " --infobox "\n$_RtFailBody\n " 0 0
+        sleep 3
+        clear
+        exit 1
+    fi
+}
+
 # Adapted from AIS. Checks if system is made by Apple, whether the system is BIOS or UEFI,
 # and for LVM and/or LUKS.
 id_system() {
@@ -354,23 +363,17 @@ mk_connection() {
 
 # Check user is root, and that there is an active internet connection
 # Seperated the checks into seperate "if" statements for readability.
-check_requirements() {
-    DIALOG " $_ChkTitle " --infobox "\n$_ChkBody\n " 0 0
-    sleep 2
-
-    if [[ `whoami` != "root" ]]; then
-        DIALOG " $_Erritle " --infobox "\n$_RtFailBody\n " 0 0
-        sleep 2
-        exit 1
-    fi
+check_connection() {
+#    DIALOG " $_ChkTitle " --infobox "\n$_ChkBody\n " 0 0
+#    sleep 2
 
     if [[ ! $(ping -c 1 google.com) ]]; then
         DIALOG " $_ErrTitle " --infobox "\n$_ConFailBody\n " 0 0
-        sleep 2
+        sleep 3
+        clear
         exit 1
     fi
 
-    # This will only be executed where neither of the above checks are true.
     # The error log is also cleared, just in case something is there from a previous use of the installer.
     DIALOG " $_ReqMetTitle " --infobox "\n$_ReqMetBody\n\n$_UpdDb\n " 0 0
     sleep 2
