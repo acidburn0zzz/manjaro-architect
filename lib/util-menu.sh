@@ -223,6 +223,8 @@ install_graphics_menu() {
         "3") setup_graphics_card
             ;;
         "4") install_all_drivers
+            check_for_error "$_InstAllDrv" $?
+            touch /mnt/.video_installed
             ;;
     esac
 }
