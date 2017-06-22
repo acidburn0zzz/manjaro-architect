@@ -13,12 +13,12 @@
 main_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
-        if [[ $HIGHLIGHT != 7 ]]; then
+        if [[ $HIGHLIGHT != 6 ]]; then
            HIGHLIGHT=$(( HIGHLIGHT + 1 ))
         fi
 
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
-          --menu "\n$_MMBody\n " 0 0 7 \
+          --menu "\n$_MMBody\n " 0 0 6 \
           "1" "$_PrepMenuTitle|>" \
           "2" "$_InstBsMenuTitle|>" \
           "3" "$_ConfBseMenuTitle|>" \
@@ -57,7 +57,7 @@ prep_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 7
-        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 8 \
+        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 7 \
           "1" "$_VCKeymapTitle" \
           "2" "$_DevShowOpt" \
           "3" "$_PrepPartDisk" \
@@ -94,7 +94,7 @@ install_base_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 7
+        submenu 6
         DIALOG " $_InstBsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstBseMenuBody\n " 0 0 6 \
           "1" "$_PrepMirror|>" \
           "2" "$_PrepPacKey" \

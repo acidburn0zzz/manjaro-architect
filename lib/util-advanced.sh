@@ -13,7 +13,7 @@
 advanced_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 5
+        submenu 7
         DIALOG " $_InstAdvBase " --default-item ${HIGHLIGHT_SUB} \
           --menu "\n " 0 0 7 \
           "1" "$_InstDEGit" \
@@ -456,7 +456,7 @@ install_multimedia_menu() {
     while ((loopmenu)); do
         local PARENT="$FUNCNAME"
 
-        submenu 5
+        submenu 4
         DIALOG " $_InstMultMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstMultMenuBody\n " 0 0 4 \
           "1" "$_InstMulSnd" \
           "2" "$_InstMulCodec" \

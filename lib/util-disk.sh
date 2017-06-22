@@ -235,17 +235,17 @@ select_filesystem() {
     fs_opts=""
     CHK_NUM=0
 
-    DIALOG " $_FSTitle " --menu "\n$_FSBody\n " 0 0 12 \
+    DIALOG " $_FSTitle " --menu "\n$_FSBody\n " 0 0 10 \
       "$_FSSkip" "-" \
-        "btrfs" "mkfs.btrfs -f" \
-        "ext3" "mkfs.ext3 -q" \
-        "ext4" "mkfs.ext4 -q" \
-        "jfs" "mkfs.jfs -q" \
-        "nilfs2" "mkfs.nilfs2 -fq" \
-        "ntfs" "mkfs.ntfs -q" \
-        "reiserfs" "mkfs.reiserfs -q" \
-        "vfat" "mkfs.vfat -F32" \
-        "xfs" "mkfs.xfs -f" 2>${ANSWER} || return 1
+      "btrfs" "mkfs.btrfs -f" \
+      "ext3" "mkfs.ext3 -q" \
+      "ext4" "mkfs.ext4 -q" \
+      "jfs" "mkfs.jfs -q" \
+      "nilfs2" "mkfs.nilfs2 -fq" \
+      "ntfs" "mkfs.ntfs -q" \
+      "reiserfs" "mkfs.reiserfs -q" \
+      "vfat" "mkfs.vfat -F32" \
+      "xfs" "mkfs.xfs -f" 2>${ANSWER} || return 1
         
     case $(cat ${ANSWER}) in
         "$_FSSkip") FILESYSTEM="$_FSSkip"
