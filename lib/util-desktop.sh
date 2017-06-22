@@ -119,6 +119,7 @@ install_all_drivers() {
     sed -i '/>multilib/d' /tmp/.all_drivers
     sed -i '/>nonfree_multilib/d' /tmp/.all_drivers
     sed -i '/>nonfree_default/d' /tmp/.all_drivers
+    sed -i '/virtualbox/d' /tmp/.all_drivers
     grep "KERNEL-" /tmp/.all_drivers > /tmp/.kernel_dependent
     for kernel in $(cat /tmp/.chosen_kernels); do
             cat /tmp/.kernel_dependent | sed "s/KERNEL/\n$kernel/g" >> /tmp/.all_drivers
