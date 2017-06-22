@@ -457,12 +457,11 @@ install_multimedia_menu() {
         local PARENT="$FUNCNAME"
 
         submenu 5
-        DIALOG " $_InstMultMenuBody " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstMultMenuTitle\n " 0 0 5 \
+        DIALOG " $_InstMultMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstMultMenuBody\n " 0 0 4 \
           "1" "$_InstMulSnd" \
           "2" "$_InstMulCodec" \
           "3" "$_InstMulAcc" \
-          "4" "$_InstMulCust" \
-          "5" "$_Back" 2>${ANSWER}
+          "4" "$_Back" 2>${ANSWER}
 
         HIGHLIGHT_SUB=$(cat ${ANSWER})
         case $(cat ${ANSWER}) in
@@ -471,8 +470,6 @@ install_multimedia_menu() {
             "2") install_codecs
                 ;;
             "3") install_acc_menu
-                ;;
-            "4") install_cust_pkgs
                 ;;
             *) loopmenu=0
                 ;;
@@ -539,7 +536,7 @@ install_codecs() {
 install_acc_menu() {
     echo "" > ${PACKAGES}
 
-    DIALOG " $_InstAccTitle " --checklist "\n$_InstAccBody\n " 0 0 15 \
+    DIALOG " $_InstMulAcc " --checklist "\n$_InstMulAccBody\n " 0 0 15 \
       "accerciser" "-" off \
       "at-spi2-atk" "-" off \
       "at-spi2-core" "-" off \
