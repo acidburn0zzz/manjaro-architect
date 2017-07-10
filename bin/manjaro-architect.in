@@ -26,7 +26,8 @@ import ${DATADIR}/translations/english.trans
 
 if [[ -e /run/miso/bootmnt ]]; then
     if [[ -e /usr/bin/maia-console ]]; then
-        [[ ! -e ~/.dialogrc ]] && cp /etc/skel/.dialogrc ~/.dialogrc
+        #[[ ! -e ~/.dialogrc ]] && cp /etc/skel/.dialogrc ~/.dialogrc
+        [[ $TERM == "linux" ]] && export DIALOGRC="/usr/share/manjaro-architect/dialogrc"
     fi
 fi
 
