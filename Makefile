@@ -45,6 +45,9 @@ ICONS = \
 LAUNCHER = \
 	data/manjaro-architect.desktop
 
+DIALOGRC = \
+	data/dialogrc
+
 LIVE = \
 	data/ma-launcher.desktop
 
@@ -84,6 +87,9 @@ install:
 	install -dm0755 $(DESTDIR)$(PREFIX)/share/applications
 	install -m0644 ${LAUNCHER} $(DESTDIR)$(PREFIX)/share/applications
 	
+	install -dm0755 $(DESTDIR)$(PREFIX)$(DATADIR)
+	install -m0644 ${DIALOGRC} $(DESTDIR)$(PREFIX)$(DATADIR)
+	
 	install -dm0755 $(DESTDIR)/etc/skel/.config/autostart
 	install -m0644 ${LIVE} $(DESTDIR)/etc/skel/.config/autostart
 
@@ -94,6 +100,7 @@ uninstall:
 	for f in ${LANG}; do rm -f $(DESTDIR)$(PREFIX)$(DATADIR)/translations/$$f; done
 	for f in ${ICONS}; do rm -f $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/$$f; done
 	for f in ${LAUNCHER}; do rm -f $(DESTDIR)$(PREFIX)/share/applications/$$f; done
+	for f in ${DIALOGRC}; do rm -f $(DESTDIR)$(PREFIX)$(DATADIR)/dialogrc; done
 	for f in ${LIVE}; do rm -f $(DESTDIR)/etc/skel/.config/autostart/$$f; done
 
 install: install
