@@ -452,3 +452,11 @@ _bootloaderInfo="Refind can be used as standalone or in conjunction with other b
 # Systemd-boot
 _InstSystdBBody="This installs systemd-boot and generates boot entries for the currently installed kernels. This bootloader requires your kernels to be on the UEFI partition. This is achieved by mounting UEFI partition to /boot."
 _SystdBReady="Systemd-boot was installed"
+
+#Meta menu
+_InstCrMenuTitle="Install core system"
+_InstDsMenuBody="This installs base manjaro system without graphical desktop environment. Steps 1-3 are needed for working system, the rest is optional."
+_InstDsMenuTitle="Install desktop system"
+_InstDsMenuBody="This installs full manjaro edition with graphical desktop environment. Steps 1-4 are needed for working system, the rest is optional."
+_InstCsMenuTitle="Install custom system"
+_InstCsMenuBody="This installs base manjaro system without graphical desktop environment. Steps 1-4 are needed for working system, the rest is optional."

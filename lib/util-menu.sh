@@ -10,7 +10,7 @@
 # as published by the Free Software Foundation. So feel free to copy, distribute,
 # or modify it as you wish.
 
-main_menu() {
+main_menub() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         if [[ $HIGHLIGHT != 6 ]]; then
@@ -51,20 +51,192 @@ main_menu() {
     done
 }
 
+main_menu() {
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        if [[ $HIGHLIGHT != 6 ]]; then
+           HIGHLIGHT=$(( HIGHLIGHT + 1 ))
+        fi
+
+        DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
+          --menu "\n$_MMBody\n " 0 0 5 \
+          "1" "$_PrepMenuTitle|>" \
+          "2" "$_InstCoreSysTitle|>" \
+          "3" "$_InstDeskSysTitle|>" \
+          "4" "$_InstCustSysTitle|>" \
+          "5" "$_Done" 2>${ANSWER}
+        HIGHLIGHT=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") prep_menu
+                ;;
+            "2") check_mount && install_core_menu
+                ;;
+            "3") check_mount && install_desktop_system_menu
+                ;;
+            "4") check_mount && install_custom_menu
+                ;;
+             *) loopmenu=0
+                exit_done
+                ;;
+        esac
+    done
+}
+
+
+install_core_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 6
+        DIALOG " $_InstCrMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCrMenuBody\n " 0 0 8 \
+          "1" "$_InstBse" \
+          "2" "$_InstBootldr" \
+          "3" "$_ConfBseMenuTitle" \
+          "4" "$_InstMulCust" \
+          "5" "$_SecMenuTitle|>" \
+          "6" "$_SeeConfOptTitle" \
+          "7" "Chroot into installation" \
+          "8" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") check_mount && install_base && setup_network_drivers
+                 ;;
+            "2") check_base && install_bootloader
+                 ;;
+            "3") check_base && config_base_menu
+                 ;;
+            "4") check_base && install_cust_pkgs
+                 ;;
+            "5") check_base && security_menu
+                ;;
+            "6") check_base && {
+                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
+                    edit_configs
+                    }
+                ;;
+            "7") check_base && chroot_interactive
+                ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+install_desktop_system_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 6
+        DIALOG " $_InstDsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstDsMenuBody\n " 0 0 9 \
+          "1" "$_InstBse" \
+          "2" "$_InstDEStable|>" \
+          "3" "$_InstBootldr" \
+          "4" "$_ConfBseMenuTitle" \
+          "5" "$_InstMulCust" \
+          "6" "$_SecMenuTitle|>" \
+          "7" "$_SeeConfOptTitle" \
+          "8" "Chroot into installation" \
+          "9" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") check_mount && install_base
+                 ;;
+            "2") check_base && install_manjaro_de_wm_pkg
+                    local err=$?
+                    if [[ $err > 0 ]]; then
+                        DIALOG " $_InstBseTitle " --msgbox "\n$_InstFail\n " 0 0;
+                        if [[ $err == 255 ]]; then
+                            cat /tmp/basestrap.log
+                            read -n1 -s
+                        fi
+                    fi
+                 ;;
+            "3") check_base && install_bootloader
+                 ;;
+            "4") check_base && config_base_menu
+                 ;;
+            "5") check_base && install_cust_pkgs
+                 ;;
+            "6") check_base && security_menu
+                ;;
+            "7") check_base && {
+                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
+                    edit_configs
+                    }
+                ;;
+            "8") check_base && chroot_interactive
+                ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+install_custom_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 6
+        DIALOG " $_InstCsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCsMenuBody\n " 0 0 9 \
+          "1" "$_InstBse" \
+          "2" "$_InstDE|>" \
+          "3" "$_InstBootldr" \
+          "5" "$_ConfBseMenuTitle" \
+          "4" "$_InstMulCust" \
+          "6" "$_SecMenuTitle|>" \
+          "7" "$_SeeConfOptTitle" \
+          "8" "Chroot into installation" \
+          "9" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") check_mount && install_base && install_drivers_menu
+                 ;;
+            "2") check_base && install_vanilla_de_wm
+                 ;;
+            "3") check_base && install_bootloader
+                 ;;
+            "4") check_base && config_base_menu
+                 ;;
+            "5") check_base && install_cust_pkgs
+                 ;;
+            "6") check_base && security_menu
+                ;;
+            "7") check_base && {
+                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
+                    edit_configs
+                    }
+                ;;
+            "8") check_base && chroot_interactive
+                ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
 # Preparation
 prep_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 7
-        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 7 \
+        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 9 \
           "1" "$_VCKeymapTitle" \
           "2" "$_DevShowOpt" \
           "3" "$_PrepPartDisk" \
           "4" "$_PrepLUKS" \
           "5" "$_PrepLVM $_PrepLVM2" \
           "6" "$_PrepMntPart" \
-          "7" "$_Back" 2>${ANSWER}
+          "7" "$_PrepMirror|>" \
+          "8" "$_PrepPacKey" \
+          "9" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -81,6 +253,19 @@ prep_menu() {
             "5") lvm_menu
                  ;;
             "6") mount_partitions
+                 ;;
+            "7") configure_mirrorlist
+                 ;;
+            "8") clear
+                 (
+                    ctrlc(){
+                      return 0
+                    }
+                    trap ctrlc SIGINT
+                    trap ctrlc SIGTERM
+                    pacman-key --init;pacman-key --populate archlinux manjaro;pacman-key --refresh-keys;
+                    check_for_error 'refresh pacman-keys'
+                  )
                  ;;
             *) loopmenu=0
                 return 0

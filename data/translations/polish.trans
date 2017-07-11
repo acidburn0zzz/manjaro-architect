@@ -452,3 +452,11 @@ _bootloaderInfo="Refind może działać samodzielnie lub razem z innym bootloade
 # Systemd-boot
 _InstSystdBBody="Ta opcja zainstaluje systemd-boot i utworzy wpisy uruchamiające dla zainstalowanych jąder. Ten bootloader wymaga lokalizacji jąder na partycji UEFI. Można to osiągnąć montując partycję UEFI pod /boot."
 _SystdBReady="Systemd-boot został zainstalowany"
+
+#Meta menu
+_InstCrMenuTitle="Install core system"
+_InstDsMenuBody="This installs base manjaro system without graphical desktop environment. Steps 1-3 are needed for working system, the rest is optional."
+_InstDsMenuTitle="Install desktop system"
+_InstDsMenuBody="This installs full manjaro edition with graphical desktop environment. Steps 1-4 are needed for working system, the rest is optional."
+_InstCsMenuTitle="Install custom system"
+_InstCsMenuBody="This installs base manjaro system without graphical desktop environment. Steps 1-4 are needed for working system, the rest is optional."
