@@ -61,9 +61,9 @@ main_menu() {
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
           --menu "\n$_MMBody\n " 0 0 5 \
           "1" "$_PrepMenuTitle|>" \
-          "2" "$_InstCoreSysTitle|>" \
-          "3" "$_InstDeskSysTitle|>" \
-          "4" "$_InstCustSysTitle|>" \
+          "2" "$_InstCrMenuTitle|>" \
+          "3" "$_InstDsMenuTitle|>" \
+          "4" "$_InstCsMenuTitle|>" \
           "5" "$_Done" 2>${ANSWER}
         HIGHLIGHT=$(cat ${ANSWER})
 
