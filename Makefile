@@ -46,7 +46,8 @@ LAUNCHER = \
 	data/manjaro-architect.desktop
 
 DIALOGRC = \
-	data/dialogrc
+	data/dialogrc \
+	data/dialogrc_gui
 
 LIVE = \
 	data/ma-launcher.desktop
@@ -100,7 +101,7 @@ uninstall:
 	for f in ${LANG}; do rm -f $(DESTDIR)$(PREFIX)$(DATADIR)/translations/$$f; done
 	for f in ${ICONS}; do rm -f $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/$$f; done
 	for f in ${LAUNCHER}; do rm -f $(DESTDIR)$(PREFIX)/share/applications/$$f; done
-	for f in ${DIALOGRC}; do rm -f $(DESTDIR)$(PREFIX)$(DATADIR)/dialogrc; done
+	for f in ${DIALOGRC}; do rm -f $(DESTDIR)$(PREFIX)$(DATADIR)/$$f; done
 	for f in ${LIVE}; do rm -f $(DESTDIR)/etc/skel/.config/autostart/$$f; done
 
 install: install
