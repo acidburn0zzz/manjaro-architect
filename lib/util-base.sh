@@ -191,6 +191,7 @@ filter_packages() {
 
         # Remove packages that have been dropped from repos
         pacman -Ssq > /tmp/.available_packages
+        pacman -Sgq >> /tmp/.available_packages
         grep -f /tmp/.available_packages $pkgs_target > /tmp/.tmp
         mv /tmp/.tmp $pkgs_target
 }
@@ -244,7 +245,7 @@ install_base() {
                 DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoKernel\n " 0 0
             fi
         else
-            cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' >> /mnt/.base
+            cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' | tr '+' '\n' >> /mnt/.base
             echo " " >> /mnt/.base
             grep -f /tmp/.available_kernels /mnt/.base > /tmp/.chosen_kernels
             check_for_error "selected: $(cat ${PACKAGES})"
