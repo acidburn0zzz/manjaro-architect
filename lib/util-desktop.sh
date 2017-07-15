@@ -234,6 +234,206 @@ install_manjaro_de_wm() {
         #install_extra
     fi
 }
+install_desktop() {
+    if [[ -e /mnt/.base_installed ]]; then
+        DIALOG " $_InstBseTitle " --yesno "\n$_WarnInstBase\n " 0 0 && rm /mnt/.base_installed || return 0
+    fi
+    # Prep variables
+    setup_profiles
+    pkgs_src=$PROFILES/shared/Packages-Root
+    pkgs_target=/mnt/.base
+    BTRF_CHECK=$(echo "btrfs-progs" "" off)
+    F2FS_CHECK=$(echo "f2fs-tools" "" off)
+    mhwd-kernel -l | awk '/linux/ {print $2}' > /tmp/.available_kernels
+    kernels=$(cat /tmp/.available_kernels)
+
+    # User to select initsystem
+    DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
+      "1" "systemd" \
+      "2" "openrc" 2>${INIT}
+
+    if [[ $(cat ${INIT}) != "" ]]; then
+        if [[ $(cat ${INIT}) -eq 2 ]]; then
+            check_for_error "init openrc"
+            touch /mnt/.openrc
+        else
+            check_for_error "init systemd"
+            [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
+        fi
+    else
+        return 0
+    fi
+    # Create the base list of packages
+    echo "" > /mnt/.base
+
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        # Choose kernel and possibly base-devel
+        DIALOG " $_InstBseTitle " --checklist "\n$_InstStandBseBody$_UseSpaceBar\n " 0 0 13 \
+          "yaourt + base-devel" "-" off \
+          $(cat /tmp/.available_kernels | awk '$0=$0" - off"') 2>${PACKAGES} || { loopmenu=0; return 0; }
+        if [[ ! $(grep "linux" ${PACKAGES}) ]]; then
+            # Check if a kernel is already installed
+            ls ${MOUNTPOINT}/boot/*.img >/dev/null 2>&1
+            if [[ $? == 0 ]]; then
+                DIALOG " Check Kernel " --msgbox "\nlinux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2 | grep -v ucode.img | sort -u) detected \n " 0 0
+                check_for_error "linux-$(ls ${MOUNTPOINT}/boot/*.img | cut -d'-' -f2) already installed"
+                loopmenu=0
+            else
+                DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoKernel\n " 0 0
+            fi
+        else
+            cat ${PACKAGES} | sed 's/+ \|\"//g' | tr ' ' '\n' | tr '+' '\n' >> /mnt/.base
+            echo " " >> /mnt/.base
+            grep -f /tmp/.available_kernels /mnt/.base > /tmp/.chosen_kernels
+            check_for_error "selected: $(cat ${PACKAGES})"
+            loopmenu=0
+        fi
+    done
+
+    # Choose wanted kernel modules
+    DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
+      "KERNEL-headers" "-" off \
+      "KERNEL-acpi_call" "-" on \
+      "KERNEL-ndiswrapper" "-" on \
+      "KERNEL-broadcom-wl" "-" off \
+      "KERNEL-r8168" "-" off \
+      "KERNEL-rt3562sta" "-" off \
+      "KERNEL-tp_smapi" "-" off \
+      "KERNEL-vhba-module" "-" off \
+      "KERNEL-virtualbox-guest-modules" "-" off \
+      "KERNEL-virtualbox-host-modules" "-" off \
+      "KERNEL-spl" "-" off \
+      "KERNEL-zfs" "-" off 2>/tmp/.modules || return 0
+
+    if [[ $(cat /tmp/.modules) != "" ]]; then
+        check_for_error "modules: $(cat /tmp/.modules)"
+        for kernel in $(cat ${PACKAGES} | grep -vE '(yaourt|base-devel)'); do
+            cat /tmp/.modules | sed "s/KERNEL/\n$kernel/g" >> /mnt/.base
+        done
+        echo " " >> /mnt/.base
+    fi
+
+    choose_mjr_desk
+
+    filter_packages
+    # remove grub
+    sed -i '/grub/d' /mnt/.base
+    echo "nilfs-utils" >> /mnt/.base
+    check_for_error "packages to install: $(cat /mnt/.base | sort | tr '\n' ' ')"
+    clear
+    set -o pipefail
+    basestrap ${MOUNTPOINT} $(cat /mnt/.base) 2>$ERR |& tee /tmp/basestrap.log
+    local err=$?
+    set +o pipefail
+    check_for_error "install basepkgs" $err || {
+        DIALOG " $_InstBseTitle " --msgbox "\n$_InstFail\n " 0 0; HIGHLIGHT_SUB=2;
+        if [[ $err == 255 ]]; then
+            cat /tmp/basestrap.log
+            read -n1 -s # or ? exit $err
+        fi
+        return 1;
+    }
+
+    # copy keymap and consolefont settings to target
+    if [[ -e /mnt/.openrc ]]; then
+        echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
+        arch_chroot "rc-update add keymaps boot" 2>$ERR
+        check_for_error "configure keymaps" $?
+        echo -e "consolefont=\"$(ini linux.font)\"" > ${MOUNTPOINT}/etc/conf.d/consolefont
+        arch_chroot "rc-update add consolefont boot" 2>$ERR
+        check_for_error "configure consolefont" $?
+    else
+        echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
+        check_for_error "configure vconsole"
+    fi
+    
+    # If root is on btrfs volume, amend mkinitcpio.conf
+    if [[ -e /tmp/.btrfsroot ]]; then
+        BTRFS_ROOT=1
+        sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
+        check_for_error "root on btrfs volume. Amend mkinitcpio."
+    fi
+
+    # If root is on nilfs2 volume, amend mkinitcpio.conf
+    [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == nilfs2 ]] && sed -e '/^HOOKS=/s/\ fsck//g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf && \
+      check_for_error "root on nilfs2 volume. Amend mkinitcpio."
+
+    # add luks and lvm hooks as needed
+    ([[ $LVM -eq 1 ]] && [[ $LUKS -eq 0 ]]) && { sed -i 's/block filesystems/block lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm2 hook" $?; }
+    ([[ $LVM -eq 0 ]] && [[ $LUKS -eq 1 ]]) && { sed -i 's/block filesystems keyboard/block consolefont keymap keyboard encrypt filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add luks hook" $?; }
+    [[ $((LVM + LUKS)) -eq 2 ]] && { sed -i 's/block filesystems keyboard/block consolefont keymap keyboard encrypt lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm/luks hooks" $?; }
+
+    [[ $((LVM + LUKS + BTRFS_ROOT)) -gt 0 ]] && { arch_chroot "mkinitcpio -P" 2>$ERR; check_for_error "re-run mkinitcpio" $?; }
+
+    # If specified, copy over the pacman.conf file to the installation
+    if [[ $COPY_PACCONF -eq 1 ]]; then
+        cp -f /etc/pacman.conf ${MOUNTPOINT}/etc/pacman.conf
+        check_for_error "copy pacman.conf"
+    fi
+
+    # if branch was chosen, use that also in installed system. If not, use the system setting
+    [[ -z $(ini branch) ]] && ini branch $(ini system.branch)
+    sed -i "s/Branch =.*/Branch = $(ini branch)/;s/# //" ${MOUNTPOINT}/etc/pacman-mirrors.conf
+
+    touch /mnt/.base_installed
+    check_for_error "base installed succesfully."
+
+
+    ## Setup desktop
+    # copy the profile overlay to the new root
+        echo "Copying overlay files to the new root"
+        cp -r "$overlay"* ${MOUNTPOINT} 2>$ERR
+        check_for_error "copy overlay" "$?"
+
+        # Copy settings to root account
+        cp -ar $MOUNTPOINT/etc/skel/. $MOUNTPOINT/root/ 2>$ERR
+        check_for_error "copy root config" "$?"
+
+        # copy settings to already created users
+        if [[ -e "$(echo /mnt/home/*)" ]]; then
+            for home in $(echo $MOUNTPOINT/home/*); do
+                cp -ar $MOUNTPOINT/etc/skel/. $home/
+                user=$(echo $home | cut -d/ -f4)
+                arch_chroot "chown -R ${user}:${user} /home/${user}"
+            done
+        fi
+        # Enable services in the chosen profile
+        enable_services
+        install_graphics_menu
+        touch /mnt/.desktop_installed
+        # Stop for a moment so user can see if there were errors
+        echo ""
+        echo ""
+        echo ""
+        echo "press Enter to continue"
+        read
+}
+
+choose_mjr_desk() {
+    # Clear packages after installing base
+    echo "" > /tmp/.desktop
+
+    # DE/WM Menu
+    DIALOG " $_InstDETitle " --radiolist "\n$_InstManDEBody\n$(evaluate_profiles)\n\n$_UseSpaceBar\n " 0 0 12 \
+      $(echo $PROFILES/{manjaro,community}/* | xargs -n1 | cut -f7 -d'/' | grep -vE "netinstall|architect" | awk '$0=$0" - off"')  2> /tmp/.desktop
+
+    # If something has been selected, install
+    if [[ $(cat /tmp/.desktop) != "" ]]; then
+        [[ -e /mnt/.openrc ]] && evaluate_openrc
+        check_for_error "selected: [Manjaro-$(cat /tmp/.desktop)]"
+        clear
+        # Source the iso-profile
+        profile=$(echo $PROFILES/*/$(cat /tmp/.desktop)/profile.conf)
+        . $profile        
+        overlay=$(echo $PROFILES/*/$(cat /tmp/.desktop)/desktop-overlay/)
+        echo $displaymanager > /tmp/.display-manager
+
+        cat $(echo $PROFILES/*/$(cat /tmp/.desktop)/Packages-Desktop) > /mnt/.desktop
+
+        echo "$(pacman -Ssq) $(pacman -Sg)" | fzf -m -e --header="Choose any extra packages you would like to add. Search packages by typing their name. Press tab to select multiple packages and cproceed with Enter." --prompt="Package > " --reverse >> /mnt/.desktop
+    fi
+}
 
 set_lightdm_greeter() {
     local greeters=$(ls /mnt/usr/share/xgreeters/*greeter.desktop) name

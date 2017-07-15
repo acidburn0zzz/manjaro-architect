@@ -115,8 +115,15 @@ install_extra() {
 filter_packages() {
         DIALOG " $_PkgList " --infobox "\n$_PlsWaitBody\n " 0 0
         # Parse package list based on user input and remove parts that don't belong to pacman
-        cat "$pkgs_src" >> $pkgs_target 2>$ERR
-        check_for_error "$FUNCNAME" $?
+        # If desktop is selected, add those packages to packages to be installed.
+        if [[ -e /mnt/.desktop ]]; then
+            cat "$pkgs_src" /mnt/.desktop >> $pkgs_target 2>$ERR
+            check_for_error "$FUNCNAME" $?
+        else 
+            cat "$pkgs_src" >> $pkgs_target 2>$ERR
+            check_for_error "$FUNCNAME" $?  
+        fi
+        
         if [[ -e /mnt/.openrc ]]; then
             # Remove any packages tagged with >systemd and remove >openrc tags
             sed -i '/>systemd/d' $pkgs_target

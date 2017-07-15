@@ -10,6 +10,26 @@
 # as published by the Free Software Foundation. So feel free to copy, distribute,
 # or modify it as you wish.
 
+install_cust_pkgs() {
+    echo "" > ${PACKAGES}
+    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
+
+    clear
+    # If at least one package, install.
+    if [[ $(cat ${PACKAGES}) != "" ]]; then
+            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
+    fi
+}
+
+chroot_interactive() {
+
+DIALOG " $_EnterChroot " --infobox "$_ChrootReturn" 0 0 
+echo ""
+echo ""
+arch_chroot bash
+}
+
 main_menub() {
     declare -i loopmenu=1
     while ((loopmenu)); do
@@ -89,7 +109,7 @@ install_core_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 6
-        DIALOG " $_InstCrMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCrMenuBody\n " 0 0 8 \
+        DIALOG " $_InstCrMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstCrMenuBody\n " 0 0 8 \
           "1" "$_InstBse" \
           "2" "$_InstBootldr" \
           "3" "$_ConfBseMenuTitle" \
@@ -130,45 +150,31 @@ install_desktop_system_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 6
-        DIALOG " $_InstDsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstDsMenuBody\n " 0 0 9 \
-          "1" "$_InstBse" \
-          "2" "$_InstDEStable|>" \
-          "3" "$_InstBootldr" \
-          "4" "$_ConfBseMenuTitle" \
-          "5" "$_InstMulCust" \
-          "6" "$_SecMenuTitle|>" \
-          "7" "$_SeeConfOptTitle" \
-          "8" "Chroot into installation" \
-          "9" "$_Back" 2>${ANSWER}
+        DIALOG " $_InstDsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstDsMenuBody\n " 0 0 7 \
+          "1" "$_InstDEStable|>" \
+          "2" "$_InstBootldr" \
+          "3" "$_ConfBseMenuTitle" \
+          "4" "$_SecMenuTitle|>" \
+          "5" "$_SeeConfOptTitle" \
+          "6" "Chroot into installation" \
+          "7" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
-            "1") check_mount && install_base
+            "1") check_mount && install_desktop
                  ;;
-            "2") check_base && install_manjaro_de_wm_pkg
-                    local err=$?
-                    if [[ $err > 0 ]]; then
-                        DIALOG " $_InstBseTitle " --msgbox "\n$_InstFail\n " 0 0;
-                        if [[ $err == 255 ]]; then
-                            cat /tmp/basestrap.log
-                            read -n1 -s
-                        fi
-                    fi
+            "2") check_base && install_bootloader
                  ;;
-            "3") check_base && install_bootloader
+            "3") check_base && config_base_menu
                  ;;
-            "4") check_base && config_base_menu
-                 ;;
-            "5") install_cust_pkgs
-                 ;;
-            "6") check_base && security_menu
+            "4") check_base && security_menu
                 ;;
-            "7") check_base && {
+            "5") check_base && {
                     type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
                     edit_configs
                     }
                 ;;
-            "8") check_base && chroot_interactive
+            "6") check_base && chroot_interactive
                 ;;
             *) loopmenu=0
                 return 0
