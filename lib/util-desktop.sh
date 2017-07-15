@@ -195,7 +195,7 @@ install_manjaro_de_wm() {
         check_for_error "packages to install: $(grep -vf /mnt/.base /mnt/.desktop | sort | tr '\n' ' ')"
         clear
         set -o pipefail
-        basestrap ${MOUNTPOINT} $(grep -vf /mnt/.base /mnt/.desktop) 2>$ERR |& tee /tmp/basestrap.log
+        basestrap ${MOUNTPOINT} $(cat /mnt/.desktop) 2>$ERR |& tee /tmp/basestrap.log
         local err=$?
         set +o pipefail
         check_for_error "install desktop-pkgs" $err || return $err

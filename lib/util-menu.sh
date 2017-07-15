@@ -107,7 +107,7 @@ install_core_menu() {
                  ;;
             "3") check_base && config_base_menu
                  ;;
-            "4") check_base && install_cust_pkgs
+            "4") install_cust_pkgs
                  ;;
             "5") check_base && security_menu
                 ;;
@@ -159,7 +159,7 @@ install_desktop_system_menu() {
                  ;;
             "4") check_base && config_base_menu
                  ;;
-            "5") check_base && install_cust_pkgs
+            "5") install_cust_pkgs
                  ;;
             "6") check_base && security_menu
                 ;;
@@ -203,7 +203,7 @@ install_custom_menu() {
                  ;;
             "4") check_base && config_base_menu
                  ;;
-            "5") check_base && install_cust_pkgs
+            "5") install_cust_pkgs
                  ;;
             "6") check_base && security_menu
                 ;;

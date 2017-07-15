@@ -187,7 +187,7 @@ filter_packages() {
         # Remove empty lines
         sed -i '/^\s*$/d' $pkgs_target
         # remove zsh
-        sed -i '/^zsh$/d' $pkgs_target
+        #sed -i '/^zsh$/d' $pkgs_target
 
         # Remove packages that have been dropped from repos
         pacman -Ssq > /tmp/.available_packages
