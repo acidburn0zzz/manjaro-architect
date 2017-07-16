@@ -45,6 +45,18 @@ advanced_menu() {
     done
 }
 
+install_cust_pkgs() {
+    echo "" > ${PACKAGES}
+    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
+
+    clear
+    # If at least one package, install.
+    if [[ $(cat ${PACKAGES}) != "" ]]; then
+            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
+    fi
+}
+
 chroot_interactive() {
 
 DIALOG " $_EnterChroot " --infobox "$_ChrootReturn" 0 0 
@@ -558,18 +570,6 @@ install_acc_menu() {
     if [[ $(cat ${PACKAGES}) != "" ]]; then
         basestrap ${MOUNTPOINT} ${PACKAGES} 2>$ERR
         check_for_error "$FUNCNAME" $? || return $?
-    fi
-}
-
-install_cust_pkgs() {
-    echo "" > ${PACKAGES}
-    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
-
-    clear
-    # If at least one package, install.
-    if [[ $(cat ${PACKAGES}) != "" ]]; then
-            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
-            check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
     fi
 }
 

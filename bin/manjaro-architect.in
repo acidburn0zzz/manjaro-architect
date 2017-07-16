@@ -22,6 +22,7 @@ import ${LIBDIR}/util-base.sh
 import ${LIBDIR}/util-desktop.sh
 import ${LIBDIR}/util-disk.sh
 import ${LIBDIR}/util-menu.sh
+import ${LIBDIR}/util-advanced.sh
 import ${DATADIR}/translations/english.trans
 
 if [[ $TERM == "linux" ]] && [[ -e /usr/bin/maia-console ]]; then

@@ -10,26 +10,6 @@
 # as published by the Free Software Foundation. So feel free to copy, distribute,
 # or modify it as you wish.
 
-install_cust_pkgs() {
-    echo "" > ${PACKAGES}
-    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
-
-    clear
-    # If at least one package, install.
-    if [[ $(cat ${PACKAGES}) != "" ]]; then
-            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
-            check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
-    fi
-}
-
-chroot_interactive() {
-
-DIALOG " $_EnterChroot " --infobox "$_ChrootReturn" 0 0 
-echo ""
-echo ""
-arch_chroot bash
-}
-
 main_menub() {
     declare -i loopmenu=1
     while ((loopmenu)); do
