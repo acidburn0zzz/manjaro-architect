@@ -12,7 +12,7 @@
 
 setup_graphics_card() {
     DIALOG " $_GCDetBody " --radiolist "\n$_UseSpaceBar\n " 0 0 12 \
-      $(mhwd -l | awk '/^video-/{print $1}' | awk '$0=$0" - off"' | sort | uniq)  2>/tmp/.driver || return 0
+      $(mhwd -l | awk '/ video-/{print $1}' | awk '$0=$0" - off"' | sort | uniq)  2>/tmp/.driver || return 0
 
     if [[ $(cat /tmp/.driver) != "" ]]; then
         clear
@@ -51,11 +51,11 @@ setup_network_drivers() {
             arch_chroot "mhwd -a pci nonfree 0200" 2>$ERR
             check_for_error "$FUNCNAME nonfree" $?
             ;;
-        "3") if [[ $(mhwd -l | awk '/^network-/' | wc -l) -eq 0 ]]; then 
+        "3") if [[ $(mhwd -l | awk '/ network-/' | wc -l) -eq 0 ]]; then 
                 DIALOG " $_InstNWDrv " --msgbox "\n$_InfoNWKernel\n " 0 0
             else
                 DIALOG " $_InstGrDrv " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
-                  $(mhwd -l | awk '/^network-/{print $1}' |awk '$0=$0" - off"')  2> /tmp/.network_driver || return 0
+                  $(mhwd -l | awk '/ network-/{print $1}' |awk '$0=$0" - off"')  2> /tmp/.network_driver || return 0
 
                 if [[ $(cat /tmp/.driver) != "" ]]; then
                     clear

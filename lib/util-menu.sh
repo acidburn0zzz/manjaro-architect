@@ -10,6 +10,8 @@
 # as published by the Free Software Foundation. So feel free to copy, distribute,
 # or modify it as you wish.
 
+import /usr/lib/manjaro-architect/util-desktop.sh 
+
 main_menub() {
     declare -i loopmenu=1
     while ((loopmenu)); do
