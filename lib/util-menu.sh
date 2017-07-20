@@ -61,7 +61,7 @@ main_menu() {
         fi
 
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
-          --menu "\n$_MMBody\n " 0 0 5 \
+          --menu "\n$_MMNewBody\n " 0 0 5 \
           "1" "$_PrepMenuTitle|>" \
           "2" "$_InstDsMenuTitle|>" \
           "3" "$_InstCrMenuTitle|>" \
