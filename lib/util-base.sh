@@ -260,7 +260,7 @@ install_base() {
 
     # Choose wanted kernel modules
     DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
-      "KERNEL-headers" "-" off \
+      "KERNEL-headers" "-" on \
       "KERNEL-acpi_call" "-" on \
       "KERNEL-ndiswrapper" "-" on \
       "KERNEL-broadcom-wl" "-" off \
