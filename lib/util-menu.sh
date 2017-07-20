@@ -63,8 +63,8 @@ main_menu() {
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
           --menu "\n$_MMBody\n " 0 0 5 \
           "1" "$_PrepMenuTitle|>" \
-          "2" "$_InstCrMenuTitle|>" \
-          "3" "$_InstDsMenuTitle|>" \
+          "2" "$_InstDsMenuTitle|>" \
+          "3" "$_InstCrMenuTitle|>" \
           "4" "$_InstCsMenuTitle|>" \
           "5" "$_Done" 2>${ANSWER}
         HIGHLIGHT=$(cat ${ANSWER})
@@ -72,9 +72,9 @@ main_menu() {
         case $(cat ${ANSWER}) in
             "1") prep_menu
                 ;;
-            "2") check_mount && install_core_menu
+            "2") check_mount && install_desktop_system_menu
                 ;;
-            "3") check_mount && install_desktop_system_menu
+            "3") check_mount && install_core_menu
                 ;;
             "4") check_mount && install_custom_menu
                 ;;
@@ -107,7 +107,7 @@ install_core_menu() {
                  ;;
             "2") check_base && install_bootloader
                  ;;
-            "3") check_base && config_base_menu
+            "3") check_base && config_cli_base_menu
                  ;;
             "4") install_cust_pkgs
                  ;;
@@ -343,6 +343,42 @@ config_base_menu() {
             "6") set_root_password
                 ;;
             "7") create_new_user
+                ;;
+            *) loopmenu=0
+                return 0
+                ;;
+        esac
+    done
+}
+
+# Base Configuration
+config_cli_base_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 8
+        DIALOG " $_ConfBseMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_ConfBseBody\n " 0 0 7 \
+          "1" "$_ConfBseFstab" \
+          "2" "$_ConfBseHost" \
+          "3" "$_ConfBseSysLoc" \
+          "4" "$_ConfBseTimeHC" \
+          "5" "$_ConfUsrRoot" \
+          "6" "$_ConfUsrNew" \
+          "7" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") generate_fstab
+                ;;
+            "2") set_hostname
+                ;;
+            "3") set_locale
+                ;;
+            "4") set_timezone && set_hw_clock
+                ;;
+            "5") set_root_password
+                ;;
+            "6") create_new_user
                 ;;
             *) loopmenu=0
                 return 0
