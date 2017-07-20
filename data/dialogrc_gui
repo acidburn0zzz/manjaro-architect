@@ -11,7 +11,7 @@ button_label_inactive_color = dialog_color
 button_active_color = (white,cyan,on)
 button_key_active_color = button_active_color
 button_label_active_color = (black,cyan,on)
-tag_key_selected_color = (white,cyan,on)
+tag_key_selected_color = (white,black,on)
 item_selected_color = tag_key_selected_color
 
 form_text_color = (black,green,on)
