@@ -37,7 +37,7 @@ _SecMenuTitle="Sikkerhed og Tilpasning"
 _SecJournTitle="Begræns størrelse af systemlog"
 _SecCoreTitle="Deaktiver coredumplog"
 _SecKernTitle="Begræns adgangen til kernelog"
-_SecKernBody="Kernens log filer kan indeholde oplysninger som en angriber an bruge til at identificere og udnytte sårbarheder, inklusive data i RAM.\n\n Hvis 'systemd-journald's log funktioner ikke er allerede er deaktiveret, kan der oprettes en regel '/etc/sysctl.d/' som forhindrer adgang til disse logfiler for brugere uden 'root' rettigheder (f.x. via sudo)."
+_SecKernBody="Kernens log filer kan indeholde oplysninger som en angriber an bruge til at identificere og udnytte sårbarheder, inklusive data i RAM.\n\nHvis 'systemd-journald's log funktioner ikke er allerede er deaktiveret, kan der oprettes en regel '/etc/sysctl.d/' som forhindrer adgang til disse logfiler for brugere uden 'root' rettigheder (f.x. via sudo)."
 _Edit="Ret opsætning"
 _Disable="Deaktiver"
 _SecMenuBody="Her findes nogle justeringer du kan lave for at forbedre systemets sikkerhed og ydelse .\n\nVed at vælge en mulighed vises oplysninger om den."
@@ -47,13 +47,13 @@ _SecCoreBody="Et coredump er en registrering af computerens RAM når en proces b
 # btrfs
 _btrfsSVTitle="btrfs Partionering"
 _btrfsSVBody="Oprette btrfs partioner?\n\nEn fundamental partition skal oprettes og monteres. Yderligere partitioner oprettes efterfølgende på denne.\n\nHvis flere partitioner er unødvendige kan du fortsætte direkte til monteringsvalg."
-_btrfsMSubBody1="Indtast navn til den fundamentale partition (e.g. ROOT). Efterfølgende angives monteringsvalg. Efter montering, vil alle andre partitioner blive oprettet på"
+_btrfsMSubBody1="Indtast navn til partition der skal være udgangspunkt (e.g. ROOT). Efterfølgende angives monteringsvalg. Efter montering, vil alle andre partitioner blive oprettet på"
 _btrfsMSubBody2="og vil være i forhold til denne."
-_btrfsSVErrBody="Blanke tegn eller mellemrum må ikke anvendes.\n Prøv venligst igen."
+_btrfsSVErrBody="Blanke tegn eller mellemrum må ikke anvendes.\nPrøv venligst igen."
 _btrfsSVBody1="Indtast navn på partition"
 _btrfsSVBody2="der oprettes på"
 _btrfsSVBody3="Denne process gentages indtil et jokertegn (*) angives som partitionsnavn.\n\nOprettede partitioner:"
-_btrfsMntBody="Brug [Mellemrum] for at ændre monteringsvalg. Gennemse dem omhyggeligt. Vælg ikke flere versioner af det samme valg."
+_btrfsMntBody="Brug [MELLEMRUM] for at ændre monteringsvalg. Gennemse dem omhyggeligt. Vælg ikke flere versioner af det samme valg."
 _btrfsMntConfBody="Bekræft dine valg:"
 
 # Autopartition
@@ -143,7 +143,7 @@ _UpdDb="Opdaterer database ..."
 # Installer Mirrorlist
 _MirrorlistTitle="Server liste"
 _MirrorBranch="Vælg Manjaro gren (i tvivl så vælg 'stable')"
-_MirrorlistBody="Serverlisten indeholder servere som pacman bruger for at hente og installere Manjaro pakker. For at finde de hurtigste servere; FØRST dannes en serverliste efter land DEREFTER bruges RankMirrors. Omvendt vil det tage LANG TID.\n\nPacman's opsætnings kan redigeres for aktivere multilib andre repos.\n\nBEMÆRK: Tekst editor lukkes med 'F2' eller '[CTRL] + [x]'. Hvis denne er ændret tast [y/j] for at gemme eller [n] for at smide ændringer væk."
+_MirrorlistBody="Serverlisten indeholder servere som pacman bruger for at hente og installere Manjaro pakker. For at finde de hurtigste servere; FØRST dannes en serverliste efter land DEREFTER bruges RankMirrors. Omvendt vil det tage LANG TID.\n\nPacman's opsætnings kan redigeres for aktivere multilib andre repos.\n\nBEMÆRK: Tekst editor lukkes med 'F2' eller '[CTRL] + [X]'. Hvis denne er ændret tast [Y/J] for at gemme eller [N] for at smide ændringer væk."
 _RankMirrors="Udpeg de ønskede server med [MELLEMRUM] eller [ENTER] og bekræft valget med [OK] knappen nederst."
 _MirrorbyCountry="Opret Server liste efter Land"
 _MirrorEdit="Rediger serverliste"
@@ -301,7 +301,7 @@ _NvidiaConfBody="En grundlæggende NVIDIA konfiguration er oprettet. Kontroller 
 # Graphics Card Detection
 _GCDetTitle="Fundet"
 _GCDetBody="Er dit grafik-kort eller virtualiserings software"
-_GCDetBody2="-Vælg 'Ja' for at anvende kortets OPEN-SOURCE driver.\n\n-Vælg 'Nej' for at gå til grafik-kort menu som indeholder NVIDIA's egne drivere."
+_GCDetBody2="-Vælg 'JA' for at anvende kortets OPEN-SOURCE driver.\n\n-Vælg 'NEJ' for at gå til grafik-kort menu som indeholder NVIDIA's egne drivere."
 
 #  Install DE Info
 _DEInfoBody="Flere miljøer kan installeres.\n\nGnome og LXDE installerer display manager.\n\nCinnamon, Gnome og KDE installerer Netværks håndtering."
@@ -333,7 +333,7 @@ _InstNMErrBody="Netværk forbindelseshåndtering er installeret og aktiveret."
 
 # Welcome
 _WelTitle="Velkommen til"
-_WelBody="Dette installationsprogram vil hente de nyeste pakker fra Manjaro servere. Der foretages kun den allermest nødvendige opsætning.\n\nMENU MULIGHEDER: Du vælger muligheder ved tryk på et tal eller ved at bruge [PILTASTER]. [ENTER] vil udføre valget. Skift mellem knapperne ved at bruge [Tab] eller med venstre/højre pil før tryk på [enter] som så udfører valget. Lange lister kan navigeres ved at brug [pg up] og [pg down] taster, og/eller ved at trykke på en tast svarende til det første bogstav i det ønskede valg.\n\nOPSÆTNING & PAKKE MULIGHEDER: Standard pakker i check-lister vil være forvalgt. Brug [MELLEMRUM] for at fra/vælge."
+_WelBody="Dette installationsprogram vil hente de nyeste pakker fra Manjaro servere. Der foretages kun den allermest nødvendige opsætning.\n\nMENU MULIGHEDER:\nDu vælger muligheder ved tryk på et tal eller ved at bruge [PILTASTER]. [ENTER] vil udføre valget. Skift mellem knapperne ved at bruge [TAB] eller med [PILTASTER]. [ENTER] udfører valget. Lange lister kan navigeres ved at brug [PageUp] og [PageDown] taster, og/eller ved at trykke på en tast svarende til det første bogstav i det ønskede valg.\n\nOPSÆTNING & PAKKE MULIGHEDER:\nStandard pakker i check-lister vil være forvalgt. Brug [MELLEMRUM] for at til/fravælge pakker."
 
 # Preparation Menu
 _PrepMenuTitle="Forbered Installation"
