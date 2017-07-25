@@ -307,6 +307,7 @@ _DEInfoBody="Vários ambientes podem ser instalados.\n\nGnome e LXDE vem com um 
 
 # Menu de instalação dos Ambientes de Desktop
 _InstDETitle="Instalar os Ambientes de Desktop"
+_DesktopInstalled="Um Desktop do Manjaro já foi instalado nesta partição!\nInstalar outro resultará em conflitos de pacotes e outros problemas.\nÉ recomendado que você formate a partição e comece uma instalação do zero.\n\nIgnorar e Continuar de qualquer forma?"
 _InstManDEBody="Por favor, escolha um Ambiente de Desktop do Manjaro.\n\nNote que os seguintes estão disponíveis apenas para base do systemd:"
 _ErrInit="Iniciador do sistema errado"
 _WarnInit="está disponível atualmente apenas para o systemd.\nPor favor adapte sua seleção:"
