@@ -450,7 +450,7 @@ _SystdBReady="Systemd-boot wurde installiert"
 
 #Meta menu
 _InstCrMenuTitle="CLI System installieren"
-_InstDsMenuBody="Dies installiert ein Manjaro-Basissystem ohne grafische Oberfläche. Schritte 1-3 sind für ein funktionierendes System erforderlich, der Rest optional."
+_InstCrMenuBody="Dies installiert ein Manjaro-Basissystem ohne grafische Oberfläche. Schritte 1-3 sind für ein funktionierendes System erforderlich, der Rest optional."
 _InstDsMenuTitle="Desktop-System installieren"
 _InstDsMenuBody="Dies installiert eine vollständige Manjaro Edition mit grafischer Oberfläche. Schritte 1-4 
 This installs full manjaro edition with graphical desktop environment. sind für ein funktionierendes System erforderlich, der Rest optional."

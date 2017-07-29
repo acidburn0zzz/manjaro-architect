@@ -457,7 +457,7 @@ _SystdBReady="Systemd-boot was installed"
 
 #Meta menu
 _InstCrMenuTitle="Instalar sistema CLI"
-_InstDsMenuBody="Este instala a base do sistema do Manjaro sem ambiente de gráfico. Passos 1-3 são necessários para o funcionamento do sistema, o resto é opcional."
+_InstCrMenuBody="Este instala a base do sistema do Manjaro sem ambiente de gráfico. Passos 1-3 são necessários para o funcionamento do sistema, o resto é opcional."
 _InstDsMenuTitle="Instalar sistema do desktop"
 _InstDsMenuBody="Este instala a edição completa do Manjaro com Ambiente de Desktop. Passos 1-4 são necessários para o funcionamento do sistema, o resto é opcional."
 _InstCsMenuTitle="Instalar sistema customizado"

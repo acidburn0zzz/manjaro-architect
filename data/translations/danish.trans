@@ -457,7 +457,7 @@ _SystdBReady="Systemd-boot er installeret uden problemer." er nødvendig for det
 
 #Meta menu
 _InstCrMenuTitle="CLI Installation"
-_InstDsMenuBody="Dette installerer at Manjaro Base system uden grafisk skrivebord. Trin 1-3 er nødvendig for dette system, resten er valgfrit."
+_InstCrMenuBody="Dette installerer at Manjaro Base system uden grafisk skrivebord. Trin 1-3 er nødvendig for dette system, resten er valgfrit."
 _InstDsMenuTitle="Desktop Installation"
 _InstDsMenuBody="Dette installerer at fuldt Manjaro Base med grafisk skrivebord. Trin 1-4  er nødvendig for dette system, resten er valgfrit."
 _InstCsMenuTitle="Tilpasset Installation"

@@ -455,7 +455,7 @@ _SystdBReady="Systemd-boot is geïnstalleerd"
 
 #Meta menu
 _InstCrMenuTitle="Installeer basis systeem"
-_InstDsMenuBody="Dit installeert manjaro basis systeem zonder desktopomgeving. Stappen 1-3 zijn nodig om een werkend systeem te hebben, de rest is optioneel."
+_InstCrMenuBody="Dit installeert manjaro basis systeem zonder desktopomgeving. Stappen 1-3 zijn nodig om een werkend systeem te hebben, de rest is optioneel."
 _InstDsMenuTitle="Installeer desktopomgeving"
 _InstDsMenuBody="Dit gaat een volledige manjaro desktopomgeving installeren. Stappen 1-4 zijn nodig om een werkend systeem te hebben, de rest is optioneel."
 _InstCsMenuTitle="Installeer zelf een systeem"

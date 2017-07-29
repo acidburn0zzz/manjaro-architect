@@ -455,7 +455,7 @@ _SystdBReady="Systemd-boot ha sido instalado"
 
 #Meta menu
 _InstCrMenuTitle="Instalar sistema CLI"
-_InstDsMenuBody="Esto instala el sistema base de manjaro sin entorno de escritorio gráfico. Los pasos 1-3 son necesarios para sistemas funcionales, el resto es opcional."
+_InstCrMenuBody="Esto instala el sistema base de manjaro sin entorno de escritorio gráfico. Los pasos 1-3 son necesarios para sistemas funcionales, el resto es opcional."
 _InstDsMenuTitle="Instalar sistema de escritorio"
 _InstDsMenuBody="Esto instala el sistema base de manjaro sin entorno de escritorio gráfico. Los pasos 1-4 son necesarios para sistemas funcionales, el resto es opcional."
 _InstCsMenuTitle="Instalar sistema personalizado"
