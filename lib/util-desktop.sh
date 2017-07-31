@@ -247,22 +247,23 @@ install_desktop() {
     mhwd-kernel -l | awk '/linux/ {print $2}' > /tmp/.available_kernels
     kernels=$(cat /tmp/.available_kernels)
 
-    # User to select initsystem
-    DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
-      "1" "systemd" \
-      "2" "openrc" 2>${INIT}
+    # # User to select initsystem
+    # DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
+    #   "1" "systemd" \
+    #   "2" "openrc" 2>${INIT}
 
-    if [[ $(cat ${INIT}) != "" ]]; then
-        if [[ $(cat ${INIT}) -eq 2 ]]; then
-            check_for_error "init openrc"
-            touch /mnt/.openrc
-        else
-            check_for_error "init systemd"
-            [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
-        fi
-    else
-        return 0
-    fi
+    # if [[ $(cat ${INIT}) != "" ]]; then
+    #     if [[ $(cat ${INIT}) -eq 2 ]]; then
+    #         check_for_error "init openrc"
+    #         touch /mnt/.openrc
+    #     else
+    #         check_for_error "init systemd"
+    #         [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
+    #     fi
+    # else
+    #     return 0
+    # fi
+    
     # Create the base list of packages
     echo "" > /mnt/.base
 
@@ -293,7 +294,7 @@ install_desktop() {
 
     # Choose wanted kernel modules
     DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
-      "KERNEL-headers" "-" off \
+      "KERNEL-headers" "-" on \
       "KERNEL-acpi_call" "-" on \
       "KERNEL-ndiswrapper" "-" on \
       "KERNEL-broadcom-wl" "-" off \
