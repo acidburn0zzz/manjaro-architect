@@ -253,7 +253,7 @@ select_filesystem() {
         "btrfs") FILESYSTEM="mkfs.btrfs -f"
             CHK_NUM=16
             fs_opts="autodefrag compress=zlib compress=lzo compress=no compress-force=zlib compress-force=lzo discard \
-            noacl noatime nodatasum nospace_cache recovery skip_balance space_cache ssd ssd_spread commit=120"
+            noacl noatime nodatasum nospace_cache recovery skip_balance space_cache nossd ssd ssd_spread commit=120"
             modprobe btrfs
             ;;
         "ext2") FILESYSTEM="mkfs.ext2 -q"
@@ -321,15 +321,14 @@ mount_opts() {
     if [[ "$(cat /sys/block/${format_device}/queue/rotational)" == 1 ]]; then
         sed -i 's/autodefrag - off/autodefrag - on/' /tmp/.fs_options
         sed -i 's/compress=zlip - off/compress=zlip - on/' /tmp/.fs_options
-        sed -i 's/noatime - off/noatome - on/' /tmp/.fs_options
         else
-        sed -i 's/ssd - off/ssd - on/' /tmp/.fs_options
-        sed -i 's/noatime - off/noatime - on/' /tmp/.fs_options
         sed -i 's/compress=lzo - off/compress=lzo - on/' /tmp/.fs_options
         sed -i 's/space_cache - off/space_cache - on/' /tmp/.fs_options
         sed -i 's/commit=120 - off/commit=120 - on/' /tmp/.fs_options
     fi
-
+        sed -i 's/nossd - off/nossd - on/' /tmp/.fs_options
+        sed -i 's/noatime - off/noatime - on/' /tmp/.fs_options
+        
     FS_OPTS=$(cat /tmp/.fs_options)
 
     DIALOG " $(echo $FILESYSTEM | sed "s/.*\.//g;s/-.*//g") " --checklist "\n$_btrfsMntBody\n " 0 0 \
@@ -930,8 +929,8 @@ mount_partitions() {
             fi
 
             DIALOG " $_PrepMntPart " --radiolist "\n$_MntUefiBody\n "  0 0 2 \
-            "/boot" "" on \
-            "/boot/efi" "" off 2>${ANSWER}
+            "/boot/efi" "" on \
+            "/boot" "" off 2>${ANSWER}
 
             if [[ $(cat ${ANSWER}) != "" ]]; then
                 UEFI_MOUNT=$(cat ${ANSWER})
