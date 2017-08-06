@@ -239,6 +239,7 @@ install_desktop() {
         DIALOG " $_InstBseTitle " --yesno "\n$_WarnInstBase\n " 0 0 && rm /mnt/.base_installed || return 0
     fi
     # Prep variables
+    touch /tmp/.git_profiles
     setup_profiles
     pkgs_src=$PROFILES/shared/Packages-Root
     pkgs_target=/mnt/.base
