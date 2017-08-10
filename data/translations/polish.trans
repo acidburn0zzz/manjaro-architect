@@ -306,7 +306,7 @@ _DEInfoBody="Można zainstalować wiele środowisk.\n\nGnome i LXDE są wyposaż
 # Install DE Menu
 _InstDETitle="Zainstaluj środowisko pulpitu"
 _DesktopInstalled="Manjaro zostało już zainstalowane na tej partycji!\nKolejna instalacja w tym samym miejscu, może skutkować konfliktem pakietów i innymi problemami.\nZaleca się formatowanie partycji o rozpoczęcie świeżej instalacji.\n\nZignorować i kontynuować mimo to?"
-_InstManDEBody="Należy pamiętać, że następujące są obecnie dostępne tylko dla bazy systemd:"
+_InstManDEBody="Należy pamiętać"
 _ErrInit="Niewłaściwy system init"
 _WarnInit="jest obecnie dostępny tylko dla systemd.\nProszę dostosować wybór:"
 _DiffPro="Wybierz inny profil"

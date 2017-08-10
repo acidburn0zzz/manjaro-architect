@@ -305,7 +305,7 @@ _DEInfoBody="Mehrere Umgebungen können installiert werden.\n\nGnome und LXDE ko
 
 # Install DE Menu
 _InstDETitle="Installiere Desktop Environments"
-_InstManDEBody="Wähle eine Manjaro Umgebung.\n\nACHTUNG! Folgende Profile sind derzeit nur mit Systemd kombinierbar:"
+_InstManDEBody="Wähle eine Manjaro Umgebung."
 _ErrInit="Falsches Initsystem"
 _WarnInit="ist nur für Systemd vefügbar\nAuswahl anpassen:"
 _DiffPro="Anderes Profil wählen"

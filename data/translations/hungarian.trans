@@ -303,7 +303,7 @@ _DEInfoBody="Több asztali környezet is telepíthető.\n\nA Gnome és az LXDE b
 
 # Asztali környezetek telepítése menü
 _InstDETitle="Asztali környezetek telepítése"
-_InstManDEBody="Válassz egy asztali környezetet.\n\nA következők csak 'systemd' init rendszerrel elérhetőek:"
+_InstManDEBody="Válassz egy asztali környezetet."
 _ErrInit="Nem megfelelő init rendszer!"
 _WarnInit="jelenleg csak 'systemd'-vel érhető el\nKérlek módosítsd a választásod:"
 _DiffPro="Válassz egy másik profilt"

@@ -308,7 +308,7 @@ _DEInfoBody="Flere miljøer kan installeres.\n\nGnome og LXDE installerer displa
 
 # Install DE Menu
 _InstDETitle="Installer Skrivebords Miljø(er)"
-_InstManDEBody="Vælg et Manjaro System.\n\nBemærk at følgende system kun er tilgængelig for systemd baserede installationer:"
+_InstManDEBody="Vælg et Manjaro System."
 _ErrInit="Forkert init system"
 _WarnInit="er kun tilgængelig for systemd.\nVenligst tilpas dit valg:"
 _DiffPro="Vælg en anden profile"

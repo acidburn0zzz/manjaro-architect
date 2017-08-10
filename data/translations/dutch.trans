@@ -306,7 +306,7 @@ _DEInfoBody="meerdere Desktop Suites kunnen worden geïnstalleerd.\n\nGnome en L
 
 # Installeer DE Menu
 _InstDETitle="Installeer Desktop Suites"
-_InstManDEBody="Kies een Manjaro Omgeving.\n\nNotie, volgende omgevingen zijn enkel beschikbaar op systemd basis:"
+_InstManDEBody="Kies een Manjaro Omgeving."
 _ErrInit="Verkeerde init systeem"
 _WarnInit="is momenteel enkel beschikbaar voor systemd\nPas uw keuze aan:"
 _DiffPro="Selecteer een ander profiel"

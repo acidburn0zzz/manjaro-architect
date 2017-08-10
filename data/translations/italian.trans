@@ -307,7 +307,7 @@ _DEInfoBody="Possono essere installati più ambienti.\n\nGnome e LXDE includono 
 
 # Install DE Menu
 _InstDETitle="Installazione Ambiente Desktop"
-_InstManDEBody="Scegliere un'ambiente Manjaro.\n\nNota che i seguenti sono disponibili solo per systemd:"
+_InstManDEBody="Scegliere un'ambiente Manjaro."
 _ErrInit="Init system sbagliato" 
 _WarnInit="disponibile solo per systemd\nPrego correggere selezione:" 
 _DiffPro="Seleziona un profilo differente" 
