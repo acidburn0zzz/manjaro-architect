@@ -355,6 +355,10 @@ install_desktop() {
         BTRFS_ROOT=1
         sed -e '/^HOOKS=/s/\ fsck//g' -e '/^MODULES=/s/"$/ btrfs"/g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf
         check_for_error "root on btrfs volume. Amend mkinitcpio."
+        # Adjust tlp settings to avoid filesystem corruption
+        if [[ -e /mnt/etc/default/tlp ]]; then
+            sed -i 's/SATA_LINKPWR_ON_BAT.*/SATA_LINKPWR_ON_BAT=max_performance/' /mnt/etc/default/tlp
+        fi
     fi
 
     # If root is on nilfs2 volume, amend mkinitcpio.conf
