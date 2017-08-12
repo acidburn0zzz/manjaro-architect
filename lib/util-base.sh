@@ -399,10 +399,10 @@ install_grub_uefi() {
     root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
     ## install refind 
     if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
-        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro_grub --recheck --removable" 2>$ERR
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro --recheck --removable" 2>$ERR
         check_for_error "grub-install --target=x86_64-efi" $?
     else
-        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro_grub --recheck" 2>$ERR
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro --recheck" 2>$ERR
         check_for_error "grub-install --target=x86_64-efi" $?
     fi
     # If encryption used amend grub
@@ -418,7 +418,7 @@ install_grub_uefi() {
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_SetBootDefBody ${UEFI_MOUNT}/EFI/boot $_SetBootDefBody2\n " 0 0
     if [[ $? -eq 0 ]]; then
         arch_chroot "mkdir ${UEFI_MOUNT}/EFI/boot" 2>$ERR
-        arch_chroot "cp -r ${UEFI_MOUNT}/EFI/manjaro_grub/grubx64.efi ${UEFI_MOUNT}/EFI/boot/bootx64.efi" 2>$ERR
+        arch_chroot "cp -r ${UEFI_MOUNT}/EFI/manjaro/grubx64.efi ${UEFI_MOUNT}/EFI/boot/bootx64.efi" 2>$ERR
         check_for_error "Install GRUB" $?
         DIALOG " $_InstUefiBtTitle " --infobox "\nGrub $_SetDefDoneBody\n " 0 0
         sleep 2
