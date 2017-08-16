@@ -390,10 +390,10 @@ greeting() {
 
 # Originally adapted from AIS. Added option to allow users to edit the mirrorlist.
 configure_mirrorlist() {
-    HIGHLIGHT_SUB=1
+    ssub_item=1
     declare -i loopmenu=1
     while ((loopmenu)); do
-        DIALOG " $_MirrorlistTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MirrorlistBody\n " 0 0 4 \
+        DIALOG " $_MirrorlistTitle " --default-item $ssub_item --menu "\n$_MirrorlistBody\n " 0 0 4 \
           "1" "$_MirrorPacman" \
           "2" "$_MirrorConfig" \
           "3" "$_MirrorRankTitle" \
@@ -405,18 +405,17 @@ configure_mirrorlist() {
                 check_for_error "edit pacman.conf $COPY_PACCONF"
                 DIALOG "" --infobox "\n$_UpdDb\n " 0 0
                 pacman -Syy
-                HIGHLIGHT_SUB=2
+                ssub_item=2
                 ;;
             "2") nano /etc/pacman-mirrors.conf
                 check_for_error "edit pacman-mirrors.conf"
-                HIGHLIGHT_SUB=3
+                ssub_item=3
                 ;;
             "3") rank_mirrors
-                HIGHLIGHT_SUB=4
+                ssub_item=4
                 ;;
 
-            *) HIGHLIGHT_SUB=1
-                loopmeu=0
+            *)  loopmeu=0
                 return 0
                 ;;
         esac
