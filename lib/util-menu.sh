@@ -90,7 +90,7 @@ install_core_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 6
+        submenu 8
         DIALOG " $_InstCrMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstCrMenuBody\n " 0 0 8 \
           "1" "$_InstBse" \
           "2" "$_InstBootldr" \
@@ -131,7 +131,7 @@ install_desktop_system_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 6
+        submenu 7
         DIALOG " $_InstDsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstDsMenuBody\n " 0 0 7 \
           "1" "$_InstDEStable|>" \
           "2" "$_InstBootldr" \
@@ -169,7 +169,7 @@ install_custom_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 6
+        submenu 9
         DIALOG " $_InstCsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCsMenuBody\n " 0 0 9 \
           "1" "$_InstBse" \
           "2" "$_InstDE|>" \
@@ -214,7 +214,7 @@ prep_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 7
+        submenu 9
         DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 9 \
           "1" "$_VCKeymapTitle" \
           "2" "$_DevShowOpt" \
@@ -356,7 +356,7 @@ config_cli_base_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 8
+        submenu 7
         DIALOG " $_ConfBseMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_ConfBseBody\n " 0 0 7 \
           "1" "$_ConfBseFstab" \
           "2" "$_ConfBseHost" \
