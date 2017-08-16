@@ -174,8 +174,8 @@ install_custom_menu() {
           "1" "$_InstBse" \
           "2" "$_InstDE|>" \
           "3" "$_InstBootldr" \
-          "5" "$_ConfBseMenuTitle" \
-          "4" "$_InstMulCust" \
+          "4" "$_ConfBseMenuTitle" \
+          "5" "$_InstMulCust" \
           "6" "$_SecMenuTitle|>" \
           "7" "$_SeeConfOptTitle" \
           "8" "Chroot into installation" \
