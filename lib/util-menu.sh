@@ -222,7 +222,7 @@ system_rescue_menu() {
           "2" "$_InstBootldr|>" \
           "3" "$_ConfBseMenuTitle" \
           "4" "$_InstMulCust" \
-          "5" "$_RmPkgs|>" \
+          "5" "$_RmPkgs" \
           "6" "$_SeeConfOptTitle" \
           "7" "$_ChrootTitle" \
           "8" "$_Back" 2>${ANSWER}
