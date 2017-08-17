@@ -358,11 +358,10 @@ install_base_menu() {
 
 # Base Configuration
 config_base_menu() {
-    local PARENT="$FUNCNAME"
+    ssub_item=1
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 8
-        DIALOG " $_ConfBseMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_ConfBseBody\n " 0 0 8 \
+        DIALOG " $_ConfBseMenuTitle " --default-item $ssub_item --menu "\n$_ConfBseBody\n " 0 0 8 \
           "1" "$_ConfBseFstab" \
           "2" "$_ConfBseHost" \
           "3" "$_ConfBseSysLoc" \
@@ -375,18 +374,25 @@ config_base_menu() {
 
         case $(cat ${ANSWER}) in
             "1") generate_fstab
+                ssub_item=2
                 ;;
             "2") set_hostname
+                ssub_item=3
                 ;;
             "3") set_locale
+                ssub_item=4
                 ;;
             "4") set_xkbmap
+                ssub_item=5
                 ;;
             "5") set_timezone && set_hw_clock
+                ssub_item=6
                 ;;
             "6") set_root_password
+                ssub_item=7
                 ;;
             "7") create_new_user
+                ssub_item=8
                 ;;
             *) loopmenu=0
                 return 0
