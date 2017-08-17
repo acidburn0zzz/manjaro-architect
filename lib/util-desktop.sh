@@ -295,9 +295,9 @@ install_desktop() {
 
     # Choose wanted kernel modules
     DIALOG " $_ChsAddPkgs " --checklist "\n$_UseSpaceBar\n " 0 0 12 \
-      "KERNEL-headers" "-" on \
-      "KERNEL-acpi_call" "-" on \
-      "KERNEL-ndiswrapper" "-" on \
+      "KERNEL-headers" "-" off \
+      "KERNEL-acpi_call" "-" off \
+      "KERNEL-ndiswrapper" "-" off \
       "KERNEL-broadcom-wl" "-" off \
       "KERNEL-r8168" "-" off \
       "KERNEL-rt3562sta" "-" off \
