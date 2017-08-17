@@ -47,7 +47,7 @@ advanced_menu() {
 
 install_cust_pkgs() {
     echo "" > ${PACKAGES}
-    pacman -Ssq | fzf -m -e --header="$_AddPkgs" --prompt="_AddPkgsPrmpt > " --reverse >${PACKAGES} || return 0
+    pacman -Ssq | fzf -m -e --header="$_AddPkgs" --prompt="$_AddPkgsPrmpt > " --reverse >${PACKAGES} || return 0
 
     clear
     # If at least one package, install.
