@@ -444,6 +444,7 @@ _LogInfo="Você gostaria de salvar o registro de instalação no sistema instala
 # Chroot
 _ChrootReturn="\nAgora você vai chroot em seu sistema instalado. Você pode fazer mudanças quase como se tivesse iniciado em seu sistema.\n\nDigite \"exit\" para sair do chroot e \"fg\" para retornar ao instalador.\n "
 _EnterChroot="Insira sua instalação"
+_ChrootTitle="Chroot into installation" # translate me !
 
 #Refind
 _InstRefindTitle="Instalar refind"
@@ -463,3 +464,15 @@ _InstDsMenuBody="Este instala a edição completa do Manjaro com Ambiente de Des
 _InstCsMenuTitle="Instalar sistema customizado"
 _InstCsMenuBody="Este instala a base do sistema do Manjaro sem ambiente gráfico. Passos 1-4 são necessários para o funcionamento do sistema, o resto é opcional."
 _MMNewBody="Após montar as partições na seção de preparação, selecione seu tipo de instalação. Se você não tem certeza, escolha sistema Desktop para Majaro padrão."
+
+#System rescue
+_SysRescTitle="System rescue" # translate me !
+_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
+_RmPkgs="Remove packages" # translate me !
+_RmPkgsMsg="Search packages by typing their name.  
+Press tab to select multiple packages" # translate me !
+_RmPkgsPrmpt="Package to remove" # translate me !
+_AddPkgsPrmpt="Package" # translate me !
+_AddPkgs="Choose any extra packages you would like to add. 
+Search packages by typing their name. 
+Press tab to select multiple packages and proceed with Enter." # translate me !

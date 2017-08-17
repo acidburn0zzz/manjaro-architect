@@ -47,13 +47,22 @@ advanced_menu() {
 
 install_cust_pkgs() {
     echo "" > ${PACKAGES}
-    pacman -Ssq | fzf -m -e --header="Search packages by typing their name. Press tab to select multiple packages" --prompt="Package > " --reverse >${PACKAGES} || return 0
+    pacman -Ssq | fzf -m -e --header="$_AddPkgs" --prompt="_AddPkgsPrmpt > " --reverse >${PACKAGES} || return 0
 
     clear
     # If at least one package, install.
     if [[ $(cat ${PACKAGES}) != "" ]]; then
             basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
             check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
+    fi
+}
+
+rm_pgs(){
+  manjaro-chroot /mnt "pacman -Qq" | fzf -m -e --header="$_RmPkgsMsg" --prompt="$_RmPkgsPrmpt > " --reverse > /tmp/.to_be_removed || return 0
+
+    if [[ $(cat /tmp/.to_be_removed) != "" ]]; then
+            arch_chroot "pacman -Rsn $(cat /tmp/.to_be_removed)" 2>$ERR
+            check_for_error "$FUNCNAME $(cat /tmp/.to_be_removed)" "$?"
     fi
 }
 

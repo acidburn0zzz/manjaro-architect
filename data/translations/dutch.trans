@@ -28,7 +28,7 @@ _EstCon="Verbinding maken?"
 _Config="Configureer"
 _ApplySet="Pas de taalinstellingen toe..."
 _ChMenu="Selecteer Menu"
-_ChMenuBody="Het Standaard menu zal je begeleiden doorheen de installatie van een voorgeconfigureerde Manjaro Omgeving met bijkomende keuzes.\n\nHet Menu voor Gevorderden kan gebruikt worden voor niet-geconfigureerde desktops of Manjaro ontwikkelingsprofielen, alsook het toevoegen van netwerk en multimedia toepassingen en enkele gevorderde opties voor systeem en veiligheid.
+_ChMenuBody="Het Standaard menu zal je begeleiden doorheen de installatie van een voorgeconfigureerde Manjaro Omgeving met bijkomende keuzes.\n\nHet Menu voor Gevorderden kan gebruikt worden voor niet-geconfigureerde desktops of Manjaro ontwikkelingsprofielen, alsook het toevoegen van netwerk en multimedia toepassingen en enkele gevorderde opties voor systeem en veiligheid."
 
 # Veiligheid en aanpassingen
 _SecMenuTitle="Beveiliging en systemd instellen"
@@ -442,6 +442,7 @@ _LogInfo="Wil je de installatielog opslaan op het geïnstalleerde systeem?\nHet 
 # Chroot
 _ChrootReturn="\nJe gaat nu chroot gebruiken op je geïnstalleerde systeem\n\n Tik \"exit\" om uit chroot te komen en \"fg\" terug te gaan naar het installatieprogramma.\n"
 _EnterChroot="Enter je systeem"
+_ChrootTitle="Chroot into installation" # translate me !
 
 #Refind
 _InstRefindTitle="Installeer refind"
@@ -461,3 +462,15 @@ _InstDsMenuBody="Dit gaat een volledige manjaro desktopomgeving installeren. Sta
 _InstCsMenuTitle="Installeer zelf een systeem"
 _InstCsMenuBody="Dit gaat manjaro basis systeem installeren zonder desktopomgeving. Stappen 1-4 zijn nodig om een werkend systeem te hebben, de rest is optioneel."
 _MMNewBody="Nadat de partities zijn geselecteerd in de voorbereiding menu, selecteer de installatie type. Als je niet zeker ben, kies dan een desktop omgeving voor een volledige manjaro."
+
+#System rescue
+_SysRescTitle="System rescue" # translate me !
+_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
+_RmPkgs="Remove packages" # translate me !
+_RmPkgsMsg="Search packages by typing their name.  
+Press tab to select multiple packages" # translate me !
+_RmPkgsPrmpt="Package to remove" # translate me !
+_AddPkgsPrmpt="Package" # translate me !
+_AddPkgs="Choose any extra packages you would like to add. 
+Search packages by typing their name. 
+Press tab to select multiple packages and proceed with Enter." # translate me !
