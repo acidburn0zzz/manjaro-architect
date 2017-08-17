@@ -61,7 +61,7 @@ main_menu() {
         fi
 
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
-          --menu "\n$_MMNewBody\n " 0 0 5 \
+          --menu "\n$_MMNewBody\n " 0 0 6 \
           "1" "$_PrepMenuTitle|>" \
           "2" "$_InstDsMenuTitle|>" \
           "3" "$_InstCrMenuTitle|>" \
@@ -217,7 +217,7 @@ system_rescue_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 8
-        DIALOG " $_SysRescBody " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCsMenuBody\n " 0 0 8 \
+        DIALOG " $_SysRescTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SysRescBody\n " 0 0 8 \
           "1" "$_InstDrvTitle|>" \
           "2" "$_InstBootldr|>" \
           "3" "$_ConfBseMenuTitle" \
@@ -442,8 +442,8 @@ install_drivers_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         DIALOG " $_InstDrvTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n " 0 0 3 \
-          "1" "$_InstGrMenuTitle|>" \
-          "2" "$_InstNWDrv" \
+          "1" "$_InstGrMenuDD|>" \
+          "2" "$_InstNWDrv|>" \
           "3" "$_Back" 2>${ANSWER}
 
         case $(cat ${ANSWER}) in
