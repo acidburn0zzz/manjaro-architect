@@ -210,7 +210,7 @@ _WarnMount2="option listed at the top of the file system menu.\n\nEnsure the cor
 
 # Select Device (installation)
 _DevSelTitle="Select Device"
-_DevSelBody="Devices (/dev/) are available hard-disks and USB-sticks to install on. The first is /sda, the second /sdb, and so on.\n\nWhere using a USB-stick to boot Architect, be careful as it will also be listed!"
+_DevSelBody="Devices (/dev/) are available hard-disks and USB-sticks to install on. The first is /sda, the second /sdb, and so on.\n\nIf you're booting Manjaro-Architect from a USB-stick, be careful as it will also be listed!"
 
 # Partitioning Tool
 _PartToolTitle="Partitioning Tool"
@@ -425,7 +425,7 @@ _InstMulCustBody="Enter the (exact) names of packages to be installed from the M
 # Main Menu
 _MMTitle="Main Menu"
 _MMBody="Steps should be followed IN ORDER. Once complete, select 'Done' to finalise the installation."
-_MMNewBody="After mounting the partitions in the preparation section, select your installation type. If you are unsure, choose Desktop system for a default Manjaro installation."
+_MMNewBody="After mounting the partitions in the preparation section, select your installation type. If you are unsure, choose Desktop System for a default Manjaro installation."
 
 # Final Check
 _BaseCheck="Base is not installed"
@@ -455,9 +455,9 @@ _InstSystdBBody="This installs systemd-boot and generates boot entries for the c
 _SystdBReady="Systemd-boot was installed"
 
 #Meta menu
-_InstCrMenuTitle="Install CLI system"
+_InstCrMenuTitle="Install CLI System"
 _InstCrMenuBody="This installs a Manjaro base-system without graphical desktop environment. Steps 1-3 are needed for a working system, the rest is optional."
-_InstDsMenuTitle="Install desktop system"
+_InstDsMenuTitle="Install Desktop System"
 _InstDsMenuBody="This installs a full Manjaro edition with graphical desktop environment. Steps 1-3 are needed for a working system, the rest is optional."
-_InstCsMenuTitle="Install custom system"
+_InstCsMenuTitle="Install Custom System"
 _InstCsMenuBody="This installs a Manjaro base-system without graphical desktop environment. Steps 1-4 are needed for a working system, the rest is optional."
