@@ -101,7 +101,7 @@ install_core_menu() {
           "4" "$_InstMulCust" \
           "5" "$_SecMenuTitle|>" \
           "6" "$_SeeConfOptTitle" \
-          "7" "Chroot into installation" \
+          "7" "$_ChrootTitle" \
           "8" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
@@ -141,7 +141,7 @@ install_desktop_system_menu() {
           "3" "$_ConfBseMenuTitle" \
           "4" "$_SecMenuTitle|>" \
           "5" "$_SeeConfOptTitle" \
-          "6" "Chroot into installation" \
+          "6" "$_ChrootTitle" \
           "7" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
@@ -181,7 +181,7 @@ install_custom_menu() {
           "5" "$_InstMulCust" \
           "6" "$_SecMenuTitle|>" \
           "7" "$_SeeConfOptTitle" \
-          "8" "Chroot into installation" \
+          "8" "$_ChrootTitle" \
           "9" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
