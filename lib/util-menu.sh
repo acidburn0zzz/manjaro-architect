@@ -400,8 +400,8 @@ config_cli_base_menu() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 7
-        DIALOG " $_ConfBseMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_ConfBseBody\n " 0 0 7 \
+        ssubmenu 7
+        DIALOG " $_ConfBseMenuTitle " --default-item ${HIGHLIGHT_SSUB} --menu "\n$_ConfBseBody\n " 0 0 7 \
           "1" "$_ConfBseFstab" \
           "2" "$_ConfBseHost" \
           "3" "$_ConfBseSysLoc" \
@@ -409,7 +409,7 @@ config_cli_base_menu() {
           "5" "$_ConfUsrRoot" \
           "6" "$_ConfUsrNew" \
           "7" "$_Back" 2>${ANSWER}
-        HIGHLIGHT_SUB=$(cat ${ANSWER})
+        HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
             "1") generate_fstab
@@ -432,23 +432,22 @@ config_cli_base_menu() {
 }
 
 install_drivers_menu() {
-    HIGHLIGHT_SUB=1
+    local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
+        ssubmenu 3
         DIALOG " $_InstDrvTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n " 0 0 3 \
           "1" "$_InstGrMenuDD|>" \
           "2" "$_InstNWDrv|>" \
           "3" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
             "1") install_graphics_menu
-                HIGHLIGHT_SUB=2
                 ;;
             "2") setup_network_drivers || DIALOG " $_InstBseTitle " --infobox "\n$_InstFail\n " 0 0
-                HIGHLIGHT_SUB=3
                 ;;
-            *) HIGHLIGHT_SUB=5
-                loopmenu=0
+            *) loopmenu=0
                 return 0
                 ;;
         esac

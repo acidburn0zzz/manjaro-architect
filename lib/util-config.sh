@@ -142,11 +142,11 @@ edit_configs() {
     shopt -u nullglob
  
     while ((1)); do
-        submenu 13
-        DIALOG " $_SeeConfOptTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SeeConfOptBody\n " 0 0 $i \
+        ssubmenu 13
+        DIALOG " $_SeeConfOptTitle " --default-item ${HIGHLIGHT_SSUB} --menu "\n$_SeeConfOptBody\n " 0 0 $i \
             "${options[@]}" 2>${ANSWER}
-        HIGHLIGHT_SUB=$(<${ANSWER})
-        choice="${HIGHLIGHT_SUB:-0}"
+        HIGHLIGHT_SSUB=$(<${ANSWER})
+        choice="${HIGHLIGHT_SSUB:-0}"
 
         case "$choice" in
             0) break ;;                      # btn cancel
