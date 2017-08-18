@@ -442,7 +442,7 @@ _LogInfo="Wil je de installatielog opslaan op het geïnstalleerde systeem?\nHet 
 # Chroot
 _ChrootReturn="\nJe gaat nu chroot gebruiken op je geïnstalleerde systeem\n\n Tik \"exit\" om uit chroot te komen en \"fg\" terug te gaan naar het installatieprogramma.\n"
 _EnterChroot="Enter je systeem"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Installeer refind"
@@ -464,7 +464,7 @@ _InstCsMenuBody="Dit gaat manjaro basis systeem installeren zonder desktopomgevi
 _MMNewBody="Nadat de partities zijn geselecteerd in de voorbereiding menu, selecteer de installatie type. Als je niet zeker ben, kies dan een desktop omgeving voor een volledige manjaro."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  

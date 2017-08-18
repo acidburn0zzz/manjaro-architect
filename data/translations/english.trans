@@ -384,7 +384,7 @@ _InstGrDrv="Choose video-driver to be installed"
 _WarnInstGr="No Display Driver selected."
 _InstDEStable="Install Manjaro Desktop"
 _InstDEGit="Install Manjaro Desktop (development profiles)"
-_InstDE="Install unconfigured desktop environments"
+_InstDE="Install Unconfigured Desktop Environments"
 _InstGrDE="Install Desktop environment"
 _InstPBody="This installs a package list and a desktop-settings package, corresponding to manjaro editions of the same name."
 _InstGrMenuGE="Install Graphical Environment"
@@ -443,7 +443,7 @@ _LogInfo="Would you like to save the installation-log to the installed system?\n
 # Chroot
 _ChrootReturn="\nYou will now chroot into your installed system. You can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to the installer.\n "
 _EnterChroot="Enter your installation"
-_ChrootTitle="Chroot into installation"
+_ChrootTitle="Chroot into Installation"
 
 #Refind
 _InstRefindTitle="Install refind"
@@ -464,16 +464,13 @@ _InstCsMenuTitle="Install Custom System"
 _InstCsMenuBody="This installs a Manjaro base-system without graphical desktop environment. Steps 1-4 are needed for a working system, the rest is optional."
 
 #System rescue
-_SysRescTitle="System rescue"
-_SysRescBody="This menu is collection of tools to help restore broken system to full functionality."
+_SysRescTitle="System Rescue"
+_SysRescBody="This menu is a collection of tools to help restore a broken system to full functionality."
 _RmPkgs="Remove packages"
-_RmPkgsMsg="Search packages by typing their name. 
-Press tab to select multiple packages"
+_RmPkgsMsg="Search packages by typing their name.\nPress tab to select multiple packages"
 _RmPkgsPrmpt="Package to remove"
 _AddPkgsPrmpt="Package"
-_AddPkgs="Choose any extra packages you would like to add. 
-Search packages by typing their name. 
-Press tab to select multiple packages and proceed with Enter."
+_AddPkgs="Choose any extra packages you would like to add.\nSearch packages by typing their name.\nPress tab to select multiple packages and proceed or quit with Enter."
 
 #Extra
 _ExtraTitle="Extra packages"

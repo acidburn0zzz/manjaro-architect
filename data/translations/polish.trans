@@ -442,7 +442,7 @@ _LogInfo="Czy chcesz skopiować dziennik instalacyjny do zainstalowanego systemu
 # Chroot
 _ChrootReturn="\nZostaniesz przeniesiony w chroot zainstalowanego systemu. Możesz tu korzystać z niego tak, jakbyś uruchomił właściwy system.\n\nWprowad \"exit\", aby opuścić chroot i \"fg\", aby wrócić do instalatora.\n "
 _EnterChroot="Wejdź w swoją instalację"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Zainstaluj refind"
@@ -464,7 +464,7 @@ _InstCsMenuBody="Ta opcja zainstaluje podstawową wersję Manjaro bez środowisk
 _MMNewBody="Po zamontowaniu partycji w dziale przygotowań, wybierz swój typ instalacji. Jeżeli nie jesteś pewien, która wersja będzie dla Ciebie odpowiednia, wybierz Desktop system w celu instalacji domyślnej, standardowej wersji Manjaro."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  
