@@ -442,6 +442,7 @@ _LogInfo="Czy chcesz skopiować dziennik instalacyjny do zainstalowanego systemu
 # Chroot
 _ChrootReturn="\nZostaniesz przeniesiony w chroot zainstalowanego systemu. Możesz tu korzystać z niego tak, jakbyś uruchomił właściwy system.\n\nWprowad \"exit\", aby opuścić chroot i \"fg\", aby wrócić do instalatora.\n "
 _EnterChroot="Wejdź w swoją instalację"
+_ChrootTitle="Chroot into installation" # translate me !
 
 #Refind
 _InstRefindTitle="Zainstaluj refind"
@@ -461,3 +462,15 @@ _InstDsMenuBody="Ta opcja zainstaluje pełną wersję systemu Manjaro wraz ze ś
 _InstCsMenuTitle="Zainstaluj system z własnymi ustawieniami"
 _InstCsMenuBody="Ta opcja zainstaluje podstawową wersję Manjaro bez środowiska graficznego. Kroki od 1 do 4 są wymagane, reszta jest opcjonalna i nie jest wymagana dla prawidłowego działania systemu."
 _MMNewBody="Po zamontowaniu partycji w dziale przygotowań, wybierz swój typ instalacji. Jeżeli nie jesteś pewien, która wersja będzie dla Ciebie odpowiednia, wybierz Desktop system w celu instalacji domyślnej, standardowej wersji Manjaro."
+
+#System rescue
+_SysRescTitle="System rescue" # translate me !
+_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
+_RmPkgs="Remove packages" # translate me !
+_RmPkgsMsg="Search packages by typing their name.  
+Press tab to select multiple packages" # translate me !
+_RmPkgsPrmpt="Package to remove" # translate me !
+_AddPkgsPrmpt="Package" # translate me !
+_AddPkgs="Choose any extra packages you would like to add. 
+Search packages by typing their name. 
+Press tab to select multiple packages and proceed with Enter." # translate me !

@@ -61,12 +61,13 @@ main_menu() {
         fi
 
         DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
-          --menu "\n$_MMNewBody\n " 0 0 5 \
+          --menu "\n$_MMNewBody\n " 0 0 6 \
           "1" "$_PrepMenuTitle|>" \
           "2" "$_InstDsMenuTitle|>" \
           "3" "$_InstCrMenuTitle|>" \
           "4" "$_InstCsMenuTitle|>" \
-          "5" "$_Done" 2>${ANSWER}
+          "5" "$_SysRescTitle|>" \
+          "6" "$_Done" 2>${ANSWER}
         HIGHLIGHT=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -77,6 +78,8 @@ main_menu() {
             "3") check_mount && install_core_menu
                 ;;
             "4") check_mount && install_custom_menu
+                ;;
+            "5") check_mount && system_rescue_menu
                 ;;
              *) loopmenu=0
                 exit_done
@@ -201,6 +204,47 @@ install_custom_menu() {
                     }
                 ;;
             "8") check_base && chroot_interactive
+                ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+system_rescue_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 8
+        DIALOG " $_SysRescTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SysRescBody\n " 0 0 8 \
+          "1" "$_InstDrvTitle|>" \
+          "2" "$_InstBootldr|>" \
+          "3" "$_ConfBseMenuTitle" \
+          "4" "$_InstMulCust" \
+          "5" "$_RmPkgs" \
+          "6" "$_SeeConfOptTitle" \
+          "7" "$_ChrootTitle" \
+          "8" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") check_base && install_drivers_menu
+                 ;;
+            "2") check_base && install_bootloader
+                 ;;
+            "3") check_base && config_base_menu
+                 ;;
+            "4") install_cust_pkgs
+                 ;;
+            "5") check_base && rm_pgs
+                 ;;
+            "6") check_base && {
+                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
+                    edit_configs
+                    }
+                ;;
+            "7") check_base && chroot_interactive
                 ;;
             *) loopmenu=0
                 return 0
@@ -392,8 +436,8 @@ install_drivers_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         DIALOG " $_InstDrvTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n " 0 0 3 \
-          "1" "$_InstGrMenuTitle|>" \
-          "2" "$_InstNWDrv" \
+          "1" "$_InstGrMenuDD|>" \
+          "2" "$_InstNWDrv|>" \
           "3" "$_Back" 2>${ANSWER}
 
         case $(cat ${ANSWER}) in

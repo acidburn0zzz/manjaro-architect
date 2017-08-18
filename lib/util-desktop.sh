@@ -437,7 +437,7 @@ choose_mjr_desk() {
 
         cat $(echo $PROFILES/*/$(cat /tmp/.desktop)/Packages-Desktop) > /mnt/.desktop
 
-        echo "$(pacman -Ssq) $(pacman -Sg)" | fzf -m -e --header="Choose any extra packages you would like to add. Search packages by typing their name. Press tab to select multiple packages and cproceed with Enter." --prompt="Package > " --reverse >> /mnt/.desktop
+        echo "$(pacman -Ssq) $(pacman -Sg)" | fzf -m -e --header="$_AddPkgs" --prompt="_AddPkgsPrmpt > " --reverse >> /mnt/.desktop
     fi
 }
 

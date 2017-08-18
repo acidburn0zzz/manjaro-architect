@@ -28,7 +28,7 @@ _EstCon="Akarsz internetkapcsolatot létesíteni?"
 _Config="Beállítás"
 _ApplySet="Nyelvi beállítások alkalmazása ..."                             
 _ChMenu="Menüválasztás"                                               
-_ChMenuBody="Az alap menü végigvezet az elő-konfigurált Manjaro asztali környezet telepítésén. \n\nA haladó menüvel konfigurálatlan asztali környezetet és fejlesztői Manjaro profilokat tudsz telepíteni. Valamint itt tudsz telepíteni további hálózati és multimédia alkalmazásokat, valamint elvégezni néhány rendszer- és biztonsági beállítást.
+_ChMenuBody="Az alap menü végigvezet az elő-konfigurált Manjaro asztali környezet telepítésén. \n\nA haladó menüvel konfigurálatlan asztali környezetet és fejlesztői Manjaro profilokat tudsz telepíteni. Valamint itt tudsz telepíteni további hálózati és multimédia alkalmazásokat, valamint elvégezni néhány rendszer- és biztonsági beállítást."
 
 # Biztonsági és rendszerbeállítások
 _SecMenuTitle="Biztonsági és systemd beállítások"
@@ -443,6 +443,7 @@ _LogInfo="El akarod menteni a telepítés-naplót? \nItt lesz megtalálható a t
 # Chroot
 _ChrootReturn="\nMost chroot-olni fogsz a telepített rendszerbe, melyen változtatásokat hajthatsz végre, majdnem úgy mintha betöltötted volna a rendszert.\n\nGépelj exit-et, hogy kilépj a chroot-ból és fg-t, hogy visszatérj a telepítőhöz.\n "
 _EnterChroot="Lépj be a telepített rendszerbe"
+_ChrootTitle="Chroot into installation" # translate me !
 
 #Refind
 _InstRefindTitle="Refind telepítése"
@@ -463,3 +464,14 @@ _InstCsMenuTitle="Egyedi rendszer telepítése"
 _InstCsMenuBody="Alap Manjaro-rendszer telepítése grafikus környezet nélkül. Az 1-4 lépés kötelező, a többi opcionális."
 _MMNewBody="Miután az előkészületi részben csatoltad a partíciókat, válaszd ki a telepítés típusát. Ha nem vagy benne biztos, hogy mit válassz, válaszd az alapértelmezett Manjaro-rendszert."
 
+#System rescue
+_SysRescTitle="System rescue" # translate me !
+_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
+_RmPkgs="Remove packages" # translate me !
+_RmPkgsMsg="Search packages by typing their name.  
+Press tab to select multiple packages" # translate me !
+_RmPkgsPrmpt="Package to remove" # translate me !
+_AddPkgsPrmpt="Package" # translate me !
+_AddPkgs="Choose any extra packages you would like to add. 
+Search packages by typing their name. 
+Press tab to select multiple packages and proceed with Enter." # translate me !

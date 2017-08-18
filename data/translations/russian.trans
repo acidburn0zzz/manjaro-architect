@@ -444,6 +444,7 @@ _LogInfo="Сохранить журнал установки (installation-log) 
 # Chroot
 _ChrootReturn="\nТеперь вы можете зайти в свою установленную систему. Вы можете сделать изменения, почти как если бы вы загрузились с установленной системы.\n\nТип \"exit\" для выхода из chroot и \"fg\" для возврата к установщику.\n "
 _EnterChroot="Введите ваши установки"
+_ChrootTitle="Chroot into installation" # translate me !
 
 # rEFInd
 _InstRefindTitle="Установка rEFInd"
@@ -463,3 +464,15 @@ _InstDsMenuBody="Устанавливает полный выпуск мандж
 _InstCsMenuTitle="Установка Пользовательской Системы"
 _InstCsMenuBody="Устанавливает базовую систему манджаро без графической среды рабочего стола. Шаги 1-4 необходимы для работы системы, остальное опционально."
 _MMNewBody="После монтирования разделов в разделе подготовки выберите тип установки. Если вы не уверены, выберите установку настольной системы."
+
+#System rescue
+_SysRescTitle="System rescue" # translate me !
+_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
+_RmPkgs="Remove packages" # translate me !
+_RmPkgsMsg="Search packages by typing their name.  
+Press tab to select multiple packages" # translate me !
+_RmPkgsPrmpt="Package to remove" # translate me !
+_AddPkgsPrmpt="Package" # translate me !
+_AddPkgs="Choose any extra packages you would like to add. 
+Search packages by typing their name. 
+Press tab to select multiple packages and proceed with Enter." # translate me !
