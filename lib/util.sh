@@ -131,6 +131,15 @@ submenu() {
     fi
 }
 
+ssubmenu() {
+    if [[ $SSUB_MENU != "$PARENT" ]]; then
+        SSUB_MENU="$PARENT"
+        HIGHLIGHT_SSUB=1
+    elif [[ $HIGHLIGHT_SSUB != "$1" ]]; then
+        HIGHLIGHT_SSUB=$(( HIGHLIGHT_SSUB + 1 ))
+    fi
+}
+
 check_root() {
     if [[ `whoami` != "root" ]]; then
         DIALOG " $_ErrTitle " --infobox "\n$_RtFailBody\n " 0 0
@@ -390,14 +399,16 @@ greeting() {
 
 # Originally adapted from AIS. Added option to allow users to edit the mirrorlist.
 configure_mirrorlist() {
-    ssub_item=1
+    local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        DIALOG " $_MirrorlistTitle " --default-item $ssub_item --menu "\n$_MirrorlistBody\n " 0 0 4 \
+        ssubmenu 4
+        DIALOG " $_MirrorlistTitle " --default-item ${HIGHLIGHT_SSUB} --menu "\n$_MirrorlistBody\n " 0 0 4 \
           "1" "$_MirrorPacman" \
           "2" "$_MirrorConfig" \
           "3" "$_MirrorRankTitle" \
           "4" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
             "1") nano /etc/pacman.conf
@@ -405,14 +416,11 @@ configure_mirrorlist() {
                 check_for_error "edit pacman.conf $COPY_PACCONF"
                 DIALOG "" --infobox "\n$_UpdDb\n " 0 0
                 pacman -Syy
-                ssub_item=2
                 ;;
             "2") nano /etc/pacman-mirrors.conf
                 check_for_error "edit pacman-mirrors.conf"
-                ssub_item=3
                 ;;
             "3") rank_mirrors
-                ssub_item=4
                 ;;
 
             *)  loopmeu=0
