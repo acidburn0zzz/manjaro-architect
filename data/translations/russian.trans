@@ -476,3 +476,7 @@ _AddPkgsPrmpt="Пакет"
 _AddPkgs="Выберите любые дополнительные пакеты, которые вы хотите добавить.
 Укажите имя пакета для поиска.
 Нажмите Tab, чтобы выбрать несколько пакетов и нажмите Enter."
+
+#Extra
+_ExtraTitle="Extra packages" # translate me !
+_ExtraBody="Would you like to add any additional packages to your installation?" # translate me !

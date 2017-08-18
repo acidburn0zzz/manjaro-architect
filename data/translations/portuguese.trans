@@ -473,3 +473,7 @@ _AddPkgsPrmpt="Package" # translate me !
 _AddPkgs="Choose any extra packages you would like to add. 
 Search packages by typing their name. 
 Press tab to select multiple packages and proceed with Enter." # translate me !
+
+#Extra
+_ExtraTitle="Extra packages" # translate me !
+_ExtraBody="Would you like to add any additional packages to your installation?" # translate me !
