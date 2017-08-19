@@ -32,8 +32,8 @@ _ChMenuBody="The Regular Menu will guide you through the installation of a pre-c
 
 # Security and Tweaks
 _SecMenuTitle="Security and systemd Tweaks"
-_SecJournTitle="Amend journald logging"
-_SecCoreTitle="Disable Coredump logging"
+_SecJournTitle="Amend journald Logging"
+_SecCoreTitle="Disable Coredump Logging"
 _SecKernTitle="Restrict Access to Kernel Logs"
 _SecKernBody="Kernel logs may contain information an attacker can use to identify and exploit kernel vulnerabilities, including sensitive memory addresses.\n\nIf systemd-journald logging has not been disabled, it is possible to create a rule in /etc/sysctl.d/ to disable access to these logs unless using root privilages (e.g. via sudo)."
 _Edit="Edit configuration file"
@@ -145,7 +145,7 @@ _RankMirrors="Select your custom mirrors using [Spacebar] or [Enter] and confirm
 _MirrorbyCountry="Generate mirrorlist by Country"
 _MirrorEdit="Manually edit mirrorlist"
 _MirrorRankTitle="Rank Mirrors by Speed"
-_MirrorRestTitle="Restore original mirrorlist"
+_MirrorRestTitle="Restore Original Mirrorlist"
 _MirrorRankBody="Finding the fastest servers from the mirrorlist."
 _MirrorNoneBody="A copy of the original mirrorlist was not found."
 _MirrorCntryBody="A list of mirrors by the selected country will be generated."
@@ -473,6 +473,6 @@ _AddPkgsPrmpt="Package"
 _AddPkgs="Choose any extra packages you would like to add.\nSearch packages by typing their name.\nPress tab to select multiple packages and proceed or quit with Enter."
 
 #Extra
-_ExtraTitle="Extra packages"
+_ExtraTitle="Extra Packages"
 _ExtraBody="Would you like to add any additional packages to your installation?"
 
