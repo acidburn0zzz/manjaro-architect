@@ -661,7 +661,7 @@ generate_fstab() {
 # locale array generation code adapted from the Manjaro 0.8 installer
 set_locale() {
     LOCALES=""
-    for i in $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | sed 's/ UTF-8//g' | grep .UTF-8); do
+    for i in $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | awk '/UTF-8/ {print $1}'); do
         LOCALES="${LOCALES} ${i} -"
     done
 
