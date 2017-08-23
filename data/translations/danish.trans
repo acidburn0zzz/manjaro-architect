@@ -444,7 +444,7 @@ _LogInfo="Vil du gemme installations-loggen på det installerede system?\nDen vi
 # Chroot
 _ChrootReturn="\nDu vil nu chroot'e ind i det installerede system. Du kan ændre og tilpasse det næsten som det var startede system.\n\nTast \"exit\" for at afslutte chroot og \"fg\" for at komḿe tibage til installation.\n "
 _EnterChroot="Gå ind i systemet"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Installer refind"
@@ -467,7 +467,7 @@ _InstCsMenuBody="Dette installerer at Manjaro Base system uden grafisk skrivebor
 _MMNewBody="Efter montering af partitioner i klargørings sektionen, vælges installationstype. Hvis du er usikker, så vælg Desktop for et standard Manjaro system."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  

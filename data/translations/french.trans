@@ -444,7 +444,7 @@ _LogInfo="Désirez-vous copier le journal d'installation sur le système install
 # Chroot
 _ChrootReturn="\nVous allez maintenant entrer en chroot dans votre système installé. Vous pouvez faire des changements comme si vous étiez dans le système installé.\n\nTapez \"exit\" pour sortir du chroot et \"fg\" retourner vers l’installateur.\n "
 _EnterChroot="Entrez dans votre système installé"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Installer refind"
@@ -466,7 +466,7 @@ _InstCsMenuBody="Ceci va installer le système de base manjaro sans environnemen
 _MMNewBody="Après avoir sélectionné les partitions dans la section préparation, choisissez votre type d’installation. Si vous n’êtes pas sur, choisissez un environnement graphique manjaro."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  

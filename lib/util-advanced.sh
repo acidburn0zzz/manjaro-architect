@@ -102,8 +102,8 @@ install_vanilla_de_wm() {
     local PARENT="$FUNCNAME"
     declare -i loopmenu=1
     while ((loopmenu)); do
-        submenu 7
-        DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SUB} \
+        ssubmenu 7
+        DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SSUB} \
           --menu "\n$_InstGrMenuBody\n " 0 0 7 \
           "1" "$_InstGrMenuDS" \
           "2" "$_InstGrDE" \
@@ -112,7 +112,7 @@ install_vanilla_de_wm() {
           "5" "$_InstMultMenuTitle|>" \
           "6" "$_InstMulCust" \
           "7" "$_Back" 2>${ANSWER}
-        HIGHLIGHT_SUB=$(cat ${ANSWER})
+        HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
             "1") install_xorg_input
@@ -586,15 +586,14 @@ security_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         local PARENT="$FUNCNAME"
-
-        submenu 4
-        DIALOG " $_SecMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SecMenuBody\n " 0 0 4 \
+        ssubmenu 4
+        DIALOG " $_SecMenuTitle " --default-item ${HIGHLIGHT_SSUB} --menu "\n$_SecMenuBody\n " 0 0 4 \
           "1" "$_SecJournTitle" \
           "2" "$_SecCoreTitle" \
           "3" "$_SecKernTitle " \
           "4" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
-        HIGHLIGHT_SUB=$(cat ${ANSWER})
         case $(cat ${ANSWER}) in
             # systemd-journald
             "1") DIALOG " $_SecJournTitle " --menu "\n$_SecJournBody\n " 0 0 7 \

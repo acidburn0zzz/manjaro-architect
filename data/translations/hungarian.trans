@@ -443,7 +443,7 @@ _LogInfo="El akarod menteni a telepítés-naplót? \nItt lesz megtalálható a t
 # Chroot
 _ChrootReturn="\nMost chroot-olni fogsz a telepített rendszerbe, melyen változtatásokat hajthatsz végre, majdnem úgy mintha betöltötted volna a rendszert.\n\nGépelj exit-et, hogy kilépj a chroot-ból és fg-t, hogy visszatérj a telepítőhöz.\n "
 _EnterChroot="Lépj be a telepített rendszerbe"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Refind telepítése"
@@ -465,7 +465,7 @@ _InstCsMenuBody="Alap Manjaro-rendszer telepítése grafikus környezet nélkül
 _MMNewBody="Miután az előkészületi részben csatoltad a partíciókat, válaszd ki a telepítés típusát. Ha nem vagy benne biztos, hogy mit válassz, válaszd az alapértelmezett Manjaro-rendszert."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  

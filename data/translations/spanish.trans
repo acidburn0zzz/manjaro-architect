@@ -442,7 +442,7 @@ _LogInfo="¿Desea guardar el registro de instalación al sistema instalado?\nSer
 # Chroot
 _ChrootReturn="\nAhora ejecutará chroot en sus sitema instalado. Puede hacer cambios casi como si hubiese iniciado en su instalación.\n\nEscribe \"exit\" para salir del chroot y \"fg\" para volver al instalador.\n "
 _EnterChroot="Introducirse en su instalación"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Instalar refind"
@@ -464,7 +464,7 @@ _InstCsMenuBody="Esto instala el sistema base de manjaro sin entorno de escritor
 _MMNewBody="Tras montar una partición en la sección de preparación, selecciona su tipo de instalación. Si no está seguro, elije un sistema de Escritorio para manjaro predeterminado."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  

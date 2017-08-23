@@ -437,7 +437,7 @@ _UserCheck="Kein Benutzer eingerichtet"
 # Chroot
 _ChrootReturn="\nHier können Sie in Ihr installiertes System chrooten und Änderungen vornehmen, fast so als würden Sie in die Installation booten.\n\nTippen Sie \"exit\" zum Verlassen oder \"fg\" um zum Installer zurückzukehren.\n "
 _EnterChroot="In die Installation chrooten"
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot in Bestehende Installation"
 
 #Refind
 _InstRefindTitle="'refind' installieren"
@@ -460,17 +460,14 @@ _InstCsMenuBody="Dies installiert ein Manjaro-Basissystem ohne grafische Oberfl�
 _MMNewBody="Wählen Sie die Installationsart nach dem Einhängen der Partitionen. Wenn Sie unsicher sind, wählen Sie 'Desktop-System' für eine Standard-Installation."
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
-_SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
-_RmPkgs="Remove packages" # translate me !
-_RmPkgsMsg="Search packages by typing their name.  
-Press tab to select multiple packages" # translate me !
-_RmPkgsPrmpt="Package to remove" # translate me !
-_AddPkgsPrmpt="Package" # translate me !
-_AddPkgs="Choose any extra packages you would like to add. 
-Search packages by typing their name. 
-Press tab to select multiple packages and proceed with Enter." # translate me !
+_SysRescTitle="System reparieren"
+_SysRescBody="Dieses Menu enthält Werkzeuge zur Reparatur eines beschädigten Systems."
+_RmPkgs="Pakete entfernen"
+_RmPkgsMsg="Pakete nach Namen suchen.\nTAB zur Auswahl weiterer Pakete."
+_RmPkgsPrmpt="Zu entfernendes Paket"
+_AddPkgsPrmpt="Paket"
+_AddPkgs="Wähle zusätzliche Pakete zur Installation.\nSuchen durch Eingabe des Namens.\nTAB zur Auswahl weiterer Pakete\nFortfahren/Abbrechen mit ENTER."
 
 #Extra
-_ExtraTitle="Extra packages" # translate me !
-_ExtraBody="Would you like to add any additional packages to your installation?" # translate me !
+_ExtraTitle="Zusätzliche Pakete"
+_ExtraBody="Möchten Sie der Installation zusätzliche Pakete hinzufügen?"

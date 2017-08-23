@@ -441,7 +441,7 @@ _LogInfo="Would you like to save the installation-log to the installed system?\n
 # Chroot
 _ChrootReturn="\nYou will now chroot into your installed system. You can do changes almost as if you had booted into your installation.\n\nType \"exit\" to exit chroot and \"fg\" to return to installer.\n " # translate me !
 _EnterChroot="Enter your installation" # translate me !
-_ChrootTitle="Chroot into installation" # translate me !
+_ChrootTitle="Chroot into Installation" # translate me !
 
 #Refind
 _InstRefindTitle="Install refind" # translate me !
@@ -463,7 +463,7 @@ _InstCsMenuBody="This installs base manjaro system without graphical desktop env
 _MMNewBody="After mounting partitions in preparation section, select your installation type. If you are unsure, choose Desktop system for default manjaro." # translate me !
 
 #System rescue
-_SysRescTitle="System rescue" # translate me !
+_SysRescTitle="System Rescue" # translate me !
 _SysRescBody="This menu is collection of tools to help restore broken system to full functionality." # translate me !
 _RmPkgs="Remove packages" # translate me !
 _RmPkgsMsg="Search packages by typing their name.  
