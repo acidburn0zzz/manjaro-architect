@@ -142,7 +142,6 @@ install_xorg_input() {
       "wayland" "-" off \
       "xorg-server" "-" on \
       "xorg-server-common" "-" off \
-      "xorg-server-utils" "-" on \
       "xorg-xinit" "-" on \
       "xorg-server-xwayland" "-" off \
       "xf86-input-evdev" "-" off \
