@@ -643,6 +643,21 @@ boot_encrypted_setting() {
     fi
 }
 
+recheck_luks() {
+    # Check if there is separate encrypted /boot partition 
+    if $(lsblk | grep '/mnt/boot' | grep -q 'crypt' ); then
+        LUKS=1
+    # Check if root is encrypted and there is no separate /boot
+    elif $(lsblk | grep "/mnt$" | grep -q 'crypt' ) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
+        LUKS=1
+    # Check if root is on encrypted lvm volume
+    elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
+        LUKS=1
+    else
+        true
+    fi
+}
+
 # Function will not allow incorrect UUID type for installed system.
 generate_fstab() {
     DIALOG " $_ConfBseFstab " --menu "\n$_FstabBody\n " 0 0 4 \
