@@ -392,11 +392,12 @@ install_grub_uefi() {
 
 
     DIALOG " $_InstGrub " --infobox "\n$_PlsWaitBody\n " 0 0
+    
     # if root is encrypted, amend /etc/default/grub
-    boot_encrypted_setting
-    #install grub
     root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
     root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
+    boot_encrypted_setting
+    #install grub
     ## install refind 
     if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
         arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro --recheck --removable" 2>$ERR
@@ -633,6 +634,9 @@ boot_encrypted_setting() {
         echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
     # Check if root is encrypted and there is no separate /boot
     elif $(lsblk | grep "/mnt$" | grep -q 'crypt' ) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
+        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+    # Check if root is on encrypted lvm volume
+    elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
         echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
     else
         true
