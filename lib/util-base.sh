@@ -323,6 +323,8 @@ install_base() {
     # If root is on nilfs2 volume, amend mkinitcpio.conf
     [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == nilfs2 ]] && sed -e '/^HOOKS=/s/\ fsck//g' -i ${MOUNTPOINT}/etc/mkinitcpio.conf && \
       check_for_error "root on nilfs2 volume. Amend mkinitcpio."
+    
+    recheck_luks
 
     # add luks and lvm hooks as needed
     ([[ $LVM -eq 1 ]] && [[ $LUKS -eq 0 ]]) && { sed -i 's/block filesystems/block lvm2 filesystems/g' ${MOUNTPOINT}/etc/mkinitcpio.conf 2>$ERR; check_for_error "add lvm2 hook" $?; }
