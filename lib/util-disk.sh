@@ -380,6 +380,16 @@ mount_current_partition() {
             fi
         done
 
+        # Check if LVM on LUKS
+        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep " crypt$" | grep -i "LVM2_member" | uniq | awk '{print "/dev/mapper/"$1}')
+        for i in ${cryptparts}; do
+            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_NAME) != "" ]]; then
+                LUKS_DEV="$LUKS_DEV cryptdevice=${i}:$LUKS_NAME"
+                LVM=1
+                return 0;
+            fi
+        done
+
         # Check if LUKS alone (parent = part /dev/...)
         cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep "part" | grep -i "crypto_luks" | uniq | awk '{print "/dev/"$1}')
         for i in ${cryptparts}; do
