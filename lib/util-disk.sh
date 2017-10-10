@@ -992,8 +992,85 @@ mount_partitions() {
             fi
         fi
     done
+    get_cryptroot
+    get_cryptboot
 }
 
+get_cryptroot() {
+        # Identify if /mnt or partition is type "crypt" (LUKS on LVM, or LUKS alone)
+    if $(sblk | awk '/\/mnt$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt$/,/part/p" | awk '{print $6}' | grep -q crypt); then
+        LUKS=1
+        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+        #Get the name of the Luks device
+        if $(lsblk -i | grep -q -e "crypt /mnt"); then
+            # Mountpoint is directly on the LUKS device, so LUKS deivece is the same as root name
+            LUKS_ROOT_NAME="$root_name"
+        else
+            # Mountpoint is not directly on LUKS device, so we need to get the crypt device above the mountpoint
+            LUKS_ROOT_NAME="$(lsblk -i | tac | sed -n -e "/\/mnt$/,/crypt/p" | awk '/crypt/ {print $1}' | sed 's/^..//')"
+        fi
+      
+        # Check if LUKS on LVM  
+        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep "lvm" | grep -i "crypto_luks" | uniq | awk '{print "/dev/mapper/"$1}')
+        for i in ${cryptparts}; do
+            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                LUKS_DEV="cryptdevice=${i}:$LUKS_ROOT_NAME"
+                LVM=1
+                return 0;
+            fi
+        done
+        # Check if LVM on LUKS
+        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep " crypt$" | grep -i "LVM2_member" | uniq | awk '{print "/dev/mapper/"$1}')
+        for i in ${cryptparts}; do
+            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                LUKS_UUID=$(lsblk -ino NAME,FSTYPE,TYPE,MOUNTPOINT,UUID | tac | sed -n -e "/\/mnt /,/part/p" | awk '/crypto_LUKS/ {print $4}')
+                LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
+                LVM=1
+                return 0;
+            fi
+        done
+        # Check if LUKS alone
+        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep "part" | grep -i "crypto_luks" | uniq | awk '{print "/dev/"$1}')
+        for i in ${cryptparts}; do
+            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                LUKS_UUID=$(lsblk -lno UUID,TYPE,FSTYPE ${i} | grep "part" | grep -i "crypto_luks" | awk '{print $1}')
+                LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
+                return 0;
+            fi
+        done
+    fi 
+}
+
+get_cryptboot(){
+    # If /boot is encrypted
+    if $(sblk | awk '/\/mnt\/boot$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt\/boot$/,/part/p" | awk '{print $6}' | grep -q crypt); then
+    
+        LUKS=1
+        boot_name=$(mount | awk '/\/mnt\/boot / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+        #Get the name of the Luks device
+        if $(lsblk -i | grep -q -e "crypt /mnt"); then
+            # Mountpoint is directly on the LUKS device, so LUKS deivece is the same as root name
+            LUKS_BOOT_NAME="$boot_name"
+            # Get UUID of the encrypted /boot
+            LUKS_BOOT_UUID=$(lsblk -lno UUID,MOUNTPOINT | awk '/\mnt\/boot$/ {print $1}')
+        else
+            # Mountpoint is not directly on LUKS device, so we need to get the crypt device above the mountpoint
+            LUKS_BOOT_NAME="$(lsblk -i | tac | sed -n -e "/\/mnt\/boot$/,/crypt/p" | awk '/crypt/ {print $1}' | sed 's/^..//')"
+            # Get UUID of the encrypted /boot
+            LUKS_BOOT_UUID=$(lsblk -ino NAME,FSTYPE,TYPE,MOUNTPOINT,UUID | tac | sed -n -e "/\/mnt\/boot /,/part/p" | awk '/crypto_LUKS/ {print $4}')
+        fi
+
+        # Check if LVM on LUKS
+        if $(lsblk -lno TYPE,MOUNTPOINT | grep "/mnt/boot$" | grep -q lvm); then
+            LVM=1
+        fi
+        # Add Cryptdevice to LUKS_DEV, if not already present (if on same LVM on LUKS as /)
+        if [[ $(echo $LUKS_DEV | grep $LUKS_BOOT_UUID) == "" ]]; then
+            LUKS_DEV="$LUKS_DEV cryptdevice=UUID=$LUKS_BOOT_UUID:$LUKS_BOOT_NAME"
+        fi
+    fi
+
+}
 btrfs_subvolumes() {
     #1) save mount options and name of the root partition 
     mount | grep "on /mnt " | grep -Po '(?<=\().*(?=\))' > /tmp/.root_mount_options

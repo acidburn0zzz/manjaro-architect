@@ -285,7 +285,6 @@ prep_menu() {
             "5") lvm_menu
                  ;;
             "6") mount_partitions
-                 recheck_luks
                  ;;
             "7") configure_mirrorlist
                  ;;
