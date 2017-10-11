@@ -911,6 +911,8 @@ mount_partitions() {
     ini mount.root "${PARTITION}"
     delete_partition_in_list "${ROOT_PART}"
 
+    # Extra check if root is on LUKS or lvm
+    get_cryptroot
     # If the root partition is btrfs, offer to create subvolumus
     if [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]]; then 
         DIALOG " Your root volume is formatted in btrfs " --yesno "\nWould you like to create subvolumes in it? \n " 0 0 && btrfs_subvolumes && touch /tmp/.btrfsroot
