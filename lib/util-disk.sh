@@ -913,6 +913,7 @@ mount_partitions() {
 
     # Extra check if root is on LUKS or lvm
     get_cryptroot
+    echo "$LUKS_DEV" > /tmp/.luks_dev
     # If the root partition is btrfs, offer to create subvolumus
     if [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]]; then 
         DIALOG " Your root volume is formatted in btrfs " --yesno "\nWould you like to create subvolumes in it? \n " 0 0 && btrfs_subvolumes && touch /tmp/.btrfsroot
@@ -996,6 +997,7 @@ mount_partitions() {
     done
     get_cryptroot
     get_cryptboot
+    echo "$LUKS_DEV" > /tmp/.luks_dev
 }
 
 get_cryptroot() {
@@ -1013,35 +1015,39 @@ get_cryptroot() {
         fi
       
         # Check if LUKS on LVM  
-        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep "lvm" | grep -i "crypto_luks" | uniq | awk '{print "/dev/mapper/"$1}')
-        for i in ${cryptparts}; do
-            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
-                LUKS_DEV="cryptdevice=${i}:$LUKS_ROOT_NAME"
-                LVM=1
-                return 0;
-            fi
-        done
+        if [[ $(lsblk -lno NAME,FSTYPE,TYPE,MOUNTPOINT | grep "lvm" | grep "/mnt$" | grep -i "crypto_luks" | uniq | awk '{print "/dev/mapper/"$1}') != "" ]]; then
+            cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE,MOUNTPOINT | grep "lvm" | grep "/mnt$" | grep -i "crypto_luks" | uniq | awk '{print "/dev/mapper/"$1}')
+            for i in ${cryptparts}; do
+                if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                    LUKS_DEV="cryptdevice=${i}:$LUKS_ROOT_NAME"
+                    LVM=1
+                fi
+            done
+        fi
         # Check if LVM on LUKS
-        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep " crypt$" | grep -i "LVM2_member" | uniq | awk '{print "/dev/mapper/"$1}')
-        for i in ${cryptparts}; do
-            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
-                LUKS_UUID=$(lsblk -ino NAME,FSTYPE,TYPE,MOUNTPOINT,UUID | tac | sed -n -e "/\/mnt /,/part/p" | awk '/crypto_LUKS/ {print $4}')
-                LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
-                LVM=1
-                return 0;
-            fi
-        done
+        if [[ $(lsblk -lno NAME,FSTYPE,TYPE | grep " crypt$" | grep -i "LVM2_member" | uniq | awk '{print "/dev/mapper/"$1}') != "" ]]; then
+            cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep " crypt$" | grep -i "LVM2_member" | uniq | awk '{print "/dev/mapper/"$1}')
+            for i in ${cryptparts}; do
+                if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                    LUKS_UUID=$(lsblk -ino NAME,FSTYPE,TYPE,MOUNTPOINT,UUID | tac | sed -n -e "/\/mnt /,/part/p" | awk '/crypto_LUKS/ {print $4}')
+                    LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
+                    LVM=1
+                fi
+            done
+        fi
         # Check if LUKS alone
-        cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE | grep "part" | grep -i "crypto_luks" | uniq | awk '{print "/dev/"$1}')
-        for i in ${cryptparts}; do
-            if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
-                LUKS_UUID=$(lsblk -lno UUID,TYPE,FSTYPE ${i} | grep "part" | grep -i "crypto_luks" | awk '{print $1}')
-                LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
-                return 0;
-            fi
-        done
+        if [[ $(lsblk -lno NAME,FSTYPE,TYPE | grep "part" | grep -i "crypto_luks" | uniq | awk '{print "/dev/"$1}') != "" ]]; then
+            cryptparts=$(lsblk -lno NAME,FSTYPE,TYPE,MOUNTPOINT | grep "/mnt$" | grep "part" | grep -i "crypto_luks" | uniq | awk '{print "/dev/"$1}')
+            for i in ${cryptparts}; do
+                if [[ $(lsblk -lno NAME ${i} | grep $LUKS_ROOT_NAME) != "" ]]; then
+                    LUKS_UUID=$(lsblk -lno UUID,TYPE,FSTYPE ${i} | grep "part" | grep -i "crypto_luks" | awk '{print $1}')
+                    LUKS_DEV="cryptdevice=UUID=$LUKS_UUID:$LUKS_ROOT_NAME"
+                fi
+            done
+        fi
+        echo "$LUKS_DEV" > /tmp/.luks_dev
     fi 
-    echo "$LUKS_DEV" > /tmp/.luks_dev
+
 }
 
 get_cryptboot(){
@@ -1071,8 +1077,9 @@ get_cryptboot(){
         if [[ $(echo $LUKS_DEV | grep $LUKS_BOOT_UUID) == "" ]]; then
             LUKS_DEV="$LUKS_DEV cryptdevice=UUID=$LUKS_BOOT_UUID:$LUKS_BOOT_NAME"
         fi
+        echo "$LUKS_DEV" > /tmp/.luks_dev
     fi
-    echo "$LUKS_DEV" > /tmp/.luks_dev
+
 }
 btrfs_subvolumes() {
     #1) save mount options and name of the root partition 
