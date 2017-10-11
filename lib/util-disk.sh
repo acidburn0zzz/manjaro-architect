@@ -998,7 +998,7 @@ mount_partitions() {
 
 get_cryptroot() {
         # Identify if /mnt or partition is type "crypt" (LUKS on LVM, or LUKS alone)
-    if $(sblk | awk '/\/mnt$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt$/,/part/p" | awk '{print $6}' | grep -q crypt); then
+    if $(lsblk | awk '/\/mnt$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt$/,/part/p" | awk '{print $6}' | grep -q crypt); then
         LUKS=1
         root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
         #Get the name of the Luks device
@@ -1039,11 +1039,12 @@ get_cryptroot() {
             fi
         done
     fi 
+    echo "$LUKS_DEV" > /tmp/.luks_dev
 }
 
 get_cryptboot(){
     # If /boot is encrypted
-    if $(sblk | awk '/\/mnt\/boot$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt\/boot$/,/part/p" | awk '{print $6}' | grep -q crypt); then
+    if $(lsblk | awk '/\/mnt\/boot$/ {print $6}' | grep -q crypt) || $(lsblk -i | tac | sed -n -e "/\/mnt\/boot$/,/part/p" | awk '{print $6}' | grep -q crypt); then
     
         LUKS=1
         boot_name=$(mount | awk '/\/mnt\/boot / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
@@ -1069,7 +1070,7 @@ get_cryptboot(){
             LUKS_DEV="$LUKS_DEV cryptdevice=UUID=$LUKS_BOOT_UUID:$LUKS_BOOT_NAME"
         fi
     fi
-
+    echo "$LUKS_DEV" > /tmp/.luks_dev
 }
 btrfs_subvolumes() {
     #1) save mount options and name of the root partition 
