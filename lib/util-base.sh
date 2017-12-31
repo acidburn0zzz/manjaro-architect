@@ -653,6 +653,9 @@ boot_encrypted_setting() {
         elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
             echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
             setup_luks_keyfile
+        # Check if root is on encrypted lvm volume
+        elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
         fi
     elif
         # There is a separate /boot. Check if it is encrypted 

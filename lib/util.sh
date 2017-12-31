@@ -442,7 +442,7 @@ rank_mirrors() {
     clear
     DIALOG " $_MirrorBranch " --msgbox "\n$_RankMirrors\n " 0 0
     clear
-    pacman-mirrors -gib "${branch}"
+    pacman-mirrors -ib "${branch}"
     [[ "$oldbranch" != "$branch" ]] && pacman -Syy
     echo ""
     ini branch "${branch}"
