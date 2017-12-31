@@ -630,18 +630,25 @@ bios_bootloader() {
 }
 
 boot_encrypted_setting() {
-    # Check if there is separate encrypted /boot partition 
-    if $(lsblk | grep '/mnt/boot' | grep -q 'crypt' ); then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
-    # Check if root is encrypted and there is no separate /boot
-    elif $(lsblk | grep "/mnt$" | grep -q 'crypt' ) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
-    # Check if root is on encrypted lvm volume
-    elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+    # Check if there is separate /boot partition 
+    if [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
+        #There is no separate /boot parition
+        # Check if root is encrypted
+        if $(lsblk | grep "/mnt$" | grep -q 'crypt' ); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+        # Check if root is on encrypted lvm volume
+        elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+        fi
+    elif
+        # There is a separate /boot. Check if it is encrypted 
+        if $(lsblk | grep '/mnt/boot' | grep -q 'crypt' ); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+        fi
     else
         true
     fi
+
 }
 
 recheck_luks() {
