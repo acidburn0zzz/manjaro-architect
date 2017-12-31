@@ -397,7 +397,8 @@ install_grub_uefi() {
     
     # if root is encrypted, amend /etc/default/grub
     root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
-    root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
+    root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')
+    root_part=$(lsblk -i | tac | sed -n -e "/$root_name/,/part/p" | awk '/part/ {print $1}' | tr -cd '[:alnum:]')
     boot_encrypted_setting
     # If encryption used amend grub
     [[ $(cat /tmp/.luks_dev) != "" ]] && sed -i "s~GRUB_CMDLINE_LINUX=.*~GRUB_CMDLINE_LINUX=\"$(cat /tmp/.luks_dev)\"~g" ${MOUNTPOINT}/etc/default/grub
@@ -629,19 +630,40 @@ bios_bootloader() {
     fi
 }
 
+setup_luks_keyfile() {
+    # Create a keyfile
+    dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
+    chmod 000 /mnt/crypto_keyfile.bin
+    # Add keyfile to luks
+    cryptsetup luksAddKey /dev/"$root_part" /mnt/crypto_keyfile.bin
+    # Add keyfile to initcpio
+    sed -i '/FILES/ s~)~/crypto_keyfile.bin)~' /mnt/etc/mkinitcpio.conf
+    arch_chroot "mkinitcpio -P"    
+}
+
 boot_encrypted_setting() {
-    # Check if there is separate encrypted /boot partition 
-    if $(lsblk | grep '/mnt/boot' | grep -q 'crypt' ); then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
-    # Check if root is encrypted and there is no separate /boot
-    elif $(lsblk | grep "/mnt$" | grep -q 'crypt' ) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
-    # Check if root is on encrypted lvm volume
-    elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt) && [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
-        echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+    # Check if there is separate /boot partition 
+    if [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
+        #There is no separate /boot parition
+        # Check if root is encrypted
+        if $(lsblk | grep "/mnt$" | grep -q 'crypt' ); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+            setup_luks_keyfile
+        # Check if root is on encrypted lvm volume
+        elif $(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '{print $6}' | grep -q crypt); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+            setup_luks_keyfile
+        fi
+    elif
+        # There is a separate /boot. Check if it is encrypted 
+        if $(lsblk | grep '/mnt/boot' | grep -q 'crypt' ); then
+            echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+            setup_luks_keyfile
+        fi
     else
         true
     fi
+
 }
 
 recheck_luks() {
