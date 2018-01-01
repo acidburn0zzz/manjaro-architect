@@ -632,12 +632,13 @@ bios_bootloader() {
 
 setup_luks_keyfile() {
     # Create a keyfile
-    dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
+    [[ -e /mnt/crypto_keyfile.bin ]] || dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin && echo "Generating a keyfile for the encrypted system"
     chmod 000 /mnt/crypto_keyfile.bin
     # Add keyfile to luks
+    echo "Adding the keyfile to the LUKS configuration"
     cryptsetup luksAddKey /dev/"$root_part" /mnt/crypto_keyfile.bin
     # Add keyfile to initcpio
-    sed -i '/FILES/ s~)~/crypto_keyfile.bin)~' /mnt/etc/mkinitcpio.conf
+    grep -q '/crypto_keyfile.bin' /mnt/etc/mkinitcpio.conf || sed -i '/FILES/ s~)~/crypto_keyfile.bin)~' /mnt/etc/mkinitcpio.conf && echo "Adding keyfile to the initcpio"
     arch_chroot "mkinitcpio -P"    
 }
 
