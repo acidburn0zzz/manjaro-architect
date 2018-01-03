@@ -389,6 +389,7 @@ install_desktop() {
 
 
     ## Setup desktop
+    if [[ -z "$overlay" ]]; then
     # copy the profile overlay to the new root
         echo "Copying overlay files to the new root"
         cp -r "$overlay"* ${MOUNTPOINT} 2>$ERR
@@ -416,6 +417,9 @@ install_desktop() {
         echo ""
         echo "press Enter to continue"
         read
+    else 
+        install_network_drivers
+    fi  
 }
 
 choose_mjr_desk() {
