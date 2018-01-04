@@ -107,15 +107,9 @@ install_all_drivers() {
 
     cat $PROFILES/shared/Packages-Mhwd > /tmp/.all_drivers
 
-    if [[ -e /mnt/.openrc ]]; then
-        # Remove any packages tagged with >systemd and remove >openrc tags
-        sed -i '/>systemd/d' /tmp/.all_drivers
-        sed -i 's/>openrc //g' /tmp/.all_drivers
-    else
-        # Remove any packages tagged with >openrc and remove >systemd tags
-        sed -i '/>openrc/d' /tmp/.all_drivers
-        sed -i 's/>systemd //g' /tmp/.all_drivers
-    fi
+    # Remove any packages tagged with >openrc and remove >systemd tags
+    sed -i '/>openrc/d' /tmp/.all_drivers
+    sed -i 's/>systemd //g' /tmp/.all_drivers
     sed -i '/>multilib/d' /tmp/.all_drivers
     sed -i '/>nonfree_multilib/d' /tmp/.all_drivers
     sed -i '/>nonfree_default/d' /tmp/.all_drivers
@@ -176,7 +170,6 @@ install_manjaro_de_wm() {
 
     # If something has been selected, install
     if [[ $(cat /tmp/.desktop) != "" ]]; then
-        [[ -e /mnt/.openrc ]] && evaluate_openrc
         check_for_error "selected: [Manjaro-$(cat /tmp/.desktop)]"
         clear
         # Source the iso-profile
@@ -247,23 +240,6 @@ install_desktop() {
     F2FS_CHECK=$(echo "f2fs-tools" "" off)
     mhwd-kernel -l | awk '/linux/ {print $2}' > /tmp/.available_kernels
     kernels=$(cat /tmp/.available_kernels)
-
-    # # User to select initsystem
-    # DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
-    #   "1" "systemd" \
-    #   "2" "openrc" 2>${INIT}
-
-    # if [[ $(cat ${INIT}) != "" ]]; then
-    #     if [[ $(cat ${INIT}) -eq 2 ]]; then
-    #         check_for_error "init openrc"
-    #         touch /mnt/.openrc
-    #     else
-    #         check_for_error "init systemd"
-    #         [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
-    #     fi
-    # else
-    #     return 0
-    # fi
     
     # Create the base list of packages
     echo "" > /mnt/.base
@@ -338,18 +314,9 @@ install_desktop() {
     }
 
     # copy keymap and consolefont settings to target
-    if [[ -e /mnt/.openrc ]]; then
-        echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
-        arch_chroot "rc-update add keymaps boot" 2>$ERR
-        check_for_error "configure keymaps" $?
-        echo -e "consolefont=\"$(ini linux.font)\"" > ${MOUNTPOINT}/etc/conf.d/consolefont
-        arch_chroot "rc-update add consolefont boot" 2>$ERR
-        check_for_error "configure consolefont" $?
-    else
         echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
         check_for_error "configure vconsole"
-    fi
-    
+ 
     # If root is on btrfs volume, amend mkinitcpio.conf
     if [[ -e /tmp/.btrfsroot ]]; then
         BTRFS_ROOT=1
@@ -432,7 +399,6 @@ choose_mjr_desk() {
 
     # If something has been selected, install
     if [[ $(cat /tmp/.desktop) != "" ]]; then
-        [[ -e /mnt/.openrc ]] && evaluate_openrc
         check_for_error "selected: [Manjaro-$(cat /tmp/.desktop)]"
         clear
         # Source the iso-profile

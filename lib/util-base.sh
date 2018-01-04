@@ -37,34 +37,6 @@ setup_profiles() {
 enable_services() {
         # Enable services in the chosen profile
         echo "Enabling services"
-        if [[ -e /mnt/.openrc ]]; then
-            eval $(grep -e "enable_openrc=" $profile | sed 's/# //g')
-            echo "${enable_openrc[@]}" | xargs -n1 > /tmp/.services
-            echo /mnt/etc/init.d/* | xargs -n1 | cut -d/ -f5 > /tmp/.available_services
-            grep -f /tmp/.available_services /tmp/.services > /tmp/.fix && mv /tmp/.fix /tmp/.services
-            for service in $(cat /tmp/.services) ; do
-                arch_chroot "rc-update add $service default" 2>$ERR
-                check_for_error "enable $service" $?
-            done
-
-            # enable display manager for openrc
-            if [[ "$(cat /tmp/.display-manager)" == sddm ]]; then
-                sed -i "s/$(grep "DISPLAYMANAGER=" /mnt/etc/conf.d/xdm)/DISPLAYMANAGER=\"sddm\"/g" /mnt/etc/conf.d/xdm
-                arch_chroot "rc-update add xdm default" 2>$ERR
-                check_for_error "add xdm default: sddm" "$?"
-                set_sddm_ck
-            elif [[ "$(cat /tmp/.display-manager)" == lightdm ]]; then
-                set_lightdm_greeter
-                sed -i "s/$(grep "DISPLAYMANAGER=" /mnt/etc/conf.d/xdm)/DISPLAYMANAGER=\"lightdm\"/g" /mnt/etc/conf.d/xdm
-                arch_chroot "rc-update add xdm default" 2>$ERR
-                check_for_error "add xdm default: lightdm" "$?"
-
-            else
-                check_for_error "no DM installed."
-                echo "no display manager was installed."
-                sleep 2
-            fi
-        else
             eval $(grep -e "enable_systemd=" $profile | sed 's/# //g')
             echo "${enable_systemd[@]}" | xargs -n1 > /tmp/.services
             echo /mnt/usr/lib/systemd/system/* | xargs -n1 | cut -d/ -f7 | sed 's/.service//g' > /tmp/.available_services
@@ -90,7 +62,6 @@ enable_services() {
                 echo "no display manager was installed"
                 sleep 2
             fi
-        fi
 }
 
 install_extra() {
@@ -124,15 +95,9 @@ filter_packages() {
             check_for_error "$FUNCNAME" $?  
         fi
         
-        if [[ -e /mnt/.openrc ]]; then
-            # Remove any packages tagged with >systemd and remove >openrc tags
-            sed -i '/>systemd/d' $pkgs_target
-            sed -i 's/>openrc //g' $pkgs_target
-        else
-            # Remove any packages tagged with >openrc and remove >systemd tags
-            sed -i '/>openrc/d' $pkgs_target
-            sed -i 's/>systemd //g' $pkgs_target
-        fi
+        # Remove any packages tagged with >openrc and remove >systemd tags
+        sed -i '/>openrc/d' $pkgs_target
+        sed -i 's/>systemd //g' $pkgs_target
 
         if [[ "$(uname -m)" == "x86_64" ]]; then
             # Remove any packages tagged with >i686 and remove >x86_64 tags
@@ -214,23 +179,6 @@ install_base() {
     mhwd-kernel -l | awk '/linux/ {print $2}' > /tmp/.available_kernels
     kernels=$(cat /tmp/.available_kernels)
 
-    # User to select initsystem - Disabled for now because openrc is no longer supported
-    #DIALOG " $_ChsInit " --menu "\n$_Note\n$_WarnOrc\n$(evaluate_profiles)\n " 0 0 2 \
-    #  "1" "systemd" \
-    #  "2" "openrc" 2>${INIT}
-
-    #if [[ $(cat ${INIT}) != "" ]]; then
-    #    if [[ $(cat ${INIT}) -eq 2 ]]; then
-    #        check_for_error "init openrc"
-    #        touch /mnt/.openrc
-    #    else
-    #        check_for_error "init systemd"
-    #        [[ -e /mnt/.openrc ]] && rm /mnt/.openrc
-    #    fi
-    #else
-    #    return 0
-    #fi
-    
     # Create the base list of packages
     echo "" > /mnt/.base
 
@@ -301,17 +249,8 @@ install_base() {
     }
 
     # copy keymap and consolefont settings to target
-    if [[ -e /mnt/.openrc ]]; then
-        echo -e "keymap=\"$(ini linux.keymap)\"" > ${MOUNTPOINT}/etc/conf.d/keymaps
-        arch_chroot "rc-update add keymaps boot" 2>$ERR
-        check_for_error "configure keymaps" $?
-        echo -e "consolefont=\"$(ini linux.font)\"" > ${MOUNTPOINT}/etc/conf.d/consolefont
-        arch_chroot "rc-update add consolefont boot" 2>$ERR
-        check_for_error "configure consolefont" $?
-    else
-        echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
-        check_for_error "configure vconsole"
-    fi
+    echo -e "KEYMAP=$(ini linux.keymap)\nFONT=$(ini linux.font)" > ${MOUNTPOINT}/etc/vconsole.conf
+    check_for_error "configure vconsole"
     
     # If root is on btrfs volume, amend mkinitcpio.conf
     if [[ -e /tmp/.btrfsroot ]]; then
@@ -632,7 +571,7 @@ bios_bootloader() {
 
 setup_luks_keyfile() {
     # Create a keyfile
-    [[ -e /mnt/crypto_keyfile.bin ]] || dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin && echo "Generating a keyfile for the encrypted system"
+    [[ -e /mnt/crypto_keyfile.bin ]] || dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin && echo "Generating a keyfile"
     chmod 000 /mnt/crypto_keyfile.bin
     # Add keyfile to luks
     echo "Adding the keyfile to the LUKS configuration"
@@ -718,10 +657,7 @@ set_locale() {
     arch_chroot "locale-gen" >/dev/null 2>$ERR
     check_for_error "$FUNCNAME" "$?"
     ini linux.locale "$LOCALE"
-    if [[ -e /mnt/.openrc ]]; then 
-        mkdir ${MOUNTPOINT}/etc/env.d
-        echo "LANG=\"${LOCALE}\"" > ${MOUNTPOINT}/etc/env.d/02locale
-    fi
+
 }
 
 # Set Zone and Sub-Zone
