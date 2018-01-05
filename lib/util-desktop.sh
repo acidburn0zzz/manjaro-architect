@@ -356,7 +356,7 @@ install_desktop() {
 
 
     ## Setup desktop
-    if [[ -z "$overlay" ]]; then
+    if [[ $(cat /tmp/.desktop) != "" ]]; then
     # copy the profile overlay to the new root
         echo "Copying overlay files to the new root"
         cp -r "$overlay"* ${MOUNTPOINT} 2>$ERR
