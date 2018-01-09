@@ -585,8 +585,15 @@ boot_encrypted_setting() {
     # Check if there is separate /boot partition 
     if [[ $(lsblk | grep "/mnt/boot$") == "" ]]; then
         #There is no separate /boot parition
+        root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
         # Check if root is encrypted
-        if $(lsblk | grep "/mnt$" | grep -q 'crypt' ); then
+        if  [[ "$LUKS" == 1 ]]; then
+            grep -q "GRUB_ENABLE_CRYPTODISK=y" /mnt/etc/default/grub || echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+            setup_luks_keyfile
+        elif $(lsblk "/dev/mapper/$root_name" | grep -q 'crypt' ); then
+            grep -q "GRUB_ENABLE_CRYPTODISK=y" /mnt/etc/default/grub || echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
+            setup_luks_keyfile
+        elif $(lsblk | grep "/mnt$" | grep -q 'crypt' ); then
             grep -q "GRUB_ENABLE_CRYPTODISK=y" /mnt/etc/default/grub || echo "GRUB_ENABLE_CRYPTODISK=y" >> /mnt/etc/default/grub
             setup_luks_keyfile
         # Check if root is on encrypted lvm volume
