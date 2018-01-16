@@ -322,6 +322,13 @@ uefi_bootloader() {
 install_grub_uefi() {
 
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstUefiBtBody\n " 0 0 || return 0
+    if $(efibootmgr | cut -d\  -f2 | grep -q -o manjaro); then
+        DIALOG " Bootloader id " --inputbox "\nInput the name identify your grub installation. Choosing an existing name overwrites it." 0 0 "manjaro" 2>/tmp/.bootid || return 0
+        bootid=$(cat /tmp/.bootid)
+    else
+        bootid="manjaro"
+    fi
+    
     clear
     if $(mount | awk '$3 == "/mnt" {print $0}' | grep btrfs | grep -qv subvolid=5) ; then 
         basestrap ${MOUNTPOINT} grub-btrfs efibootmgr dosfstools 2>$ERR
@@ -331,8 +338,7 @@ install_grub_uefi() {
         check_for_error "$FUNCNAME grub" $? || return 1
     fi
 
-
-    DIALOG " $_InstGrub " --infobox "\n$_PlsWaitBody\n " 0 0
+    #DIALOG " $_InstGrub " --infobox "\n$_PlsWaitBody\n " 0 0
     
     # if root is encrypted, amend /etc/default/grub
     root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
@@ -343,10 +349,10 @@ install_grub_uefi() {
     [[ $(cat /tmp/.luks_dev) != "" ]] && sed -i "s~GRUB_CMDLINE_LINUX=.*~GRUB_CMDLINE_LINUX=\"$(cat /tmp/.luks_dev)\"~g" ${MOUNTPOINT}/etc/default/grub
     #install grub
     if [[ "$(cat /sys/block/${root_device}/removable)" == 1 ]]; then
-        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro --recheck --removable" 2>$ERR
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=${bootid} --recheck --removable" 2>$ERR
         check_for_error "grub-install --target=x86_64-efi" $?
     else
-        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=manjaro --recheck" 2>$ERR
+        arch_chroot "grub-install --target=x86_64-efi --efi-directory=${UEFI_MOUNT} --bootloader-id=${bootid} --recheck" 2>$ERR
         check_for_error "grub-install --target=x86_64-efi" $?
     fi
 
