@@ -247,7 +247,12 @@ _FormUefiBody="Die UEFI-Partition"
 _FormUefiBody2="ist bereits formatiert.\n\nUmformatieren? Das wird ALLE Daten, die auf dieser sich bereits befinden, löschen."
 
 # UEFI Mountpoint
-_MntUefiBody="Wähle UEFI Einhängpunkt."
+_MntUefiBody="Select UEFI Mountpoint.\n\n
+/boot/efi is recommended for multiboot systems.\n
+/boot is required for systemd-boot." # translate me !
+_MntUefiCrypt="Select UEFI Mountpoint.\n\n
+/boot/efi is recommended for multiboot systems and required for full disk encryption. Encrypted /boot is supported only by grub and can lead to slow startup.\n\n
+/boot is required for systemd-boot and for refind when using encryption." # translate me !
 
 # Extra Partitions
 _ExtPartBody="Wählen Sie zusätliche einzuhängende Partitionen in beliebiger Reihenfolge oder 'Fertig' zum Verlassen."
