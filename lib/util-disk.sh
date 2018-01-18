@@ -941,7 +941,12 @@ mount_partitions() {
                 check_for_error "mkfs.vfat -F32 ${PARTITION}" "$?"
             fi
 
-            DIALOG " $_PrepMntPart " --radiolist "\n$_MntUefiBody\n "  0 0 2 \
+            if [[ "$LUKS" == 1 ]]; then
+                _MntUefiMessage="$_MntUefiBody"
+            else
+                _MntUefiMessage="$_MntUefiCrypt"
+            fi
+            DIALOG " $_PrepMntPart " --radiolist "\n$_MntUefiMessage\n "  0 0 2 \
             "/boot/efi" "" on \
             "/boot" "" off 2>${ANSWER}
 

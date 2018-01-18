@@ -366,7 +366,7 @@ set_keymap() {
 
 mk_connection() {
     if [[ ! -n "$(curl -Is https://manjaro.org | head -1)" ]]; then
-        DIALOG " $_NoCon " --yesno "\n$_EstCon\n " 0 0 && $NW_CMD && return 0 || clear && exit 0
+        DIALOG " $_NoCon " --yesno "\n$_EstCon\n " 0 0 && $NW_CMD && return 0 || clear
     fi
 }
 
@@ -376,20 +376,20 @@ check_connection() {
 #    DIALOG " $_ChkTitle " --infobox "\n$_ChkBody\n " 0 0
 #    sleep 2
 
-    if [[ ! $(ping -c 1 google.com) ]]; then
-        DIALOG " $_ErrTitle " --infobox "\n$_ConFailBody\n " 0 0
-        sleep 3
+    if [[ $(ping -c 1 google.com) ]]; then
+        DIALOG " $_ReqMetTitle " --infobox "\n$_ReqMetBody\n\n$_UpdDb\n " 0 0
+        sleep 2
         clear
-        exit 1
+        echo "" > $ERR
+        pacman -Syy 2>$ERR
+        check_for_error "refresh database" $? SKIP
+        greeting
+    else
+        true
     fi
 
     # The error log is also cleared, just in case something is there from a previous use of the installer.
-    DIALOG " $_ReqMetTitle " --infobox "\n$_ReqMetBody\n\n$_UpdDb\n " 0 0
-    sleep 2
-    clear
-    echo "" > $ERR
-    pacman -Syy 2>$ERR
-    check_for_error "refresh database" $? SKIP
+    
 }
 
 # Greet the user when first starting the installer

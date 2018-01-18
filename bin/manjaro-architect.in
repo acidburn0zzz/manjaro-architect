@@ -43,5 +43,5 @@ id_system
 set_language
 mk_connection
 check_connection
-greeting
+#greeting
 main_menu
