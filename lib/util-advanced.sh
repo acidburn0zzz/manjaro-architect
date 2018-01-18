@@ -104,14 +104,13 @@ install_vanilla_de_wm() {
     while ((loopmenu)); do
         ssubmenu 7
         DIALOG " $_InstGrMenuTitle " --default-item ${HIGHLIGHT_SSUB} \
-          --menu "\n$_InstGrMenuBody\n " 0 0 7 \
+          --menu "\n$_InstGrMenuBody\n " 0 0 6 \
           "1" "$_InstGrMenuDS" \
           "2" "$_InstGrDE" \
           "3" "$_InstGrMenuDM" \
           "4" "$_InstNMMenuTitle|>" \
           "5" "$_InstMultMenuTitle|>" \
-          "6" "$_InstMulCust" \
-          "7" "$_Back" 2>${ANSWER}
+          "6" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SSUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -124,8 +123,6 @@ install_vanilla_de_wm() {
             "4") install_network_menu
                  ;;
             "5") install_multimedia_menu
-                 ;;
-            "6") install_cust_pkgs
                  ;;
             *) loopmenu=0
                 return 0
