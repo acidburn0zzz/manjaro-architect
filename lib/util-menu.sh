@@ -535,12 +535,3 @@ performance_menu() {
         esac
     done
 }
-
-_TweaksMenuTitle="System tweaks"
-_PerfBody="Settings to configure your system to a specific workload"
-_TweaksBody="Various configuration options"
-_PerfMenu="Performance"
-_SetSchd="I/O schedulers"
-_SetSwap="Swap configuration"
-_AutologEnable="Enable automatic login"
-_HibrnEnable="Enable hibernation"
