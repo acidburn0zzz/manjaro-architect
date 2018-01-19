@@ -487,3 +487,12 @@ Appuyez sur Tab pour sélectionner plusieurs paquets puis validez avec Entrée."
 #Extra
 _ExtraTitle="Paquets additionnels"
 _ExtraBody="Voulez-vous ajouter des paquets additionnels à votre installation ?"
+
+_TweaksMenuTitle="System tweaks" # translate me !
+_PerfBody="Settings to configure your system to a specific workload" # translate me !
+_TweaksBody="Various configuration options" # translate me !
+_PerfMenu="Performance" # translate me !
+_SetSchd="I/O schedulers" # translate me !
+_SetSwap="Swap configuration" # translate me !
+_AutologEnable="Enable automatic login" # translate me !
+_HibrnEnable="Enable hibernation" # translate me !

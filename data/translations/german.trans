@@ -476,3 +476,12 @@ _AddPkgs="Wähle zusätzliche Pakete zur Installation.\nSuchen durch Eingabe des
 #Extra
 _ExtraTitle="Zusätzliche Pakete"
 _ExtraBody="Möchten Sie der Installation zusätzliche Pakete hinzufügen?"
+
+_TweaksMenuTitle="System tweaks" # translate me !
+_PerfBody="Settings to configure your system to a specific workload" # translate me !
+_TweaksBody="Various configuration options" # translate me !
+_PerfMenu="Performance" # translate me !
+_SetSchd="I/O schedulers" # translate me !
+_SetSwap="Swap configuration" # translate me !
+_AutologEnable="Enable automatic login" # translate me !
+_HibrnEnable="Enable hibernation" # translate me !

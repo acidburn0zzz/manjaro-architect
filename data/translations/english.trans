@@ -481,3 +481,12 @@ _AddPkgs="Choose any extra packages you would like to add.\nSearch packages by t
 _ExtraTitle="Extra Packages"
 _ExtraBody="Would you like to add any additional packages to your installation?"
 
+_TweaksMenuTitle="System tweaks"
+_PerfBody="Settings to configure your system to a specific workload"
+_TweaksBody="Various configuration options"
+_PerfMenu="Performance"
+_SetSchd="I/O schedulers"
+_SetSwap="Swap configuration"
+_AutologEnable="Enable automatic login"
+_HibrnEnable="Enable hibernation"
+

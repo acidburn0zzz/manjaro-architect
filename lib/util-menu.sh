@@ -96,11 +96,11 @@ install_core_menu() {
         submenu 8
         DIALOG " $_InstCrMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstCrMenuBody\n " 0 0 8 \
           "1" "$_InstBse" \
-          "2" "$_InstBootldr" \
-          "3" "$_ConfBseMenuTitle" \
+          "2" "$_InstBootldr|>" \
+          "3" "$_ConfBseMenuTitle|>" \
           "4" "$_InstMulCust" \
-          "5" "$_SecMenuTitle|>" \
-          "6" "$_SeeConfOptTitle" \
+          "5" "$_TweaksMenuTitle|>" \
+          "6" "$_SeeConfOptTitle|>" \
           "7" "$_ChrootTitle" \
           "8" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
@@ -114,7 +114,7 @@ install_core_menu() {
                  ;;
             "4") install_cust_pkgs
                  ;;
-            "5") check_base && security_menu
+            "5") check_base && tweaks_menu
                 ;;
             "6") check_base && {
                     type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
@@ -137,10 +137,10 @@ install_desktop_system_menu() {
         submenu 7
         DIALOG " $_InstDsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_MMBody\n$_InstDsMenuBody\n " 0 0 7 \
           "1" "$_InstDEStable|>" \
-          "2" "$_InstBootldr" \
-          "3" "$_ConfBseMenuTitle" \
-          "4" "$_SecMenuTitle|>" \
-          "5" "$_SeeConfOptTitle" \
+          "2" "$_InstBootldr|>" \
+          "3" "$_ConfBseMenuTitle|>" \
+          "4" "$_TweaksMenuTitle|>" \
+          "5" "$_SeeConfOptTitle|>" \
           "6" "$_ChrootTitle" \
           "7" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
@@ -152,7 +152,7 @@ install_desktop_system_menu() {
                  ;;
             "3") check_base && config_base_menu
                  ;;
-            "4") check_base && security_menu
+            "4") check_base && tweaks_menu
                 ;;
             "5") check_base && {
                     type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
@@ -176,10 +176,10 @@ install_custom_menu() {
         DIALOG " $_InstCsMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_InstCsMenuBody\n " 0 0 9 \
           "1" "$_InstBse" \
           "2" "$_InstDE|>" \
-          "3" "$_InstBootldr" \
-          "4" "$_ConfBseMenuTitle" \
+          "3" "$_InstBootldr|>" \
+          "4" "$_ConfBseMenuTitle|>" \
           "5" "$_InstMulCust" \
-          "6" "$_SecMenuTitle|>" \
+          "6" "$_TweaksMenuTitle|>" \
           "7" "$_SeeConfOptTitle" \
           "8" "$_ChrootTitle" \
           "9" "$_Back" 2>${ANSWER}
@@ -196,7 +196,7 @@ install_custom_menu() {
                  ;;
             "5") install_cust_pkgs
                  ;;
-            "6") check_base && security_menu
+            "6") check_base && tweaks_menu
                 ;;
             "7") check_base && {
                     type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
@@ -480,3 +480,67 @@ install_graphics_menu() {
             ;;
     esac
 }
+
+tweaks_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 7
+        DIALOG " $_TweaksMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_TweaksBody " 0 0 5 \
+          "1" "$_AutologEnable" \
+          "2" "$_HibrnEnable" \
+          "3" "$_PerfMenu|>" \
+          "4" "$_SecMenuTitle|>" \
+          "5" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") enable_autologin
+                 ;;
+            "2") enable_hibernation
+                 ;;
+            "3") performance_menu
+                 ;;
+            "4") security_menu
+                ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+performance_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 3
+        DIALOG " $_PerfMenu " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PerfBody\n " 0 0 4 \
+          "1" "$_SetSchd" \
+          "2" "$_SetSwap" \
+          "3" "Preload" \
+          "4" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") set_schedulers
+                 ;;
+            "2") set_swappiness
+                 ;;
+            "3") preloader
+                 ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+_TweaksMenuTitle="System tweaks"
+_PerfBody="Settings to configure your system to a specific workload"
+_TweaksBody="Various configuration options"
+_PerfMenu="Performance"
+_SetSchd="I/O schedulers"
+_SetSwap="Swap configuration"
+_AutologEnable="Enable automatic login"
+_HibrnEnable="Enable hibernation"

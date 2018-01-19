@@ -649,3 +649,87 @@ security_menu() {
         esac
     done
 }
+
+enable_console_logging() {
+  echo "ForwardToConsole=yes
+TTYPath=/dev/tty12" >> /mnt/etc/systemd/jounald.conf
+  sed -i '/MaxLevelConsole/ s/#//' /mnt/etc/systemd/journald.conf
+}
+
+enable_hibernation() { 
+if DIALOG " Hibernation setup " --yesno "\nAre you sure you want to enable hibernation automatically? \n " 0 0; then
+  if ! [[ -e /mnt/etc/fstab ]]; then
+    generate_fstab
+  fi
+  basestrap ${MOUNTPOINT} "hibernator"
+  arch_chroot "hibernator" 2>$ERR
+  check_for_error "Running hibernator" $?
+  [[ $? == 0 ]] && DIALOG " Hibernation setup " --infobox "\nHibernator was successfully run \n " 0 0
+else
+  return 0
+fi
+}
+
+enable_autologin() {
+  dm=$(file /mnt/etc/systemd/system/display-manager.service 2>/dev/null | awk -F'/' '{print $NF}' | cut -d. -f1)
+  [[ -z $dm ]] && dm=xlogin
+  if DIALOG " Autologin setup " --yesno "\nThis option enables autologin using $dm.\n\nProceed? \n " 0 0; then
+      #detect displaymanager
+      if [[ $(echo /mnt/home/* | xargs -n1 | wc -l) == 1 ]]; then
+        autologin_user=$(echo /mnt/home/* | cut -d/ -f4)
+      else
+        autologin_user=$(echo /mnt/home/* | cut -d/ -f4 | fzf --reverse --prompt="user> " --header="Choose the user to automatically log in")
+      fi
+      #enable autologin
+      case "$(echo $dm)" in 
+        gdm)      sed -i "s/^AutomaticLogin=*/AutomaticLogin=$autologin_user/g" /mnt/etc/gdm/custom.conf
+                  sed -i 's/^AutomaticLoginEnable=*/AutomaticLoginEnable=true/g' /mnt/etc/gdm/custom.conf
+                  sed -i 's/^TimedLoginEnable=*/TimedLoginEnable=true/g' /mnt/etc/gdm/custom.conf
+                  sed -i 's/^TimedLogin=*/TimedLoginEnable=$autologin_user/g' /mnt/etc/gdm/custom.conf
+                  sed -i 's/^TimedLoginDelay=*/TimedLoginDelay=0/g' /mnt/etc/gdm/custom.conf    
+            ;;
+        lightdm)  sed -i "s/^#autologin-user=/autologin-user=$autologin_user/" /mnt/etc/lightdm/lightdm.conf
+                  sed -i 's/^#autologin-user-timeout=0/autologin-user-timeout=0/' /mnt/etc/lightdm/lightdm.conf
+                  arch_chroot "groupadd -r autologin"
+                  arch_chroot "gpasswd -a $autologin_user autologin"
+            ;;
+        sddm)     xsession=$(echo /usr/share/xsessions/* | xargs -n1 | head -n1)
+                  [[ -e /mnt/etc/sddm.conf ]] || arch_chroot "sddm --example-config > /etc/sddm.conf"
+                  sed -i "s/^User=/User=$autologin_user/g" /mnt/etc/sddm.conf
+                  sed -i "s/^Session/Session=$xsession/g" /mnt/etc/sddm.conf
+            ;;
+        lxdm)     sed -i "s/^# autologin=dgod/autologin=$autologin_user/g" /mnt/etc/lxdm/lxdm.conf
+            ;;
+        *)        basestrap ${MOUNTPOINT} "xlogin"
+                  arch_chroot "systemctl enable xlogin@${autologin_user}"
+            ;;
+      esac
+fi
+}
+
+set_schedulers() {
+  [[ -e /mnt/etc/udev/rules.d/60-ioscheduler.rules ]] ||  \
+  echo '# set scheduler for non-rotating disks
+# noop and deadline are recommended for non-rotating disks
+# for rotational disks, cfq gives better performance and bfq-sq more responsive desktop environment
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
+# set scheduler for rotating disks
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq-sq"' > /mnt/etc/udev/rules.d/60-ioscheduler.rules
+  nano /mnt/etc/udev/rules.d/60-ioscheduler.rules
+}
+
+set_swappiness() {
+  [[ -e /mnt/etc/sysctl.d/99-sysctl.conf ]] ||  \
+  echo 'vm.swappiness = 10
+vm.vfs_cache_pressure = 50
+#vm.dirty_ratio = 3' > /mnt/etc/sysctl.d/99-sysctl.conf
+  nano /mnt/etc/sysctl.d/99-sysctl.conf
+}
+
+preloader() {
+  if DIALOG " Preload setup " --yesno "\n Enabling preload loads often used applications to ram in advance in order to start them up more quickly. \n\nProceed? \n " 0 0; then
+    basestrap ${MOUNTPOINT} "preload"
+    arch_chroot "systemctl enable preload"
+  fi
+
+}
