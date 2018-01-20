@@ -537,7 +537,7 @@ logs_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 3
-        DIALOG " $_LogMenu " --default-item ${HIGHLIGHT_SUB} --menu "\n$_LogBody\n " 0 0 4 \
+        DIALOG " $_LogMenu " --default-item ${HIGHLIGHT_SUB} --menu "\n$_LogBody\n " 0 0 5 \
           "1" "Dmesg" \
           "2" "Pacman log" \
           "3" "Xorg log" \
@@ -552,7 +552,7 @@ logs_menu() {
                  ;;
             "3") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/Xorg.0.log
                  ;;
-            "4") arch_chroot "journalctl" | --header="Exit by pressing esc" --prompt="Type to filter log entries > "
+            "4") arch_chroot "journalctl" | fzf --header="Exit by pressing esc" --prompt="Type to filter log entries > "
                  ;;
             *) loopmenu=0
                 return 0
