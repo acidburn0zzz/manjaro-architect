@@ -468,10 +468,14 @@ _MMNewBody="Wählen Sie die Installationsart nach dem Einhängen der Partitionen
 _SysRescTitle="System reparieren"
 _SysRescBody="Dieses Menu enthält Werkzeuge zur Reparatur eines beschädigten Systems."
 _RmPkgs="Pakete entfernen"
-_RmPkgsMsg="Pakete nach Namen suchen.\nTAB zur Auswahl weiterer Pakete."
+_RmPkgsMsg="Pakete nach Namen suchen.
+TAB zur Auswahl weiterer Pakete."
 _RmPkgsPrmpt="Zu entfernendes Paket"
 _AddPkgsPrmpt="Paket"
-_AddPkgs="Wähle zusätzliche Pakete zur Installation.\nSuchen durch Eingabe des Namens.\nTAB zur Auswahl weiterer Pakete\nFortfahren/Abbrechen mit ENTER."
+_AddPkgs="Wähle zusätzliche Pakete zur Installation.
+Suchen durch Eingabe des Namens.
+TAB zur Auswahl weiterer Pakete
+Fortfahren/Abbrechen mit ENTER."
 
 #Extra
 _ExtraTitle="Zusätzliche Pakete"

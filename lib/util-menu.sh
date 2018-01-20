@@ -552,7 +552,7 @@ logs_menu() {
                  ;;
             "3") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/Xorg.0.log
                  ;;
-            "4") arch_chroot "journalctl" | fzf --header="Exit by pressing esc" --prompt="Type to filter log entries > "
+            "4") arch_chroot "journalctl" | fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > "
                  ;;
             *) loopmenu=0
                 return 0
