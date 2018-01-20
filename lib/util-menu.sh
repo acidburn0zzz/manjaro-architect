@@ -182,10 +182,10 @@ system_rescue_menu() {
           "3" "$_ConfBseMenuTitle" \
           "4" "$_InstMulCust" \
           "5" "$_RmPkgs" \
-          "6" "$_SeeConfOptTitle" \
+          "6" "$_SeeConfOptTitle|>" \
           "7" "$_ChrootTitle" \
-          "8" "$_DataRecMenu" \
-          "9" "$_LogMenu" \
+          "8" "$_DataRecMenu|>" \
+          "9" "$_LogMenu|>" \
           "10" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
@@ -541,8 +541,8 @@ logs_menu() {
           "1" "Dmesg" \
           "2" "Pacman log" \
           "3" "Xorg log" \
-          "3" "Journalctl" \
-          "4" "$_Back" 2>${ANSWER}
+          "4" "Journalctl" \
+          "5" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -550,9 +550,9 @@ logs_menu() {
                  ;;
             "2") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/pacman.log
                  ;;
-            "3") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/Xorg.*
+            "3") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/Xorg.0.log
                  ;;
-            "5") arch_chroot "journalctl" | --header="Exit by pressing esc" --prompt="Type to filter log entries > "
+            "4") arch_chroot "journalctl" | --header="Exit by pressing esc" --prompt="Type to filter log entries > "
                  ;;
             *) loopmenu=0
                 return 0
