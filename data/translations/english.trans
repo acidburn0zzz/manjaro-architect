@@ -490,3 +490,8 @@ _SetSwap="Swap configuration"
 _AutologEnable="Enable automatic login"
 _HibrnEnable="Enable hibernation"
 
+_LogMenu="View system logs"
+_LogBody="Parse system logs with fzf"
+_DataRecMenu="Data recovery"
+_DataRecBody="Various tools for data backup and recovery"
+

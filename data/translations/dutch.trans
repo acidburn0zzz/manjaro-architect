@@ -492,3 +492,7 @@ _SetSchd="I/O schedulers" # translate me !
 _SetSwap="Swap configuration" # translate me !
 _AutologEnable="Enable automatic login" # translate me !
 _HibrnEnable="Enable hibernation" # translate me !
+_LogMenu="View system logs" # translate me !
+_LogBody="Parse system logs with fzf" # translate me !
+_DataRecMenu="Data recovery" # translate me !
+_DataRecBody="Various tools for data backup and recovery" # translate me !

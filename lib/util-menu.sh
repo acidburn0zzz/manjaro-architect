@@ -12,47 +12,6 @@
 
 import /usr/lib/manjaro-architect/util-desktop.sh 
 
-main_menub() {
-    declare -i loopmenu=1
-    while ((loopmenu)); do
-        if [[ $HIGHLIGHT != 6 ]]; then
-           HIGHLIGHT=$(( HIGHLIGHT + 1 ))
-        fi
-
-        DIALOG " $_MMTitle " --default-item ${HIGHLIGHT} \
-          --menu "\n$_MMBody\n " 0 0 6 \
-          "1" "$_PrepMenuTitle|>" \
-          "2" "$_InstBsMenuTitle|>" \
-          "3" "$_ConfBseMenuTitle|>" \
-          "4" "$_SeeConfOptTitle" \
-          "5" "$_InstAdvBase|>" \
-          "6" "$_Done" 2>${ANSWER}
-        HIGHLIGHT=$(cat ${ANSWER})
-
-        case $(cat ${ANSWER}) in
-            "1") prep_menu
-                ;;
-            "2") check_mount && install_base_menu
-                ;;
-            "3") check_base && config_base_menu
-                ;;
-            "4") check_base && {
-                    type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
-                    edit_configs
-                    }
-                ;;
-            "5") check_base && {
-                    type advanced_menu &>/dev/null || import ${LIBDIR}/util-advanced.sh
-                    advanced_menu
-                    }
-                ;;
-             *) loopmenu=0
-                exit_done
-                ;;
-        esac
-    done
-}
-
 main_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
@@ -79,7 +38,7 @@ main_menu() {
                 ;;
             "4") check_mount && install_custom_menu
                 ;;
-            "5") check_mount && system_rescue_menu
+            "5") system_rescue_menu
                 ;;
              *) loopmenu=0
                 exit_done
@@ -217,7 +176,7 @@ system_rescue_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 8
-        DIALOG " $_SysRescTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SysRescBody\n " 0 0 8 \
+        DIALOG " $_SysRescTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_SysRescBody\n " 0 0 10 \
           "1" "$_InstDrvTitle|>" \
           "2" "$_InstBootldr|>" \
           "3" "$_ConfBseMenuTitle" \
@@ -225,26 +184,32 @@ system_rescue_menu() {
           "5" "$_RmPkgs" \
           "6" "$_SeeConfOptTitle" \
           "7" "$_ChrootTitle" \
-          "8" "$_Back" 2>${ANSWER}
+          "8" "$_DataRecMenu" \
+          "9" "$_LogMenu" \
+          "10" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
-            "1") check_base && install_drivers_menu
+            "1") check_mount && check_base && install_drivers_menu
                  ;;
-            "2") check_base && install_bootloader
+            "2") check_mount && check_base && install_bootloader
                  ;;
-            "3") check_base && config_base_menu
+            "3") check_mount && check_base && config_base_menu
                  ;;
-            "4") install_cust_pkgs
+            "4") check_mount && install_cust_pkgs
                  ;;
-            "5") check_base && rm_pgs
+            "5") check_mount && check_base && rm_pgs
                  ;;
-            "6") check_base && {
+            "6") check_mount && check_base && {
                     type edit_configs &>/dev/null || import ${LIBDIR}/util-config.sh
                     edit_configs
                     }
                 ;;
-            "7") check_base && chroot_interactive
+            "7") check_mount && check_base && chroot_interactive
+                ;;
+            "8") recovery_menu
+                ;;
+            "9") check_mount && check_base && logs_menu
                 ;;
             *) loopmenu=0
                 return 0
@@ -528,6 +493,66 @@ performance_menu() {
             "2") set_swappiness
                  ;;
             "3") preloader
+                 ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+recovery_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 3
+        DIALOG " $_DataRecMenu " --default-item ${HIGHLIGHT_SUB} --menu "\n$_DataRecBody\n " 0 0 3 \
+          "1" "Clonezilla" \
+          "2" "Photorec" \
+          "3" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") if which clonezilla &>/dev/null; then
+                    clonezilla
+                 else
+                    pacman -S clonezilla && clonezilla
+                 fi
+                 ;;
+            "2") if which photorec &>/dev/null; then
+                    photorec
+                 else
+                    pacman -S photorec && photorec
+                 fi
+                 ;;
+            *) loopmenu=0
+                return 0
+                 ;;
+        esac
+    done
+}
+
+logs_menu() {
+    local PARENT="$FUNCNAME"
+    declare -i loopmenu=1
+    while ((loopmenu)); do
+        submenu 3
+        DIALOG " $_LogMenu " --default-item ${HIGHLIGHT_SUB} --menu "\n$_LogBody\n " 0 0 4 \
+          "1" "Dmesg" \
+          "2" "Pacman log" \
+          "3" "Xorg log" \
+          "3" "Journalctl" \
+          "4" "$_Back" 2>${ANSWER}
+        HIGHLIGHT_SUB=$(cat ${ANSWER})
+
+        case $(cat ${ANSWER}) in
+            "1") arch_chroot "dmesg" | fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > "
+                 ;;
+            "2") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/pacman.log
+                 ;;
+            "3") fzf --reverse --header="Exit by pressing esc" --prompt="Type to filter log entries > " < /mnt/var/log/Xorg.*
+                 ;;
+            "5") arch_chroot "journalctl" | --header="Exit by pressing esc" --prompt="Type to filter log entries > "
                  ;;
             *) loopmenu=0
                 return 0
