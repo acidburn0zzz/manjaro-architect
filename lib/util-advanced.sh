@@ -693,10 +693,10 @@ enable_autologin() {
                   arch_chroot "groupadd -r autologin"
                   arch_chroot "gpasswd -a $autologin_user autologin"
             ;;
-        sddm)     xsession=$(echo /usr/share/xsessions/* | xargs -n1 | head -n1)
+        sddm)     xsession=$(echo /mnt/usr/share/xsessions/* | xargs -n1 | head -n1)
                   [[ -e /mnt/etc/sddm.conf ]] || arch_chroot "sddm --example-config > /etc/sddm.conf"
                   sed -i "s/^User=/User=$autologin_user/g" /mnt/etc/sddm.conf
-                  sed -i "s/^Session/Session=$xsession/g" /mnt/etc/sddm.conf
+                  sed -i "s~^Session~Session=$xsession~g" /mnt/etc/sddm.conf
             ;;
         lxdm)     sed -i "s/^# autologin=dgod/autologin=$autologin_user/g" /mnt/etc/lxdm/lxdm.conf
             ;;
