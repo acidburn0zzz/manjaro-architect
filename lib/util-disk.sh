@@ -879,6 +879,47 @@ lvm_del_all() {
     fi
 }
 
+make_esp() {
+    # Extra Step for VFAT UEFI Partition. This cannot be in an LVM container.
+    if [[ $SYSTEM == "UEFI" ]]; then
+        if DIALOG " $_PrepMntPart " --menu "\n$_SelUefiBody\n " 0 0 12 ${PARTITIONS} 2>${ANSWER}; then
+            PARTITION=$(cat ${ANSWER})
+            UEFI_PART=${PARTITION}
+
+            # If it is already a fat/vfat partition...
+            if [[ $(fsck -N $PARTITION | grep fat) ]]; then
+                DIALOG " $_PrepMntPart " --yesno "\n$_FormUefiBody $PARTITION $_FormUefiBody2\n " 0 0 && {
+                    mkfs.vfat -F32 ${PARTITION} >/dev/null 2>$ERR
+                    check_for_error "mkfs.vfat -F32 ${PARTITION}" "$?"
+                } # || return 0
+            else
+                mkfs.vfat -F32 ${PARTITION} >/dev/null 2>$ERR
+                check_for_error "mkfs.vfat -F32 ${PARTITION}" "$?"
+            fi
+
+            if [[ "$LUKS" == 0 ]]; then
+                _MntUefiMessage="$_MntUefiBody"
+            else
+                _MntUefiMessage="$_MntUefiCrypt"
+            fi
+            DIALOG " $_PrepMntPart " --radiolist "\n$_MntUefiMessage\n "  0 0 2 \
+            "/boot/efi" "" on \
+            "/boot" "" off 2>${ANSWER}
+
+            if [[ $(cat ${ANSWER}) != "" ]]; then
+                UEFI_MOUNT=$(cat ${ANSWER})
+                mkdir -p ${MOUNTPOINT}${UEFI_MOUNT} 2>$ERR
+                check_for_error "create ${MOUNTPOINT}${UEFI_MOUNT}" $?
+                mount ${PARTITION} ${MOUNTPOINT}${UEFI_MOUNT} 2>$ERR
+                check_for_error "mount ${PARTITION} ${MOUNTPOINT}${UEFI_MOUNT}" $?
+                if confirm_mount ${MOUNTPOINT}${UEFI_MOUNT}; then
+                    ini mount.efi "${UEFI_MOUNT}"
+                    delete_partition_in_list "$PARTITION"
+                fi
+            fi
+        fi
+    fi
+}
 mount_partitions() {
     # Warn users that they CAN mount partitions without formatting them!
     DIALOG " $_PrepMntPart " --msgbox "\n$_WarnMount1 '$_FSSkip' $_WarnMount2\n " 0 0
@@ -924,53 +965,17 @@ mount_partitions() {
     # Identify and create swap, if applicable
     make_swap
 
-    # Extra Step for VFAT UEFI Partition. This cannot be in an LVM container.
-    if [[ $SYSTEM == "UEFI" ]]; then
-        if DIALOG " $_PrepMntPart " --menu "\n$_SelUefiBody\n " 0 0 12 ${PARTITIONS} 2>${ANSWER}; then
-            PARTITION=$(cat ${ANSWER})
-            UEFI_PART=${PARTITION}
-
-            # If it is already a fat/vfat partition...
-            if [[ $(fsck -N $PARTITION | grep fat) ]]; then
-                DIALOG " $_PrepMntPart " --yesno "\n$_FormUefiBody $PARTITION $_FormUefiBody2\n " 0 0 && {
-                    mkfs.vfat -F32 ${PARTITION} >/dev/null 2>$ERR
-                    check_for_error "mkfs.vfat -F32 ${PARTITION}" "$?"
-                } # || return 0
-            else
-                mkfs.vfat -F32 ${PARTITION} >/dev/null 2>$ERR
-                check_for_error "mkfs.vfat -F32 ${PARTITION}" "$?"
-            fi
-
-            if [[ "$LUKS" == 1 ]]; then
-                _MntUefiMessage="$_MntUefiBody"
-            else
-                _MntUefiMessage="$_MntUefiCrypt"
-            fi
-            DIALOG " $_PrepMntPart " --radiolist "\n$_MntUefiMessage\n "  0 0 2 \
-            "/boot/efi" "" on \
-            "/boot" "" off 2>${ANSWER}
-
-            if [[ $(cat ${ANSWER}) != "" ]]; then
-                UEFI_MOUNT=$(cat ${ANSWER})
-                mkdir -p ${MOUNTPOINT}${UEFI_MOUNT} 2>$ERR
-                check_for_error "create ${MOUNTPOINT}${UEFI_MOUNT}" $?
-                mount ${PARTITION} ${MOUNTPOINT}${UEFI_MOUNT} 2>$ERR
-                check_for_error "mount ${PARTITION} ${MOUNTPOINT}${UEFI_MOUNT}" $?
-                if confirm_mount ${MOUNTPOINT}${UEFI_MOUNT}; then
-                    ini mount.efi "${UEFI_MOUNT}"
-                    delete_partition_in_list "$PARTITION"
-                fi
-            fi
-        fi
-    fi
-
     # All other partitions
     while [[ $NUMBER_PARTITIONS > 0 ]]; do
         DIALOG " $_PrepMntPart " --menu "\n$_ExtPartBody\n " 0 0 12 "$_Done" $"-" ${PARTITIONS} 2>${ANSWER} || return 0
         PARTITION=$(cat ${ANSWER})
 
         if [[ $PARTITION == $_Done ]]; then
-            return 0;
+                make_esp
+                get_cryptroot
+                get_cryptboot
+                echo "$LUKS_DEV" > /tmp/.luks_dev
+                return 0;
         else
             MOUNT=""
             select_filesystem
@@ -1000,9 +1005,6 @@ mount_partitions() {
             fi
         fi
     done
-    get_cryptroot
-    get_cryptboot
-    echo "$LUKS_DEV" > /tmp/.luks_dev
 }
 
 get_cryptroot() {
