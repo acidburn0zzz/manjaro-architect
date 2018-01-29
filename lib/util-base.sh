@@ -359,8 +359,11 @@ install_grub_uefi() {
     # If root is on btrfs volume, amend grub
     [[ -e /tmp/.btrfsroot ]] && \
       sed -e '/GRUB_SAVEDEFAULT/ s/^#*/#/' -i ${MOUNTPOINT}/etc/default/grub
-
-    grub_mkconfig
+    # Enble manjaro grub theme
+    basestrap ${MOUNTPOINT} grub-theme-manjaro 2>$ERR
+    check_for_error "$FUNCNAME grub" $?
+    
+    # grub_mkconfig
 
     # Ask if user wishes to set Grub as the default bootloader and act accordingly
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_SetBootDefBody ${UEFI_MOUNT}/EFI/boot $_SetBootDefBody2\n " 0 0
@@ -427,6 +430,7 @@ install_refind()
     #    sed -i "s/root=.* /root=$bl_root /g" /mnt/boot/refind_linux.conf
     #    sed -i '/Boot with minimal options/d' /mnt/boot/refind_linux.conf
     #fi
+    basestrap ${MOUNTPOINT} refind-theme-maia 
     DIALOG " $_InstUefiBtTitle " --infobox "\n$_RefindReady\n " 0 0
     sleep 2
 }
@@ -524,7 +528,9 @@ bios_bootloader() {
                 [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]] && \
                   sed -e '/GRUB_SAVEDEFAULT/ s/^#*/#/' -i ${MOUNTPOINT}/etc/default/grub
 
-                grub_mkconfig
+                #grub_mkconfig
+                basestrap ${MOUNTPOINT} grub-theme-manjaro 2>$ERR
+                check_for_error "$FUNCNAME grub" $?
             fi
         else
             # Syslinux
