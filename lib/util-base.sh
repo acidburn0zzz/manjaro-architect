@@ -525,6 +525,7 @@ bios_bootloader() {
                   sed -e '/GRUB_SAVEDEFAULT/ s/^#*/#/' -i ${MOUNTPOINT}/etc/default/grub
                 
                 DIALOG " $_InstGrub " --infobox "\n$_PlsWaitBody\n " 0 0
+                dd if=/dev/zero of=$DEVICE seek=1 count=2047
                 arch_chroot "grub-install --target=i386-pc --recheck $DEVICE" 2>$ERR
                 check_for_error "grub-install --target=i386-pc" $?
 
