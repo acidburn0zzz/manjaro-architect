@@ -595,7 +595,9 @@ setup_luks_keyfile() {
     chmod 000 /mnt/crypto_keyfile.bin
     # Add keyfile to luks
     echo "Adding the keyfile to the LUKS configuration"
-    cryptsetup luksAddKey /dev/"$root_part" /mnt/crypto_keyfile.bin
+    root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
+    root_part=$(lsblk -i | tac | sed -n -e "/$root_name/,/part/p" | awk '/part/ {print $1}' | tr -cd '[:alnum:]')
+    cryptsetup luksAddKey /dev/"$root_part" /mnt/crypto_keyfile.bin || echo "Something vent wrong with adding the LUKS key. Is /dev/$root_part the right partition?"
     # Add keyfile to initcpio
     grep -q '/crypto_keyfile.bin' /mnt/etc/mkinitcpio.conf || sed -i '/FILES/ s~)~/crypto_keyfile.bin)~' /mnt/etc/mkinitcpio.conf && echo "Adding keyfile to the initcpio"
     arch_chroot "mkinitcpio -P"    
