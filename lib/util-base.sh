@@ -521,6 +521,7 @@ bios_bootloader() {
                 # if /boot is LVM (whether using a seperate /boot mount or not), amend grub
                 if ( [[ $LVM -eq 1 ]] && [[ $LVM_SEP_BOOT -eq 0 ]] ) || [[ $LVM_SEP_BOOT -eq 2 ]]; then
                     sed -i "s/GRUB_PRELOAD_MODULES=\"/GRUB_PRELOAD_MODULES=\"lvm /g" ${MOUNTPOINT}/etc/default/grub
+                    sed -e '/GRUB_SAVEDEFAULT/ s/^#*/#/' -i ${MOUNTPOINT}/etc/default/grub
                 fi
 
                 # If encryption used amend grub
