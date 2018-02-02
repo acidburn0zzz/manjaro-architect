@@ -149,6 +149,12 @@ filter_packages() {
         # remove >manjaro flags and >sonar flags+pkgs until we support it properly
         sed -i '/>sonar/d' $pkgs_target
         sed -i 's/>manjaro //g' $pkgs_target
+
+        # Does the system have a battery?
+        if [[ -z "$(echo /sys/class/power_supply/BAT*)" ]]; then 
+          # No battery was detected. Remove TLP
+          sed -i '/tlp/d' $pkgs_target
+        fi  
         # Remove commented lines
         # remove everything except the first word of every lines
         sed -i 's/\s.*$//' $pkgs_target
