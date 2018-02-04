@@ -956,8 +956,15 @@ mount_partitions() {
     get_cryptroot
     echo "$LUKS_DEV" > /tmp/.luks_dev
     # If the root partition is btrfs, offer to create subvolumus
-    if [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]]; then 
-        DIALOG " Your root volume is formatted in btrfs " --yesno "\nWould you like to create subvolumes in it? \n " 0 0 && btrfs_subvolumes && touch /tmp/.btrfsroot
+    if [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]]; then
+        # Check if there are subvolumes already on the btrfs partition
+        if [[ $(btrfs subvolume list /mnt | wc -l) -gt 1 ]] && DIALOG " The volume has already subvolumes " --yesno "\nWould you like to mount them? \n " 0 0; then
+            # Pre-existing subvolumes and user wants to mount them
+            mount_existing_subvols
+        else
+            # No subvolumes present. Make some new ones
+            DIALOG " Your root volume is formatted in btrfs " --yesno "\nWould you like to create subvolumes in it? \n " 0 0 && btrfs_subvolumes && touch /tmp/.btrfsroot
+        fi
     else 
         [[ -e /tmp/.btrfsroot ]] && rm /tmp/.btrfsroot
     fi    
@@ -1138,4 +1145,25 @@ btrfs_subvolumes() {
     else
         return 0
     fi
+}
+
+mount_existing_subvols() {
+    # Set mount options
+    format_name=$(echo ${PARTITION} | rev | cut -d/ -f1 | rev)
+    format_device=$(lsblk -i | tac | sed -n -e "/$format_name/,/disk/p" | awk '/disk/ {print $1}')   
+    if [[ "$(cat /sys/block/${format_device}/queue/rotational)" == 1 ]]; then
+        fs_opts="autodefrag,compress=zlib,noatime,nossd,commit=120"
+    else
+        fs_opts"compress=lzo,noatime,space_cache,ssd,commit=120"
+    fi
+    btrfs subvolume list /mnt | cut -d" " -f9 > /tmp/.subvols
+    umount /mnt
+    # Mount subvolumes one by one
+    for subvol in $(cat /tmp/.subvols); do
+        # Ask for mountpoint
+        DIALOG "Mount subvolume $subvol" --inputbox "\nInput mountpoint of the subvolume $subvol\nas it would appear in installed system\n(without prepending /mnt).\n" 0 0 "/" 2>/tmp/.mountp || return 0
+        [[ -e "/mnt/$(cat /tmp/.mountp)" ]] || mkdir -p /mnt/"$(cat /tmp/.mountp)"
+        # Mount the subvolume
+        mount -o "${fs_opts},subvol=$sub" "$(cat /tmp/.root_partition)" /mnt"$(cat /tmp/.mountp)"
+    done
 }
