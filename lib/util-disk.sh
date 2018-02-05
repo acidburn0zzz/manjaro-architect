@@ -958,7 +958,7 @@ mount_partitions() {
     # If the root partition is btrfs, offer to create subvolumus
     if [[ $(lsblk -lno FSTYPE,MOUNTPOINT | awk '/ \/mnt$/ {print $1}') == btrfs ]]; then
         # Check if there are subvolumes already on the btrfs partition
-        if [[ $(btrfs subvolume list /mnt | wc -l) -gt 1 ]] && DIALOG " The volume has already subvolumes " --yesno "\nWould you like to mount them? \n " 0 0; then
+        if [[ $(btrfs subvolume list /mnt | wc -l) -gt 1 ]] && DIALOG " The volume has already subvolumes " --yesno "\nFound subvolumes $(btrfs subvolume list /mnt | cut -d" " -f9)\n\nWould you like to mount them? \n " 0 0; then
             # Pre-existing subvolumes and user wants to mount them
             mount_existing_subvols
         else
@@ -1164,6 +1164,6 @@ mount_existing_subvols() {
         DIALOG "Mount subvolume $subvol" --inputbox "\nInput mountpoint of the subvolume $subvol\nas it would appear in installed system\n(without prepending /mnt).\n" 0 0 "/" 2>/tmp/.mountp || return 0
         [[ -e "/mnt/$(cat /tmp/.mountp)" ]] || mkdir -p /mnt/"$(cat /tmp/.mountp)"
         # Mount the subvolume
-        mount -o "${fs_opts},subvol=$sub" "$(cat /tmp/.root_partition)" /mnt"$(cat /tmp/.mountp)"
+        mount -o "${fs_opts},subvol=$subvol" "$(cat /tmp/.root_partition)" /mnt"$(cat /tmp/.mountp)"
     done
 }
