@@ -473,7 +473,7 @@ check_mount() {
 check_base() {
     check_mount
     if [[ $? -eq 0 ]]; then
-        if [[ ! -e /mnt/.base_installed ]]; then
+        if [[ ! -e /mnt/usr/bin/pacman ]]; then
             DIALOG " $_ErrTitle " --msgbox "\n$_ErrNoBase\n " 0 0
             ANSWER=1
             HIGHLIGHT=1
