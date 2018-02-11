@@ -673,6 +673,8 @@ generate_fstab() {
             [[ -f ${MOUNTPOINT}/swapfile ]] && sed -i "s/\\${MOUNTPOINT}//" ${MOUNTPOINT}/etc/fstab
         fi
     fi
+    # Edit fstab in case of btrfs subvolumes
+    sed -i "s/subvolid=.*,subvol=\/.*,//g" /mnt/etc/fstab
 }
 
 # locale array generation code adapted from the Manjaro 0.8 installer
