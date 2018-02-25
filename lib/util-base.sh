@@ -388,6 +388,7 @@ install_refind()
     DIALOG " $_InstUefiBtTitle " --yesno "\n$_InstRefindBody\n " 0 0 || return 0
     clear
     inst_needed refind-efi
+    inst_needed refind-drivers
     # Check if the volume is removable. If so, install all drivers
     root_name=$(mount | awk '/\/mnt / {print $1}' | sed s~/dev/mapper/~~g | sed s~/dev/~~g)
     root_device=$(lsblk -i | tac | sed -n -e "/$root_name/,/disk/p" | awk '/disk/ {print $1}')   
@@ -405,6 +406,12 @@ install_refind()
         check_for_error "refind-install --root /mnt" $?
     fi
 
+    # If root is on exotic filesystem, add drivers
+    rootfs=$(mount | awk '/\/mnt / {print $5}')
+    case $rootfs in
+        nilfs2|xfs|jfs) cp /usr/share/refind/drivers_x64/"$rootfs"_x64.fi ${MOUNTPOINT}${UEFI_MOUNT}/EFI/refind/drivers_x64/
+            ;;
+    esac
     # Mount as rw
     sed -i 's/ro\ /rw\ \ /g' /mnt/boot/refind_linux.conf
 
