@@ -381,7 +381,7 @@ check_connection() {
         sleep 2
         clear
         echo "" > $ERR
-        pacman -Syy 2>$ERR
+        pacman -Sy 2>$ERR
         check_for_error "refresh database" $? SKIP
         greeting
     else
