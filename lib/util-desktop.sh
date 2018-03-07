@@ -408,7 +408,7 @@ choose_mjr_desk() {
         echo $displaymanager > /tmp/.display-manager
 
         cat $(echo $PROFILES/*/$(cat /tmp/.desktop)/Packages-Desktop) > /mnt/.desktop
-
+		echo "" >> /mnt/.desktop
         DIALOG " $_ExtraTitle " --yesno "\n$_ExtraBody \n " 0 0 && \
         echo "$(pacman -Ssq) $(pacman -Sg)" | fzf -m -e --header="$_AddPkgs" --prompt="$_AddPkgsPrmpt > " --reverse >> /mnt/.desktop
     
