@@ -324,9 +324,9 @@ mount_opts() {
         sed -i 's/nossd - off/nossd - on/' /tmp/.fs_options    
     else
         sed -i 's/compress=lzo - off/compress=lzo - on/' /tmp/.fs_options
-        sed -i 's/space_cache - off/space_cache - on/' /tmp/.fs_options
+        sed -i 's/ space_cache - off/ space_cache - on/' /tmp/.fs_options
         sed -i 's/commit=120 - off/commit=120 - on/' /tmp/.fs_options
-        sed -i 's/ssd - off/ssd - on/' /tmp/.fs_options
+        sed -i 's/ ssd - off/ ssd - on/' /tmp/.fs_options
         
     fi
         sed -i 's/noatime - off/noatime - on/' /tmp/.fs_options
