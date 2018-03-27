@@ -321,12 +321,14 @@ mount_opts() {
     if [[ "$(cat /sys/block/${format_device}/queue/rotational)" == 1 ]]; then
         sed -i 's/autodefrag - off/autodefrag - on/' /tmp/.fs_options
         sed -i 's/compress=zlip - off/compress=zlip - on/' /tmp/.fs_options
-        else
+        sed -i 's/nossd - off/nossd - on/' /tmp/.fs_options    
+    else
         sed -i 's/compress=lzo - off/compress=lzo - on/' /tmp/.fs_options
         sed -i 's/space_cache - off/space_cache - on/' /tmp/.fs_options
         sed -i 's/commit=120 - off/commit=120 - on/' /tmp/.fs_options
+        sed -i 's/ssd - off/ssd - on/' /tmp/.fs_options
+        
     fi
-        sed -i 's/nossd - off/nossd - on/' /tmp/.fs_options
         sed -i 's/noatime - off/noatime - on/' /tmp/.fs_options
         
     FS_OPTS=$(cat /tmp/.fs_options)
@@ -1131,8 +1133,8 @@ btrfs_subvolumes() {
             cd /mnt
             btrfs subvolume create @
             btrfs subvolume create @home
-            btrfs subvolume create @cache
-            btrfs subvolume create @snapshots
+            #btrfs subvolume create @cache
+            #btrfs subvolume create @snapshots
             cd
             # Mount subvolumes
             umount /mnt
@@ -1140,7 +1142,7 @@ btrfs_subvolumes() {
             mkdir -p /mnt/home
             mkdir -p /mnt/var/cache
             mount -o $(cat ${MOUNT_OPTS}),subvol=@home "$(cat /tmp/.root_partition)" /mnt/home
-            mount -o $(cat ${MOUNT_OPTS}),subvol=@cache "$(cat /tmp/.root_partition)" /mnt/var/cache
+            #mount -o $(cat ${MOUNT_OPTS}),subvol=@cache "$(cat /tmp/.root_partition)" /mnt/var/cache
         fi
     else
         return 0
@@ -1154,7 +1156,7 @@ mount_existing_subvols() {
     if [[ "$(cat /sys/block/${format_device}/queue/rotational)" == 1 ]]; then
         fs_opts="autodefrag,compress=zlib,noatime,nossd,commit=120"
     else
-        fs_opts"compress=lzo,noatime,space_cache,ssd,commit=120"
+        fs_opts="compress=lzo,noatime,space_cache,ssd,commit=120"
     fi
     btrfs subvolume list /mnt | cut -d" " -f9 > /tmp/.subvols
     umount /mnt
