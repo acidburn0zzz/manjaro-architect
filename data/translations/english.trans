@@ -471,7 +471,7 @@ _InstCsMenuBody="This installs a Manjaro base-system without graphical desktop e
 #System rescue
 _SysRescTitle="System Rescue"
 _SysRescBody="This menu is a collection of tools to help restore a broken system to full functionality."
-_RmPkgs="Remove packages"
+_RmPkgs="Remove Packages"
 _RmPkgsMsg="Search packages by typing their name.
 Press tab to select multiple packages"
 _RmPkgsPrmpt="Package to remove"
@@ -484,17 +484,17 @@ Press tab to select multiple packages and proceed or quit with Enter."
 _ExtraTitle="Extra Packages"
 _ExtraBody="Would you like to add any additional packages to your installation?"
 
-_TweaksMenuTitle="System tweaks"
+_TweaksMenuTitle="System Tweaks"
 _PerfBody="Settings to configure your system to a specific workload"
 _TweaksBody="Various configuration options"
 _PerfMenu="Performance"
-_SetSchd="I/O schedulers"
-_SetSwap="Swap configuration"
-_AutologEnable="Enable automatic login"
-_HibrnEnable="Enable hibernation"
+_SetSchd="I/O Schedulers"
+_SetSwap="Swap Configuration"
+_AutologEnable="Enable Automatic Login"
+_HibrnEnable="Enable Hibernation"
 
-_LogMenu="View system logs"
+_LogMenu="View System Logs"
 _LogBody="Parse system logs with fzf"
-_DataRecMenu="Data recovery"
+_DataRecMenu="Data Recovery"
 _DataRecBody="Various tools for data backup and recovery"
 
