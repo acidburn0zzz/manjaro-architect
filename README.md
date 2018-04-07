@@ -9,18 +9,18 @@ This installer provides netinstallation for different manjaro editions. It sourc
 Main Menu
 |
 ├── Prepare Installation
-|    ├── Set Virtual Console
-|    ├── List Devices
-|    ├── Partition Disk
-|    ├── LUKS Encryption
-|    ├── Logical Volume Management
-|    ├── Mount Partitions
-|    ├── Configure Installer Mirrorlist
-|    |   ├── Edit Pacman Configuration
-|    |   ├── Edit Pacman Mirror Configuration
-|    |   └── Rank Mirrors by Speed
-|    |
-│    └── Refresh Pacman Keys
+|   ├── Set Virtual Console
+|   ├── List Devices
+|   ├── Partition Disk
+|   ├── LUKS Encryption
+|   ├── Logical Volume Management
+|   ├── Mount Partitions
+|   ├── Configure Installer Mirrorlist
+|   |   ├── Edit Pacman Configuration
+|   |   ├── Edit Pacman Mirror Configuration
+|   |   └── Rank Mirrors by Speed
+|   |
+│   └── Refresh Pacman Keys
 |
 ├── Install Desktop System
 │   ├── Install Manjaro Desktop
