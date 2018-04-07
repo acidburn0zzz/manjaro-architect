@@ -19,6 +19,7 @@ Main Menu
 |    |   ├── Edit Pacman Configuration
 |    |   ├── Edit Pacman Mirror Configuration
 |    |   └── Rank Mirrors by Speed
+|    |
 │    └── Refresh Pacman Keys
 |
 ├── Install Desktop System
