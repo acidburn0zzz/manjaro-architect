@@ -483,8 +483,8 @@ _AddPkgs="Выберите любые дополнительные пакеты,
 Нажмите Tab, чтобы выбрать несколько пакетов и нажмите Enter."
 
 #Extra
-_ExtraTitle="Дополнительные пакеты"
-_ExtraBody="Хотели бы вы добавить какие-либо дополнительные пакеты для установки?"
+_ExtraPkgTitle="Дополнительные пакеты"
+_ExtraPkgBody="Хотели бы вы добавить какие-либо дополнительные пакеты для установки?"
 
 _TweaksMenuTitle="System tweaks" # translate me !
 _PerfBody="Settings to configure your system to a specific workload" # translate me !

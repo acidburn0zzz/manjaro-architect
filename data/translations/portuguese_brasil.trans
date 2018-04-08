@@ -483,8 +483,8 @@ Procurar pacotes pelo nome.
 Pressione tab para selecionar multiplos pacotes e prosseguir com Enter."
 
 #Extra
-_ExtraTitle="Pacotes extras"
-_ExtraBody="Você gostaria de adicionar qualquer pacote a mais em sua instalação?"
+_ExtraPkgTitle="Pacotes extras"
+_ExtraPkgBody="Você gostaria de adicionar qualquer pacote a mais em sua instalação?"
 
 _TweaksMenuTitle="Ajustes do Sistema"
 _PerfBody="Configurar seu sistema para uma carga de trabalho específica"

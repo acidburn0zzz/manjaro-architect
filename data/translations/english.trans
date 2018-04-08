@@ -481,8 +481,8 @@ Search packages by typing their name.
 Press tab to select multiple packages and proceed or quit with Enter."
 
 #Extra
-_ExtraTitle="Extra Packages"
-_ExtraBody="Would you like to add any additional packages to your installation?"
+_ExtraPkgTitle="Extra Packages"
+_ExtraPkgBody="Would you like to add any additional packages to your installation?"
 
 _TweaksMenuTitle="System Tweaks"
 _PerfBody="Settings to configure your system to a specific workload"

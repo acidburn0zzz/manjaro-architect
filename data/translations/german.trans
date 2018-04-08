@@ -478,8 +478,8 @@ TAB zur Auswahl weiterer Pakete
 Fortfahren/Abbrechen mit ENTER."
 
 #Extra
-_ExtraTitle="Zusätzliche Pakete"
-_ExtraBody="Möchten Sie der Installation zusätzliche Pakete hinzufügen?"
+_ExtraPkgTitle="Zusätzliche Pakete"
+_ExtraPkgBody="Möchten Sie der Installation zusätzliche Pakete hinzufügen?"
 
 _TweaksMenuTitle="System tweaks" # translate me !
 _PerfBody="Settings to configure your system to a specific workload" # translate me !

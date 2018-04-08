@@ -484,8 +484,8 @@ Search packages by typing their name.
 Press tab to select multiple packages and proceed with Enter." # translate me !
 
 #Extra
-_ExtraTitle="Ekstra pakker"
-_ExtraBody="Would you like to add any additional packages to your installation?" # translate me !
+_ExtraPkgTitle="Ekstra pakker"
+_ExtraPkgBody="Would you like to add any additional packages to your installation?" # translate me !
 
 _TweaksMenuTitle="System tweaks" # translate me !
 _PerfBody="Settings to configure your system to a specific workload" # translate me !

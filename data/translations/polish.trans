@@ -481,8 +481,8 @@ Wyszukaj pakiety, przez wpisanie ich nazwy.
 Wciśnij [tab], by zaznaczyć wiele pakietów i [enter], by kontynuować."
 
 #Extra
-_ExtraTitle="Dodatkowe pakiety"
-_ExtraBody="Czy chciałbyś dodać jakieś dodatkowe pakiety do swojej instalacji?"
+_ExtraPkgTitle="Dodatkowe pakiety"
+_ExtraPkgBody="Czy chciałbyś dodać jakieś dodatkowe pakiety do swojej instalacji?"
 
 _TweaksMenuTitle="System tweaks" # translate me !
 _PerfBody="Settings to configure your system to a specific workload" # translate me !
