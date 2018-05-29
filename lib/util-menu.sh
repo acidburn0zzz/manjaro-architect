@@ -233,7 +233,8 @@ prep_menu() {
           "6" "$_PrepMntPart" \
           "7" "$_PrepMirror|>" \
           "8" "$_PrepPacKey" \
-          "9" "$_Back" 2>${ANSWER}
+          "9" "$_HostCache" \
+          "10" "$_Back" 2>${ANSWER}
         HIGHLIGHT_SUB=$(cat ${ANSWER})
 
         case $(cat ${ANSWER}) in
@@ -264,6 +265,8 @@ prep_menu() {
                     check_for_error 'refresh pacman-keys'
                   )
                  ;;
+            "9") set_cache
+                 ;;
             *) loopmenu=0
                 return 0
                  ;;
@@ -271,6 +274,17 @@ prep_menu() {
     done
 }
 
+set_cache()
+{
+  _HostCache="Choose pacman cache"
+  _HostCacheBody="Do you want to use the pacman cache of the running system instead of the installation target? This can reduce the size of the required downloads in the installation."
+  DIALOG " $_HostCache " --yesno "\n$_HostCacheBody\n " 0 0
+  if [[ $? -eq 0 ]]; then
+    hostcache=true
+  else
+    hostcache=false
+  fi
+}
 # Base Installation
 install_base_menu() {
     local PARENT="$FUNCNAME"

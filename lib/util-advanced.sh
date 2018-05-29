@@ -52,7 +52,11 @@ install_cust_pkgs() {
     clear
     # If at least one package, install.
     if [[ $(cat ${PACKAGES}) != "" ]]; then
-            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            if $hostcache; then
+              basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            else
+              basestrap -c ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            fi
             check_for_error "$FUNCNAME $(cat ${PACKAGES})" "$?"
     fi
 }
@@ -205,7 +209,11 @@ install_de_wm() {
     if [[ $(cat ${PACKAGES}) != "" ]]; then
         clear
         sed -i 's/+\|\"//g' ${PACKAGES}
-        basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+        if $hostcache; then
+          basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+        else
+          basestrap -c ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+        fi
         check_for_error "${FUNCNAME}: ${PACKAGES}" "$?"
 
         # Clear the packages file for installation of "common" packages
@@ -233,7 +241,12 @@ install_de_wm() {
         # If at least one package, install.
         if [[ $(cat ${PACKAGES}) != "" ]]; then
             clear
-            basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            
+            if $hostcache; then
+              basestrap ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            else
+              basestrap -c ${MOUNTPOINT} $(cat ${PACKAGES}) 2>$ERR
+            fi
             check_for_error "basestrap ${MOUNTPOINT} $(cat ${PACKAGES})" "$?"
         fi
     fi

@@ -120,7 +120,11 @@ install_all_drivers() {
             echo "" >> /tmp/.all_drivers
     done
     sed -i '/KERNEL-/d' /tmp/.all_drivers
-    basestrap ${MOUNTPOINT} $(cat /tmp/.all_drivers)
+    if $hostcache; then
+        basestrap ${MOUNTPOINT} $(cat /tmp/.all_drivers)
+    else
+        basestrap -c ${MOUNTPOINT} $(cat /tmp/.all_drivers)
+    fi
 }
 install_ati() {
     sed -i 's/MODULES=""/MODULES="radeon"/' ${MOUNTPOINT}/etc/mkinitcpio.conf
@@ -188,7 +192,11 @@ install_manjaro_de_wm() {
         check_for_error "packages to install: $(grep -vf /mnt/.base /mnt/.desktop | sort | tr '\n' ' ')"
         clear
         set -o pipefail
-        basestrap ${MOUNTPOINT} $(cat /mnt/.desktop) 2>$ERR |& tee /tmp/basestrap.log
+        if $hostcache; then
+            basestrap ${MOUNTPOINT} $(cat /mnt/.desktop) 2>$ERR |& tee /tmp/basestrap.log
+        else 
+            basestrap -c ${MOUNTPOINT} $(cat /mnt/.desktop) 2>$ERR |& tee /tmp/basestrap.log
+        fi
         local err=$?
         set +o pipefail
         check_for_error "install desktop-pkgs" $err || return $err
@@ -301,7 +309,12 @@ install_desktop() {
     check_for_error "packages to install: $(cat /mnt/.base | sort | tr '\n' ' ')"
     clear
     set -o pipefail
-    basestrap ${MOUNTPOINT} $(cat /mnt/.base) 2>$ERR |& tee /tmp/basestrap.log
+    if $hostcache; then
+        basestrap ${MOUNTPOINT} $(cat /mnt/.base) 2>$ERR |& tee /tmp/basestrap.log
+    else
+        basestrap -c ${MOUNTPOINT} $(cat /mnt/.base) 2>$ERR |& tee /tmp/basestrap.log
+    fi
+    
     local err=$?
     set +o pipefail
     check_for_error "install basepkgs" $err || {
