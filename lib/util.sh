@@ -592,3 +592,13 @@ exit_done() {
         fi
     fi
 }
+
+set_cache()
+{
+  DIALOG " $_HostCache " --yesno "\n$_HostCacheBody\n " 0 0
+  if [[ $? -eq 0 ]]; then
+    hostcache=true
+  else
+    hostcache=false
+  fi
+}

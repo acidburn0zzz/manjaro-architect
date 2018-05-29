@@ -497,3 +497,6 @@ _LogMenu="Переглянути системні логи"
 _LogBody="Зробити аналіз системних логів за допомогою fzf"
 _DataRecMenu="Відновлення даних"
 _DataRecBody="Різні утиліти для копіювання та відновлення даних"
+
+_HostCache="Choose pacman cache" # translate me !
+_HostCacheBody="Do you want to use the pacman cache of the running system instead of the installation target? This can reduce the size of the required downloads in the installation." # translate me !

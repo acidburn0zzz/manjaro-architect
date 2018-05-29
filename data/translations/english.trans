@@ -498,3 +498,6 @@ _LogBody="Parse system logs with fzf"
 _DataRecMenu="Data Recovery"
 _DataRecBody="Various tools for data backup and recovery"
 
+_HostCache="Choose pacman cache"
+_HostCacheBody="Do you want to use the pacman cache of the running system instead of the installation target? This can reduce the size of the required downloads in the installation."
+

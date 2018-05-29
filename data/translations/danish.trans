@@ -500,3 +500,5 @@ _LogMenu="Vis systemlogge"
 _LogBody="Parse system logs with fzf" # translate me !
 _DataRecMenu="Data recovery" # translate me !
 _DataRecBody="Various tools for data backup and recovery" # translate me !
+_HostCache="Choose pacman cache" # translate me !
+_HostCacheBody="Do you want to use the pacman cache of the running system instead of the installation target? This can reduce the size of the required downloads in the installation." # translate me !

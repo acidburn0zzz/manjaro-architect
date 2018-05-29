@@ -224,7 +224,7 @@ prep_menu() {
     declare -i loopmenu=1
     while ((loopmenu)); do
         submenu 9
-        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 9 \
+        DIALOG " $_PrepMenuTitle " --default-item ${HIGHLIGHT_SUB} --menu "\n$_PrepMenuBody\n " 0 0 10 \
           "1" "$_VCKeymapTitle" \
           "2" "$_DevShowOpt" \
           "3" "$_PrepPartDisk" \
@@ -274,17 +274,6 @@ prep_menu() {
     done
 }
 
-set_cache()
-{
-  _HostCache="Choose pacman cache"
-  _HostCacheBody="Do you want to use the pacman cache of the running system instead of the installation target? This can reduce the size of the required downloads in the installation."
-  DIALOG " $_HostCache " --yesno "\n$_HostCacheBody\n " 0 0
-  if [[ $? -eq 0 ]]; then
-    hostcache=true
-  else
-    hostcache=false
-  fi
-}
 # Base Installation
 install_base_menu() {
     local PARENT="$FUNCNAME"
